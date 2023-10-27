@@ -1,4 +1,9 @@
 baseURL = 'https://sacrorum.com/'
 languageCode = 'en-us'
-title = 'Rex Sacrorum'
+title = 'Bogdan Novosad blog'
 theme = 'ananke'
+copyright = "Copyright 2023 Bogdan Novosad"
+defaultContentLanguage = "en"
+enableGitInfo = true
+enableRobotsTXT = true
+googleAnalytics = "G-K4ZYFFEK0Q"
