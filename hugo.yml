@@ -18,17 +18,17 @@ languages:
         category: categories
         tag: tags
         series: series
-      menu:
-        main:
-          - name: Archive
-            url: archives
-            weight: 5
-          - name: Search
-            url: search/
-            weight: 10
-          - name: Tags
-            url: tags/
-            weight: 10
+      # menu:
+      #   main:
+      #     - name: Archive
+      #       url: archives
+      #       weight: 5
+      #     - name: Search
+      #       url: search/
+      #       weight: 10
+      #     - name: Tags
+      #       url: tags/
+      #       weight: 10
 outputs:
     home:
         - HTML
@@ -78,8 +78,10 @@ params:
       url: "https://github.com/rexsacrorum"
     - name: linkedin
       url: "https://www.linkedin.com/in/novosad/"
-    - name: Rss
-      url: "index.xml"
+    - name: CV
+      url: "https://rxresu.me/rexsacrorum/software-engineer"
+    # - name: Rss
+    #   url: "index.xml"
 
   # editPost:
   #       URL: "https://github.com/adityatelange/hugo-PaperMod/tree/exampleSite/content"
