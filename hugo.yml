@@ -71,7 +71,7 @@ params:
   homeInfoParams:
     Title: "Hi there!"
     Content: >
-        Welcome to my blog. I am a software developer and I write about programming, software development, and other topics. I hope you find something useful here.
+        I am a Software Engineer with extensive experience in software development across various roles. I contributed to the development lifecycle, from conceptualization to deployment, focusing on scalable and maintainable solutions. Led architectural designs, and spearheaded the development of an online document viewer application. Developed SaaS solutions for essential sectors as a full-stack developer. I hold a Master's degree in Computer Science and have earned multiple Microsoft certifications, underscoring my commitment to professional growth and technological excellence.
 
   socialIcons:
     - name: github
@@ -80,6 +80,8 @@ params:
       url: "https://www.linkedin.com/in/novosad/"
     - name: CV
       url: "https://rxresu.me/rexsacrorum/software-engineer"
+    - name: email
+      url: "bogdan@sacrorum.com"
     # - name: Rss
     #   url: "index.xml"
 
