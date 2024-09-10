@@ -80,8 +80,10 @@ params:
       url: "https://www.linkedin.com/in/novosad/"
     - name: CV
       url: "https://rxresu.me/rexsacrorum/software-engineer"
+    - name: telegram
+      url: "https://t.me/whoishereitsmemario"
     - name: email
-      url: "bogdan@sacrorum.com"
+      url: "mailto:bogdan@sacrorum.com"
     # - name: Rss
     #   url: "index.xml"
 
