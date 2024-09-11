@@ -70,6 +70,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true # Fetch Hugo themes (true OR recursive)
+          fetch-depth: 0 # Fetch all history for .GitInfo and .Lastmod
+          lfs: true # Fetches LFS data
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
