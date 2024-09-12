@@ -84,8 +84,8 @@ params:
       url: "https://t.me/whoishereitsmemario"
     - name: email
       url: "mailto:bogdan@sacrorum.com"
-    # - name: Rss
-    #   url: "index.xml"
+    - name: Rss
+      url: "index.xml"
 
   # editPost:
   #       URL: "https://github.com/adityatelange/hugo-PaperMod/tree/exampleSite/content"
