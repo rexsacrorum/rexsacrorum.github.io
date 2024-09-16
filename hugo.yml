@@ -71,7 +71,17 @@ params:
   homeInfoParams:
     Title: "Hi there!"
     Content: >
-      I am a Software Engineer with extensive experience in software development across various roles, organized and detail-oriented. With the ability to work effectively both independently and in teams. I am driven by a strong desire for continuous learning and professional growth. I enjoy exploring new places, meeting people, and learning from their experiences.
+      I am a Software Engineer with 11+ years of extensive experience in software development across various roles. I can design application architecture, implement on the backend and frontend side, build CI/CD pipeline to test and deploy the application and write configs for services in Kubernetes.
+      
+      I am open to new job offers as Senior C# backend engineer or Full-Stack Engineer, in a startup or corporation, remote or onsite in any part of the EU, US, or UK. Can work as a contractor from Spain.
+
+      Backend: c#, .net core, .net framework, EF, Dapper, MediatR, gRpc,
+      Databases/storages: MSSQL, PostgreSQL, MongoDB, Redis, S3.
+      Frontend: Vue, pug, Angular, Bootstrap or clean CSS.
+      Testing: xUnit, Autofixture, Moq, FluentAssertions.
+      DevOps: docker, Kubernetes, GitOps, PowerShell, bash, Gitlab-ci, Github, AWS, Linux administration.
+      Architectures: MVC, SPA, layered, hexagonal, monolith, microservices, event-driven, CQRS, REST.
+      Methodologies and principles: Agile, SOLID, 12 factors, TDD.
 
   socialIcons:
     - name: github
