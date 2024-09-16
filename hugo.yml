@@ -75,14 +75,6 @@ params:
       
       I am open to new job offers as Senior C# backend engineer or Full-Stack Engineer, in a startup or corporation, remote or onsite in any part of the EU, US, or UK. Can work as a contractor from Spain.
 
-      Backend: c#, .net core, .net framework, EF, Dapper, MediatR, gRpc,
-      Databases/storages: MSSQL, PostgreSQL, MongoDB, Redis, S3.
-      Frontend: Vue, pug, Angular, Bootstrap or clean CSS.
-      Testing: xUnit, Autofixture, Moq, FluentAssertions.
-      DevOps: docker, Kubernetes, GitOps, PowerShell, bash, Gitlab-ci, Github, AWS, Linux administration.
-      Architectures: MVC, SPA, layered, hexagonal, monolith, microservices, event-driven, CQRS, REST.
-      Methodologies and principles: Agile, SOLID, 12 factors, TDD.
-
   socialIcons:
     - name: github
       url: "https://github.com/rexsacrorum"
