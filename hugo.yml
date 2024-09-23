@@ -76,16 +76,19 @@ params:
       I am open to new job offers as Senior C# backend engineer or Full-Stack Engineer, in a startup or corporation, remote or onsite in any part of the EU, US, or UK. Can work as a contractor from Spain.
 
   socialIcons:
-    - name: github
-      url: "https://github.com/rexsacrorum"
     - name: linkedin
       url: "https://www.linkedin.com/in/novosad/"
     - name: CV
       url: "Bogdan_Novosad_CV.pdf"
+    - name: github
+      url: "https://github.com/rexsacrorum"
+    - name: leetcode
+      url: "https://leetcode.com/u/novosad/"
     - name: telegram
       url: "https://t.me/whoishereitsmemario"
     - name: email
       url: "mailto:bogdan@sacrorum.com"
+
     - name: Rss
       url: "index.xml"
 
