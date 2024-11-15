@@ -17,7 +17,7 @@ languages:
       taxonomies:
         category: categories
         tag: tags
-        series: series
+        # series: series
       # menu:
       #   main:
       #     - name: Archive
