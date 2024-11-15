@@ -6,3 +6,6 @@ src/.env.*
 *.icloud
 # Compiled blog files
 public/
+
+# Node modules
+node_modules/
