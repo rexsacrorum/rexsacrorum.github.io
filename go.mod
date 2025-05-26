@@ -1,5 +1,5 @@
-require github.com/adityatelange/hugo-PaperMod v0.0.0-20241109160605-3e5362100777
-
 module rexsacrorum.github.io
 
-go 1.22.1
+go 1.24
+
+require github.com/adityatelange/hugo-PaperMod v0.0.0-20250524045829-5a4651783fa9 // indirect
