@@ -6,8 +6,6 @@ tags: ["MCP", "Claude", "AI", "Model Context Protocol"]
 categories: ["AI", "Development"]
 ---
 
-# How to setup MCP with Claude app
-
 ## What is MCP?
 
 MCP is an open protocol that standardizes how applications provide context to LLMs. Think of MCP like a USB-C port for AI applications. Just as USB-C provides a standardized way to connect your devices to various peripherals and accessories, MCP provides a standardized way to connect AI models to different data sources and tools.
@@ -123,7 +121,56 @@ After restarting the Claude app, go to the extension and press "connect this tab
 
 Prompt examples:
 
-* Write an Ansible playbook to automate the dev machine setup according to this guide
+* Write an Ansible playbook to automate the dev machine setup according to this guide %YOUR_GUIDE_URL%.
+
+#### Windows CLI MCP Server
+
+MCP server for secure command-line interactions on Windows systems, enabling controlled access to PowerShell, CMD, Git Bash shells, and remote systems via SSH. It allows MCP clients (like Claude Desktop) to perform operations on your system, similar to Open Interpreter.
+
+**Features**
+
+* **Multi-Shell Support**: Execute commands in PowerShell, Command Prompt (CMD), and Git Bash
+* **SSH Support**: Execute commands on remote systems via SSH
+* **Resource Exposure**: View SSH connections, current directory, and configuration as MCP resources
+* **Security Controls**:
+  * Command and SSH command blocking (full paths, case variations)
+  * Working directory validation
+  * Maximum command length limits
+  * Command logging and history tracking
+  * Smart argument validation
+* **Configurable**:
+  * Custom security rules
+  * Shell-specific settings
+
+Create a `config.json` with the following command and arguments:
+
+```powershell
+npx @simonb97/server-win-cli --init-config "$HOME\.win-cli-mcp\config.json"
+```
+
+Edit the `config.json` file to customize the server settings, such as allowed commands, SSH configurations, allowed directories, and security rules.
+
+Config:
+
+```json
+{
+  "mcpServers": {
+    "windows-cli": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@simonb97/server-win-cli",
+        "--config",
+        "$HOME\\.win-cli-mcp\\config.json"
+      ]
+    }
+  }
+}
+```
+
+Prompt examples:
+
+* TODO:
 
 ### Example config
 
@@ -144,6 +191,15 @@ Prompt examples:
     "browsermcp": {
       "command": "npx",
       "args": ["@browsermcp/mcp@latest"]
+    },
+    "windows-cli": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@simonb97/server-win-cli",
+        "--config",
+        "$HOME\\.win-cli-mcp\\config.json"
+      ]
     }
   }
 }
