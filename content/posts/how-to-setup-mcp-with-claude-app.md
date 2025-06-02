@@ -172,6 +172,30 @@ Prompt examples:
 
 * TODO:
 
+#### Context7 MCP - Up-to-date Code Docs For Any Prompt
+
+Context7 pulls up-to-date, version-specific documentation and code examples directly from the source. Paste accurate, relevant documentation directly into tools like Cursor, Claude, or any LLM. Get better answers, no hallucinations and an AI that actually understands your stack.
+
+Config:
+
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "env": {
+        "DEFAULT_MINIMUM_TOKENS": "6000"
+      }
+    }
+  }
+}
+```
+
+Prompt examples:
+* Create a basic Next.js project with app router. use context7
+* Create a script to delete the rows where the city is "" given PostgreSQL credentials. use context7
+
 ### Example config
 
 ```json
@@ -200,6 +224,13 @@ Prompt examples:
         "--config",
         "$HOME\\.win-cli-mcp\\config.json"
       ]
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "env": {
+        "DEFAULT_MINIMUM_TOKENS": "6000"
+      }
     }
   }
 }
