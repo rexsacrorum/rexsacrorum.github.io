@@ -79,7 +79,7 @@ params:
     - name: linkedin
       url: "https://www.linkedin.com/in/novosad/"
     - name: CV
-      url: "Bogdan_Novosad_CV.pdf"
+      url: "/cv/"
     - name: github
       url: "https://github.com/rexsacrorum"
     - name: leetcode

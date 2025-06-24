@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bogdan Novosad - Senior Software Engineer</title>
+    <meta name="description" content="Senior Software Engineer with 11+ years of experience in .NET, SaaS, and AI technologies">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100"><polygon fill="rgba(255,255,255,0.1)" points="0,0 1000,0 1000,80 0,100"/></svg>') no-repeat center bottom;
+            background-size: cover;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .name {
+            font-size: 3em;
+            font-weight: 300;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .title {
+            font-size: 1.3em;
+            font-weight: 400;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .contact-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .contact-icon {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 0;
+        }
+
+        .sidebar {
+            background: #f8f9fa;
+            padding: 40px 30px;
+            border-right: 1px solid #e9ecef;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 30px;
+            height: 3px;
+            background: #e74c3c;
+        }
+
+        .summary {
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #555;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        .job {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .job:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .job-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .company {
+            font-size: 1.1em;
+            color: #3498db;
+            font-weight: 500;
+        }
+
+        .job-period {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            font-weight: 500;
+            background: #ecf0f1;
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        .job-description {
+            color: #555;
+            line-height: 1.7;
+        }
+
+        .job-description ul {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+
+        .job-description li {
+            margin-bottom: 8px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .skill-category {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+
+        .skill-category h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .skill-tag {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .education-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+            margin-bottom: 15px;
+        }
+
+        .education-degree {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .education-school {
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+
+        .education-period {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .certification {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cert-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .cert-issuer {
+            color: #3498db;
+            font-size: 0.9em;
+        }
+
+        .cert-date {
+            color: #7f8c8d;
+            font-size: 0.85em;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-info {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .name {
+                font-size: 2.2em;
+            }
+            
+            .job-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+            
+            .job:hover {
+                transform: none;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="name">Bogdan Novosad</h1>
+                <p class="title">Senior Software Engineer | SWE | .NET, SaaS, AI</p>
+                <div class="contact-info">
+                    <a href="tel:+34685564571" class="contact-item">
+                        <svg class="contact-icon" viewBox="0 0 24 24">
+                            <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21 11.19 11.19 0 003.48.56 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11.19 11.19 0 00.56 3.48 1 1 0 01-.21 1.11l-2.2 2.2z"/>
+                        </svg>
+                        +34 685 564 571
+                    </a>
+                    <a href="mailto:bogdan@novosad.xyz" class="contact-item">
+                        <svg class="contact-icon" viewBox="0 0 24 24">
+                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                        </svg>
+                        bogdan@novosad.xyz
+                    </a>
+                    <a href="https://www.linkedin.com/in/novosad/" class="contact-item">
+                        <svg class="contact-icon" viewBox="0 0 24 24">
+                            <path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/>
+                        </svg>
+                        novosad
+                    </a>
+                    <span class="contact-item">
+                        <svg class="contact-icon" viewBox="0 0 24 24">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/>
+                        </svg>
+                        Madrid, Spain
+                    </span>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <aside class="sidebar">
+                <section class="section">
+                    <h2 class="section-title">Technical Skills</h2>
+                    <div class="skills-grid">
+                        <div class="skill-category">
+                            <h4>Backend</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">C#</span>
+                                <span class="skill-tag">.NET Core</span>
+                                <span class="skill-tag">.NET Framework</span>
+                                <span class="skill-tag">ASP.NET</span>
+                                <span class="skill-tag">EF</span>
+                                <span class="skill-tag">Dapper</span>
+                                <span class="skill-tag">MediatR</span>
+                                <span class="skill-tag">gRPC</span>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-category">
+                            <h4>Databases</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">SQL Server</span>
+                                <span class="skill-tag">PostgreSQL</span>
+                                <span class="skill-tag">MongoDB</span>
+                                <span class="skill-tag">Redis</span>
+                                <span class="skill-tag">S3</span>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-category">
+                            <h4>Frontend</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">Vue.js</span>
+                                <span class="skill-tag">Angular</span>
+                                <span class="skill-tag">Svelte</span>
+                                <span class="skill-tag">TypeScript</span>
+                                <span class="skill-tag">Bootstrap</span>
+                                <span class="skill-tag">CSS</span>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-category">
+                            <h4>DevOps & Cloud</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">Docker</span>
+                                <span class="skill-tag">Kubernetes</span>
+                                <span class="skill-tag">AWS</span>
+                                <span class="skill-tag">Terraform</span>
+                                <span class="skill-tag">GitLab CI</span>
+                                <span class="skill-tag">GitHub</span>
+                                <span class="skill-tag">Prometheus</span>
+                                <span class="skill-tag">Grafana</span>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-category">
+                            <h4>Testing</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">xUnit</span>
+                                <span class="skill-tag">Autofixture</span>
+                                <span class="skill-tag">Moq</span>
+                                <span class="skill-tag">FluentAssertions</span>
+                                <span class="skill-tag">TDD</span>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-category">
+                            <h4>Architecture</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">Microservices</span>
+                                <span class="skill-tag">Hexagonal</span>
+                                <span class="skill-tag">CQRS</span>
+                                <span class="skill-tag">DDD</span>
+                                <span class="skill-tag">REST</span>
+                                <span class="skill-tag">Event-driven</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2 class="section-title">Education</h2>
+                    <div class="education-item">
+                        <div class="education-degree">Master's Degree</div>
+                        <div class="education-school">Moscow Aviation Institute</div>
+                        <div class="education-period">Computer Science • 2011-2013</div>
+                    </div>
+                    <div class="education-item">
+                        <div class="education-degree">Bachelor's Degree</div>
+                        <div class="education-school">Moscow Aviation Institute</div>
+                        <div class="education-period">Computer Science • 2007-2011</div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2 class="section-title">Certifications</h2>
+                    <div class="certification">
+                        <div>
+                            <div class="cert-name">EF SET English Certificate 74/100 (C2 Proficient)</div>
+                            <div class="cert-issuer">EF SET</div>
+                        </div>
+                        <div class="cert-date">Feb 2024</div>
+                    </div>
+                    <div class="certification">
+                        <div>
+                            <div class="cert-name">MCSA: Web Applications</div>
+                            <div class="cert-issuer">Microsoft</div>
+                        </div>
+                        <div class="cert-date">Sep 2016</div>
+                    </div>
+                    <div class="certification">
+                        <div>
+                            <div class="cert-name">MCPS: Microsoft Certified Professional</div>
+                            <div class="cert-issuer">Microsoft</div>
+                        </div>
+                        <div class="cert-date">Jul 2015</div>
+                    </div>
+                    <div class="certification">
+                        <div>
+                            <div class="cert-name">Programming in C#</div>
+                            <div class="cert-issuer">Microsoft</div>
+                        </div>
+                        <div class="cert-date">Jul 2015</div>
+                    </div>
+                </section>
+            </aside>
+
+            <main class="content">
+                <section class="section">
+                    <h2 class="section-title">Professional Summary</h2>
+                    <div class="summary">
+                        I am a Software Engineer with 11+ years of extensive experience in software development across various roles. I am open to new job opportunities as a Senior C# Backend Engineer or Full-Stack Engineer. I specialize in .NET technologies, cloud architecture, and building scalable SaaS applications using modern DevOps practices.
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2 class="section-title">Professional Experience</h2>
+                    
+                    <div class="job">
+                        <div class="job-header">
+                            <div>
+                                <div class="job-title">Staff Software Engineer - Special Projects Team</div>
+                                <div class="company">Software Country</div>
+                            </div>
+                            <div class="job-period">Oct 2024 - Present</div>
+                        </div>
+                        <div class="job-description">
+                            Selected for a small, senior team tasked with transforming a 25-year-old monolithic e-learning platform (7M daily users) into a cloud-native, micro-service architecture.
+                            <ul>
+                                <li>Carve legacy WinForms/MVC modules into .NET Core/ASP.NET 8 REST services, while introducing a modern Svelte 5 front-end</li>
+                                <li>Design and migrate relational schemas; author high-throughput SQL (T-SQL & PostgreSQL) and own data-model evolution</li>
+                                <li>Build and maintain infrastructure-as-code with Terraform across AWS (EKS, ECS, EC2, RDS, S3, CloudFront)</li>
+                                <li>Drive GitLab-based CI/CD: automated tests, container builds, blue-green & canary deployments with zero downtime</li>
+                                <li>Tackle DevOps initiatives—observability (Prometheus / Grafana), cost-optimisation, disaster-recovery drills</li>
+                                <li>Mentor engineers on clean architecture, DDD and cloud best practices; conduct design and code reviews</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="job">
+                        <div class="job-header">
+                            <div>
+                                <div class="job-title">Senior Full-Stack Engineer</div>
+                                <div class="company">Aspose</div>
+                            </div>
+                            <div class="job-period">Apr 2023 - Oct 2024</div>
+                        </div>
+                        <div class="job-description">
+                            Worked with 10 developers using scrum methodology on company SaaS projects, responsible for designing new projects architecture, database design, full stack development, DevOps tasks, and systems health monitoring.
+                            <ul>
+                                <li>Designed architecture and developed a new online document viewer - a SaaS application with .NET 8 microservices, SPA frontend on Angular 14, AWS S3 for files, and PostgreSQL databases</li>
+                                <li>Developed AI assistant based on OpenAI assistants API for documentation, significantly reducing support forum requests and increasing user satisfaction</li>
+                                <li>Set up CI/CD across multiple projects using GitLab CI and ArgoCD, streamlining development process and reducing deployment times</li>
+                                <li>Implemented hexagonal architecture and SOLID principles for easily maintainable and testable code</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="job">
+                        <div class="job-header">
+                            <div>
+                                <div class="job-title">Senior Software Engineer</div>
+                                <div class="company">Aspose</div>
+                            </div>
+                            <div class="job-period">Sep 2018 - Mar 2023</div>
+                        </div>
+                        <div class="job-description">
+                            <ul>
+                                <li>Created a tool that collects library performance metrics for different scenarios on customer documents, comparing metrics between commits and integrating with CI/CD pipeline</li>
+                                <li>Set up a knowledge base with VuePress and custom written plugins for the layout team, greatly speeding up problem analysis and new functionality development</li>
+                                <li>Implemented new layout algorithms responsible for clipping behavior of different objects, solving dozens of customer problems</li>
+                                <li>Maintained high level of library performance from release to release through automated performance monitoring</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="job">
+                        <div class="job-header">
+                            <div>
+                                <div class="job-title">Full-Stack Engineer</div>
+                                <div class="company">ADICOM</div>
+                            </div>
+                            <div class="job-period">Jul 2013 - Sep 2018</div>
+                        </div>
+                        <div class="job-description">
+                            <ul>
+                                <li>Introduced unit testing with xUnit and Autofixture to the team, making tests more readable and maintainable</li>
+                                <li>Solved critical performance issues that prevented project deployment, conducting system performance testing with JMeter</li>
+                                <li>Moved functionality from monolithic project into separate microservices to improve performance</li>
+                                <li>Developed and maintained full-stack web applications using modern technologies</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+</body>
+</html>
