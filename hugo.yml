@@ -80,8 +80,6 @@ params:
       url: "/cv/"
     - name: github
       url: "https://github.com/rexsacrorum"
-    - name: leetcode
-      url: "https://leetcode.com/u/novosad/"
     - name: telegram
       url: "https://t.me/rexsacrorum"
     - name: email
