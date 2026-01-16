@@ -1,0 +1,244 @@
+/* CV page layout (extends PaperMod) */
+
+.cv-sheet {
+  background: var(--entry);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: calc(var(--gap) * 1.1);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+}
+
+.cv-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--content-gap);
+  padding-bottom: var(--gap);
+  border-bottom: 1px solid var(--border);
+}
+
+.cv-titleblock {
+  flex: 1 1 420px;
+  min-width: 280px;
+}
+
+.cv-name {
+  margin: 0;
+  font-size: 40px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.cv-role {
+  margin: 8px 0 0 0;
+  color: var(--secondary);
+}
+
+.cv-contact {
+  flex: 1 1 280px;
+  min-width: 260px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  color: var(--secondary);
+}
+
+.cv-contact strong {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.cv-section {
+  padding-top: var(--gap);
+}
+
+.cv-section-title {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--secondary);
+}
+
+.cv-summary {
+  margin: 0;
+  color: var(--content);
+}
+
+.cv-highlights {
+  margin: 12px 0 0 0;
+  padding-left: 18px;
+  color: var(--content);
+}
+
+.cv-highlights li {
+  margin: 6px 0;
+}
+
+.cv-skillgrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px var(--content-gap);
+}
+
+.cv-skilltitle {
+  margin: 0 0 10px 0;
+  font-size: 15px;
+  color: var(--primary);
+}
+
+.cv-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cv-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: calc(var(--radius) * 2);
+  border: 1px solid var(--border);
+  background: var(--theme);
+  color: var(--content);
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.cv-roles {
+  display: grid;
+  gap: var(--content-gap);
+}
+
+.cv-rolecard {
+  padding: 16px 16px 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--theme);
+}
+
+.cv-roleheader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 14px;
+}
+
+.cv-roletitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 650;
+}
+
+.cv-rolemeta {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-left: auto;
+  color: var(--secondary);
+  font-size: 14px;
+}
+
+.cv-rolecompany {
+  white-space: nowrap;
+}
+
+.cv-roledates {
+  white-space: nowrap;
+}
+
+.cv-rolesummary {
+  margin: 10px 0 0 0;
+  color: var(--content);
+}
+
+.cv-bullets {
+  margin: 10px 0 0 0;
+  padding-left: 18px;
+  color: var(--content);
+}
+
+.cv-bullets li {
+  margin: 6px 0;
+}
+
+.cv-split {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--content-gap);
+}
+
+.cv-list {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--content);
+}
+
+.cv-list li {
+  margin: 6px 0;
+}
+
+.cv-muted {
+  color: var(--secondary);
+}
+
+@media (max-width: 900px) {
+  .cv-skillgrid {
+    grid-template-columns: 1fr;
+  }
+
+  .cv-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  body {
+    background: white;
+    font-size: 11pt;
+  }
+
+  .header,
+  .footer,
+  .top-link,
+  .post-footer,
+  .share-buttons,
+  .breadcrumbs,
+  .toc {
+    display: none !important;
+  }
+
+  .main {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .cv-sheet {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 9pt;
+    color: #555;
+  }
+
+  .cv-rolecard,
+  .cv-section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  @page {
+    margin: 14mm;
+  }
+}
+

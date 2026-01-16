@@ -1,0 +1,93 @@
+name: Bogdan Novosad
+role: "SWE | .NET, AWS, RAG, Agentic Coding"
+contact:
+  email: bogdan@novosad.xyz
+  phone: "+34 685 564 571"
+  website: https://sacrorum.com/
+  linkedin: https://www.linkedin.com/in/novosad/
+  location: Spain
+summary: >-
+  Full-Stack Engineer and Systems Architect with 12+ years of experience designing and delivering scalable,
+  cloud-native solutions. Specialized in modernizing legacy systems into microservice architectures while
+  maintaining stability for millions of daily users.
+highlights:
+  - "Architecture & design: clean architecture, SOLID, microservices, scalable systems"
+  - "Cloud & DevOps: AWS, Terraform, Docker/Kubernetes, CI/CD, observability"
+  - "AI integration: RAG and AI assistants (OpenAI API) to improve product workflows"
+skills:
+  - group: Backend
+    tags: [C#, .NET, ASP.NET, EF, Dapper, MediatR, gRPC, REST]
+  - group: Data
+    tags: [SQL Server, PostgreSQL, MongoDB, Redis, T-SQL, S3]
+  - group: Frontend
+    tags: [TypeScript, Svelte, Angular, Vue.js, CSS]
+  - group: "Cloud and Delivery"
+    tags: [AWS, Terraform, Docker, Kubernetes, "GitLab CI", GitHub, Prometheus, Grafana]
+  - group: AI
+    tags: [RAG, LLMs, "OpenAI API", "Assistants API", Agents]
+  - group: "Engineering Practices"
+    tags: [TDD, xUnit, AutoFixture, Moq, FluentAssertions, DDD, CQRS, Hexagonal, Event-driven]
+experience:
+  - title: "SWE — Special Projects Team"
+    company: Software Country
+    dates: "Oct 2024 — Present (Direct contract, Remote)"
+    summary: >-
+      Selected for a senior team transforming a 25-year-old monolithic e-learning platform (~7M daily users) into a
+      cloud-native microservice architecture.
+    bullets:
+      - "Design services and APIs as part of a migration from monolith to microservices"
+      - "Implement RAG-based LLM features with the OpenAI API to generate learning materials from multiple sources"
+      - "Improve CI/CD and reliability for a high-traffic platform"
+      - "Collaborate closely with senior engineers on architecture and delivery"
+  - title: "Full Stack Engineer"
+    company: "Aspose Pty Ltd"
+    dates: "Apr 2023 — Oct 2024 (Direct contract, Remote)"
+    summary: "Worked in a Scrum team; owned architecture, database design, full-stack development, DevOps, and service health."
+    bullets:
+      - "Designed and built an online document viewer SaaS using .NET 8 microservices, Angular 14 SPA, S3, and PostgreSQL"
+      - "Delivered an AI assistant (OpenAI Assistants API) for documentation/support workflows"
+      - "Set up CI/CD across projects with GitLab CI and ArgoCD, streamlining deployments and feedback loops"
+      - "Applied hexagonal architecture and SOLID principles to improve maintainability and testability"
+  - title: Senior Software Engineer
+    company: Aspose
+    dates: "Sep 2018 — Mar 2023"
+    bullets:
+      - "Built tooling to collect and compare library performance metrics across commits; integrated into CI/CD"
+      - "Created a VuePress knowledge base with custom plugins to speed up analysis and feature delivery"
+      - "Implemented layout algorithms (e.g., clipping behavior) solving dozens of customer issues"
+      - "Maintained release-to-release performance via automated monitoring"
+  - title: Full-Stack Engineer
+    company: ADICOM
+    dates: "Jul 2013 — Sep 2018"
+    bullets:
+      - "Introduced unit testing (xUnit + AutoFixture) to improve confidence and maintainability"
+      - "Unblocked deployments by diagnosing and fixing critical performance issues (incl. JMeter-based testing)"
+      - "Extracted functionality from a monolith into services to improve performance and scalability"
+      - "Developed and maintained full-stack web applications"
+education:
+  - school: "Moscow Aviation Institute (National Research University)"
+    degree: "Master's degree, Computer Science"
+    dates: "2011–2013"
+  - school: "Moscow Aviation Institute (National Research University)"
+    degree: "Bachelor's degree, Computer Science"
+    dates: "2007–2011"
+certifications:
+  - name: "EF SET English"
+    detail: "74/100 (C2 Proficient)"
+    date: "Feb 2024"
+  - name: "MCSA: Web Applications"
+    detail: Microsoft
+    date: "Sep 2016"
+  - name: MCPS
+    detail: "Microsoft Certified Professional"
+    date: "Jul 2015"
+  - name: "Programming in C#"
+    detail: Microsoft
+    date: "Jul 2015"
+languages:
+  - name: English
+    level: "C2 (EF SET)"
+projects:
+  - name: "Glider MCP"
+    dates: "Jan 2025 — Present"
+    summary: "AI-powered code analysis project focused on deeper understanding of C# codebases (MCP)."

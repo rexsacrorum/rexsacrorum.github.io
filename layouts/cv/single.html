@@ -1,0 +1,162 @@
+{{- define "main" }}
+{{- $cv := site.Data.cv }}
+
+<article class="post-single cv-page">
+    {{- if not .Params.hideTitle }}
+      <header class="page-header">
+        <h1>{{ .Title }}</h1>
+      </header>
+    {{- end }}
+
+    <div class="post-content">
+      <section class="cv-sheet" itemscope itemtype="https://schema.org/Person">
+        <header class="cv-header">
+          <div class="cv-titleblock">
+            <h1 class="cv-name" itemprop="name">{{ $cv.name }}</h1>
+            <p class="cv-role" itemprop="jobTitle">{{ $cv.role }}</p>
+          </div>
+
+            <ul class="cv-contact">
+            {{- with $cv.contact.email }}
+              <li><strong>Email:</strong> <a href="mailto:{{ . }}" itemprop="email">{{ . }}</a></li>
+            {{- end }}
+            {{- with $cv.contact.phone }}
+              <li><strong>Phone:</strong> <a href="tel:{{ . | replaceRE "[^+0-9]" "" }}" itemprop="telephone">{{ . }}</a></li>
+            {{- end }}
+            {{- with $cv.contact.website }}
+              <li><strong>Website:</strong> <a href="{{ . }}" rel="me">{{ . | replaceRE "^https?://" "" | strings.TrimSuffix "/" }}</a></li>
+            {{- end }}
+            {{- with $cv.contact.linkedin }}
+              <li><strong>LinkedIn:</strong> <a href="{{ . }}" rel="me">{{ . | replaceRE "^https?://" "" | strings.TrimSuffix "/" }}</a></li>
+            {{- end }}
+            {{- with $cv.contact.location }}
+              <li><strong>Location:</strong> <span itemprop="homeLocation">{{ . }}</span></li>
+            {{- end }}
+          </ul>
+        </header>
+
+        {{- with $cv.summary }}
+          <section class="cv-section" aria-labelledby="cv-summary">
+            <h2 class="cv-section-title" id="cv-summary">Summary</h2>
+            <p class="cv-summary">{{ . }}</p>
+            {{- with $cv.highlights }}
+              <ul class="cv-highlights">
+                {{- range . }}
+                  <li>{{ . }}</li>
+                {{- end }}
+              </ul>
+            {{- end }}
+          </section>
+        {{- end }}
+
+        {{- with $cv.skills }}
+          <section class="cv-section" aria-labelledby="cv-skills">
+            <h2 class="cv-section-title" id="cv-skills">Core Skills</h2>
+            <div class="cv-skillgrid">
+              {{- range . }}
+                <div class="cv-skillgroup">
+                  <h3 class="cv-skilltitle">{{ .group }}</h3>
+                  <div class="cv-tags">
+                    {{- range .tags }}
+                      <span class="cv-tag">{{ . }}</span>
+                    {{- end }}
+                  </div>
+                </div>
+              {{- end }}
+            </div>
+          </section>
+        {{- end }}
+
+        {{- with $cv.experience }}
+          <section class="cv-section" aria-labelledby="cv-experience">
+            <h2 class="cv-section-title" id="cv-experience">Experience</h2>
+            <div class="cv-roles">
+              {{- range . }}
+                <article class="cv-rolecard">
+                  <header class="cv-roleheader">
+                    <h3 class="cv-roletitle">{{ .title }}</h3>
+                    <div class="cv-rolemeta">
+                      <span class="cv-rolecompany">{{ .company }}</span>
+                      {{- with .dates }}<span class="cv-roledates">{{ . }}</span>{{- end }}
+                    </div>
+                  </header>
+
+                  {{- with .summary }}
+                    <p class="cv-rolesummary">{{ . }}</p>
+                  {{- end }}
+
+                  {{- with .bullets }}
+                    <ul class="cv-bullets">
+                      {{- range . }}
+                        <li>{{ . }}</li>
+                      {{- end }}
+                    </ul>
+                  {{- end }}
+                </article>
+              {{- end }}
+            </div>
+          </section>
+        {{- end }}
+
+        {{- with $cv.projects }}
+          <section class="cv-section" aria-labelledby="cv-projects">
+            <h2 class="cv-section-title" id="cv-projects">Projects</h2>
+            <div class="cv-roles">
+              {{- range . }}
+                <article class="cv-rolecard">
+                  <header class="cv-roleheader">
+                    <h3 class="cv-roletitle">{{ .name }}</h3>
+                    <div class="cv-rolemeta">
+                      {{- with .dates }}<span class="cv-roledates">{{ . }}</span>{{- end }}
+                    </div>
+                  </header>
+                  {{- with .summary }}
+                    <p class="cv-rolesummary">{{ . }}</p>
+                  {{- end }}
+                </article>
+              {{- end }}
+            </div>
+          </section>
+        {{- end }}
+
+        <section class="cv-section cv-split" aria-label="Additional Information">
+          {{- with $cv.education }}
+            <div class="cv-splitcol">
+              <h2 class="cv-section-title">Education</h2>
+              <ul class="cv-list">
+                {{- range . }}
+                  <li>
+                    <div><strong>{{ .school }}</strong></div>
+                    <div class="cv-muted">{{ .degree }} — {{ .dates }}</div>
+                  </li>
+                {{- end }}
+              </ul>
+            </div>
+          {{- end }}
+
+          {{- with $cv.certifications }}
+            <div class="cv-splitcol">
+              <h2 class="cv-section-title">Certifications</h2>
+              <ul class="cv-list">
+                {{- range . }}
+                  <li><strong>{{ .name }}</strong> <span class="cv-muted">— {{ .detail }}, {{ .date }}</span></li>
+                {{- end }}
+              </ul>
+            </div>
+          {{- end }}
+
+          {{- with $cv.languages }}
+            <div class="cv-splitcol">
+              <h2 class="cv-section-title">Languages</h2>
+              <ul class="cv-list">
+                {{- range . }}
+                  <li><strong>{{ .name }}</strong> <span class="cv-muted">— {{ .level }}</span></li>
+                {{- end }}
+              </ul>
+            </div>
+          {{- end }}
+        </section>
+      </section>
+    </div>
+  </article>
+{{- end }}
