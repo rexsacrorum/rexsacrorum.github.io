@@ -8,6 +8,34 @@
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
 }
 
+.cv-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 0 0 12px 0;
+}
+
+.cv-action {
+  appearance: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--theme);
+  color: var(--content);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.cv-action:hover {
+  border-color: var(--secondary);
+}
+
+.cv-action:focus-visible {
+  outline: 2px solid var(--secondary);
+  outline-offset: 2px;
+}
+
 .cv-header {
   display: flex;
   flex-wrap: wrap;
@@ -22,14 +50,14 @@
   min-width: 280px;
 }
 
-.cv-name {
+.cv-sheet .cv-name {
   margin: 0;
   font-size: 40px;
   line-height: 1.15;
   letter-spacing: -0.02em;
 }
 
-.cv-role {
+.cv-sheet .cv-role {
   margin: 8px 0 0 0;
   color: var(--secondary);
 }
@@ -55,7 +83,7 @@
   padding-top: var(--gap);
 }
 
-.cv-section-title {
+.cv-sheet .cv-section-title {
   margin: 0 0 12px 0;
   font-size: 16px;
   letter-spacing: 0.06em;
@@ -84,7 +112,7 @@
   gap: 16px var(--content-gap);
 }
 
-.cv-skilltitle {
+.cv-sheet .cv-skilltitle {
   margin: 0 0 10px 0;
   font-size: 15px;
   color: var(--primary);
@@ -128,7 +156,7 @@
   gap: 6px 14px;
 }
 
-.cv-roletitle {
+.cv-sheet .cv-roletitle {
   margin: 0;
   font-size: 18px;
   font-weight: 650;
@@ -197,9 +225,19 @@
 }
 
 @media print {
+  :root {
+    --gap: 10px;
+    --content-gap: 10px;
+  }
+
   body {
     background: white;
-    font-size: 11pt;
+    font-size: 8.5pt;
+    line-height: 1.15;
+  }
+
+  .no-print {
+    display: none !important;
   }
 
   .header,
@@ -218,27 +256,112 @@
     max-width: 100% !important;
   }
 
+  .post-content {
+    margin: 0 !important;
+  }
+
   .cv-sheet {
     border: none;
     border-radius: 0;
     box-shadow: none;
     padding: 0;
+    background: transparent;
   }
 
-  a[href^="http"]::after {
-    content: " (" attr(href) ")";
+  .cv-header {
+    gap: 10px;
+    padding-bottom: 8px;
+  }
+
+  .cv-contact {
+    gap: 4px;
     font-size: 9pt;
-    color: #555;
   }
 
-  .cv-rolecard,
+  .cv-sheet .cv-name {
+    font-size: 22px;
+  }
+
+  .cv-sheet .cv-role {
+    margin-top: 4px;
+  }
+
   .cv-section {
-    break-inside: avoid;
-    page-break-inside: avoid;
+    padding-top: 6px;
+  }
+
+  .cv-sheet .cv-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+
+  .cv-rolecard {
+    border: none;
+    padding: 0;
+    background: transparent;
+  }
+
+  .cv-roles {
+    gap: 8px;
+  }
+
+  .cv-roleheader {
+    gap: 4px 10px;
+  }
+
+  .cv-sheet .cv-roletitle {
+    font-size: 12pt;
+    font-weight: 700;
+  }
+
+  .cv-rolemeta {
+    font-size: 9pt;
+  }
+
+  .cv-rolesummary {
+    margin-top: 4px;
+  }
+
+  .cv-bullets,
+  .cv-highlights {
+    margin-top: 4px;
+    padding-left: 14px;
+  }
+
+  .cv-bullets li,
+  .cv-highlights li,
+  .cv-list li {
+    margin: 2px 0;
+  }
+
+  .cv-list {
+    padding-left: 14px;
+  }
+
+  .cv-tags {
+    gap: 0;
+  }
+
+  .cv-tag {
+    border: none;
+    background: transparent;
+    padding: 0;
+    font-size: 9pt;
+    line-height: inherit;
+  }
+
+  .cv-tag:not(:last-child)::after {
+    content: ", ";
+  }
+
+  /* Keep PDFs compact: browser "Save as PDF" preserves clickable links already. */
+  a[href^="http"]::after {
+    content: "";
   }
 
   @page {
-    margin: 14mm;
+    margin: 5mm;
   }
 }
-
