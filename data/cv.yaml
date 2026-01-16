@@ -1,7 +1,7 @@
 name: Bogdan Novosad
 role: "SWE | .NET, AWS, RAG, Agentic Coding"
 contact:
-  email: bogdan@novosad.xyz
+  email: bogdan@sacrorum.com
   phone: "+34 685 564 571"
   website: https://sacrorum.com/
   linkedin: https://www.linkedin.com/in/novosad/
@@ -24,7 +24,7 @@ skills:
   - group: "Cloud and Delivery"
     tags: [AWS, Terraform, Docker, Kubernetes, "GitLab CI", GitHub, Prometheus, Grafana]
   - group: AI
-    tags: [RAG, LLMs, "OpenAI API", "Assistants API", Agents]
+    tags: [RAG, LLMs, "OpenAI API", "Agentic Coding"]
   - group: "Engineering Practices"
     tags: [TDD, xUnit, AutoFixture, Moq, FluentAssertions, DDD, CQRS, Hexagonal, Event-driven]
 experience:
@@ -32,12 +32,11 @@ experience:
     company: Software Country
     dates: "Oct 2024 — Present (Direct contract, Remote)"
     summary: >-
-      Selected for a senior team transforming a 25-year-old monolithic e-learning platform (~7M daily users) into a
+      Selected for a team transforming a 25-year-old monolithic e-learning platform (~7M daily users) into a
       cloud-native microservice architecture.
     bullets:
       - "Design services and APIs as part of a migration from monolith to microservices"
       - "Implement RAG-based LLM features with the OpenAI API to generate learning materials from multiple sources"
-      - "Improve CI/CD and reliability for a high-traffic platform"
       - "Collaborate closely with senior engineers on architecture and delivery"
   - title: "Full Stack Engineer"
     company: "Aspose Pty Ltd"
@@ -45,7 +44,7 @@ experience:
     summary: "Worked in a Scrum team; owned architecture, database design, full-stack development, DevOps, and service health."
     bullets:
       - "Designed and built an online document viewer SaaS using .NET 8 microservices, Angular 14 SPA, S3, and PostgreSQL"
-      - "Delivered an AI assistant (OpenAI Assistants API) for documentation/support workflows"
+      - "Delivered an AI assistant (OpenAI API) for documentation/support workflows"
       - "Set up CI/CD across projects with GitLab CI and ArgoCD, streamlining deployments and feedback loops"
       - "Applied hexagonal architecture and SOLID principles to improve maintainability and testability"
   - title: Senior Software Engineer
@@ -89,5 +88,9 @@ languages:
     level: "C2 (EF SET)"
 projects:
   - name: "Glider MCP"
-    dates: "Jan 2025 — Present"
-    summary: "AI-powered code analysis project focused on deeper understanding of C# codebases (MCP)."
+    dates: "Jan 2026 — Present"
+    summary: "Roslyn-powered Model Context Protocol (MCP) server for semantic C# code analysis and safe refactoring in MCP clients (e.g., Claude Code)."
+    bullets:
+      - "Loads a solution/project and resolves symbols the same way the compiler does (not grep)"
+      - "Provides tools for find usages/implementations/types, type info/method signatures, and compiler diagnostics"
+      - "Implements safe refactors (rename symbol, move type/member) plus batching; ships as a .NET global tool with stdio and HTTP transports"

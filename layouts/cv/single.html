@@ -49,24 +49,6 @@
           </section>
         {{- end }}
 
-        {{- with $cv.skills }}
-          <section class="cv-section" aria-labelledby="cv-skills">
-            <h2 class="cv-section-title" id="cv-skills">Core Skills</h2>
-            <div class="cv-skillgrid">
-              {{- range . }}
-                <div class="cv-skillgroup">
-                  <h3 class="cv-skilltitle">{{ .group }}</h3>
-                  <div class="cv-tags">
-                    {{- range .tags }}
-                      <span class="cv-tag">{{ . }}</span>
-                    {{- end }}
-                  </div>
-                </div>
-              {{- end }}
-            </div>
-          </section>
-        {{- end }}
-
         {{- with $cv.experience }}
           <section class="cv-section" aria-labelledby="cv-experience">
             <h2 class="cv-section-title" id="cv-experience">Experience</h2>
@@ -98,6 +80,24 @@
           </section>
         {{- end }}
 
+        {{- with $cv.skills }}
+          <section class="cv-section" aria-labelledby="cv-skills">
+            <h2 class="cv-section-title" id="cv-skills">Core Skills</h2>
+            <div class="cv-skillgrid">
+              {{- range . }}
+                <div class="cv-skillgroup">
+                  <h3 class="cv-skilltitle">{{ .group }}</h3>
+                  <div class="cv-tags">
+                    {{- range .tags }}
+                      <span class="cv-tag">{{ . }}</span>
+                    {{- end }}
+                  </div>
+                </div>
+              {{- end }}
+            </div>
+          </section>
+        {{- end }}
+
         {{- with $cv.projects }}
           <section class="cv-section" aria-labelledby="cv-projects">
             <h2 class="cv-section-title" id="cv-projects">Projects</h2>
@@ -112,6 +112,13 @@
                   </header>
                   {{- with .summary }}
                     <p class="cv-rolesummary">{{ . }}</p>
+                  {{- end }}
+                  {{- with .bullets }}
+                    <ul class="cv-bullets">
+                      {{- range . }}
+                        <li>{{ . }}</li>
+                      {{- end }}
+                    </ul>
                   {{- end }}
                 </article>
               {{- end }}
