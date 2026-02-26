@@ -1,95 +1,113 @@
 name: Bogdan Novosad
-role: "SWE | .NET, AWS, RAG, Agentic Coding"
+role: Developer Tools / .NET / TypeScript / LLM Tooling
 contact:
   email: bogdan@sacrorum.com
   website: https://sacrorum.com/
   linkedin: https://www.linkedin.com/in/novosad/
   location: Spain
-summary: >-
-  Full-Stack Engineer and Systems Architect with 12+ years of experience designing and delivering scalable,
-  cloud-native solutions. Specialized in modernizing legacy systems into microservice architectures while
-  maintaining stability for millions of daily users.
+summary: 'Senior software engineer (12+ years) building developer tools and full-stack systems. Recent
+  focus: making AI-assisted coding reliable on large C# codebases via Roslyn-based semantic analysis (MCP
+  server for navigation, diagnostics, and safe refactoring). Strong TypeScript SPA background (Angular/Svelte/Vue)
+  and pragmatic delivery with CI/CD and cloud infrastructure.'
 highlights:
-  - "Architecture & design: clean architecture, SOLID, microservices, scalable systems"
-  - "Cloud & DevOps: AWS, Terraform, Docker/Kubernetes, CI/CD, observability"
-  - "AI integration: RAG and AI assistants (OpenAI API) to improve product workflows"
+- 'Developer tools: Roslyn/MCP semantic code navigation, refactoring workflows, performance benchmarking
+  harnesses'
+- 'LLM integration: RAG features and AI assistants (OpenAI API)'
+- 'Full-stack delivery: .NET + TypeScript SPAs, CI/CD (GitLab CI, ArgoCD), AWS infrastructure'
 skills:
-  - group: Backend
-    tags: [C#, .NET, ASP.NET, EF, Dapper, MediatR, gRPC, REST]
-  - group: Data
-    tags: [SQL Server, PostgreSQL, MongoDB, Redis, T-SQL, S3]
-  - group: Frontend
-    tags: [TypeScript, Svelte, Angular, Vue.js, CSS]
-  - group: "Cloud and Delivery"
-    tags: [AWS, Terraform, Docker, Kubernetes, "GitLab CI", GitHub, Prometheus, Grafana]
-  - group: AI
-    tags: [RAG, LLMs, "OpenAI API", "Agentic Coding"]
-  - group: "Engineering Practices"
-    tags: [TDD, xUnit, AutoFixture, Moq, FluentAssertions, DDD, CQRS, Hexagonal, Event-driven]
+- group: Developer Tools & AI
+  tags:
+  - Roslyn
+  - MCP
+  - RAG
+  - LLMs
+  - OpenAI API
+  - Agentic Coding
+- group: Backend
+  tags:
+  - C#
+  - .NET
+  - ASP.NET
+  - gRPC
+  - REST
+  - EF
+  - Dapper
+- group: Frontend
+  tags:
+  - TypeScript
+  - Angular
+  - Svelte
+  - Vue.js
+- group: Delivery
+  tags:
+  - AWS
+  - Terraform
+  - Docker
+  - Kubernetes
+  - GitLab CI
+  - ArgoCD
+  - Prometheus
+  - Grafana
+- group: Data
+  tags:
+  - PostgreSQL
+  - SQL Server
+  - Redis
+  - S3
 experience:
-  - title: "SWE — Special Projects Team"
-    company: Software Country
-    dates: "Oct 2024 — Present (Direct contract, Remote)"
-    summary: >-
-      Selected for a team transforming a 25-year-old monolithic e-learning platform (~7M daily users) into a
-      cloud-native microservice architecture.
-    bullets:
-      - "Design services and APIs as part of a migration from monolith to microservices"
-      - "Implement RAG-based LLM features with the OpenAI API to generate learning materials from multiple sources"
-      - "Collaborate closely with senior engineers on architecture and delivery"
-  - title: "Full Stack Engineer"
-    company: "Aspose Pty Ltd"
-    dates: "Apr 2023 — Oct 2024 (Direct contract, Remote)"
-    summary: "Worked in a Scrum team; owned architecture, database design, full-stack development, DevOps, and service health."
-    bullets:
-      - "Designed and built an online document viewer SaaS using .NET 8 microservices, Angular 14 SPA, S3, and PostgreSQL"
-      - "Delivered an AI assistant (OpenAI API) for documentation/support workflows"
-      - "Set up CI/CD across projects with GitLab CI and ArgoCD, streamlining deployments and feedback loops"
-      - "Applied hexagonal architecture and SOLID principles to improve maintainability and testability"
-  - title: Senior Software Engineer
-    company: Aspose
-    dates: "Sep 2018 — Mar 2023"
-    bullets:
-      - "Built tooling to collect and compare library performance metrics across commits; integrated into CI/CD"
-      - "Created a VuePress knowledge base with custom plugins to speed up analysis and feature delivery"
-      - "Implemented layout algorithms (e.g., clipping behavior) solving dozens of customer issues"
-      - "Maintained release-to-release performance via automated monitoring"
-  - title: Full-Stack Engineer
-    company: ADICOM
-    dates: "Jul 2013 — Sep 2018"
-    bullets:
-      - "Introduced unit testing (xUnit + AutoFixture) to improve confidence and maintainability"
-      - "Unblocked deployments by diagnosing and fixing critical performance issues (incl. JMeter-based testing)"
-      - "Extracted functionality from a monolith into services to improve performance and scalability"
-      - "Developed and maintained full-stack web applications"
+- title: SWE — Special Projects Team
+  company: Software Country
+  dates: Oct 2024 — Present (Direct contract, Remote)
+  summary: Transforming a long-lived e-learning platform into a safer-to-change, service-oriented architecture.
+  bullets:
+  - Design services and APIs while migrating a 25-year monolith (~7M daily users) toward a cloud-native
+    architecture
+  - Deliver RAG-based LLM features (OpenAI API) to generate learning materials from multiple sources
+- title: Full Stack Engineer
+  company: Aspose Pty Ltd
+  dates: Apr 2023 — Oct 2024 (Direct contract, Remote)
+  summary: Full-stack delivery (architecture, database, implementation, and operations) in a Scrum team.
+  bullets:
+  - 'Designed and built an online document viewer SaaS: .NET 8 services + Angular (TypeScript) SPA + PostgreSQL
+    + S3'
+  - Delivered an AI assistant (OpenAI API) for documentation/support workflows
+  - 'Owned delivery automation: GitLab CI + ArgoCD for repeatable deployments and faster feedback loops'
+- title: Senior Software Engineer
+  company: Aspose
+  dates: Sep 2018 — Mar 2023
+  bullets:
+  - Built CI-integrated tooling to collect and compare library performance metrics across commits
+  - Implemented core layout/formatting features and resolved customer issues while keeping performance
+    stable release-to-release
+  summary: 'Library engineering: performance, correctness, and shipping customer-facing functionality.'
+- title: Full-Stack Engineer
+  company: ADICOM
+  dates: Jul 2013 — Sep 2018
+  bullets:
+  - Introduced unit testing (xUnit + AutoFixture) and improved maintainability of a legacy system
+  - Diagnosed and fixed critical performance bottlenecks (incl. load testing) and extracted monolith functionality
+    into services
+  summary: Full-stack development with an emphasis on reliability and performance.
 education:
-  - school: "Moscow Aviation Institute (National Research University)"
-    degree: "Master's degree, Computer Science"
-    dates: "2011–2013"
-  - school: "Moscow Aviation Institute (National Research University)"
-    degree: "Bachelor's degree, Computer Science"
-    dates: "2007–2011"
-certifications:
-  - name: "EF SET English"
-    detail: "74/100 (C2 Proficient)"
-    date: "Feb 2024"
-  - name: "MCSA: Web Applications"
-    detail: Microsoft
-    date: "Sep 2016"
-  - name: MCPS
-    detail: "Microsoft Certified Professional"
-    date: "Jul 2015"
-  - name: "Programming in C#"
-    detail: Microsoft
-    date: "Jul 2015"
+- school: Moscow Aviation Institute (National Research University)
+  degree: Master's degree, Computer Science
+  dates: 2011–2013
+- school: Moscow Aviation Institute (National Research University)
+  degree: Bachelor's degree, Computer Science
+  dates: 2007–2011
+certifications: []
 languages:
-  - name: English
-    level: "C2 (EF SET)"
+- name: English
+  level: C2 (EF SET, 2024)
 projects:
-  - name: "Glider MCP"
-    dates: "Jan 2026 — Present"
-    summary: "Roslyn-powered Model Context Protocol (MCP) server for semantic C# code analysis and safe refactoring in MCP clients (e.g., Claude Code)."
-    bullets:
-      - "Loads a solution/project and resolves symbols the same way the compiler does (not grep)"
-      - "Provides tools for find usages/implementations/types, type info/method signatures, and compiler diagnostics"
-      - "Implements safe refactors (rename symbol, move type/member) plus batching; ships as a .NET global tool with stdio and HTTP transports"
+- name: Glider MCP
+  dates: Jan 2026 — Present
+  summary: Roslyn-powered MCP server for semantic C# analysis and safe refactoring in MCP clients (e.g.,
+    Claude Code).
+  bullets:
+  - Keeps an in-memory semantic model for solutions/projects; resolves symbols the way the compiler does
+    (not grep)
+  - 'LLM-first tooling: bounded outputs with pagination/filtering, stable identifiers, batching, and cancellation'
+  - Automatic file watching to keep the semantic state synchronized as the code changes
+  - Safe refactors (e.g., rename symbol, move type/member); ships as a .NET global tool with stdio and
+    HTTP transports
