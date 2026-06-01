@@ -1,6 +1,6 @@
 baseURL: 'https://sacrorum.com/'
 languageCode: 'en-us'
-title: 'Bogdan Novosad'
+title: 'Bogdan Novosad — Staff Software Engineer, AI Developer Tools'
 copyright: "Copyright 2024 Bogdan Novosad"
 defaultContentLanguage: "en"
 enableGitInfo: true
@@ -37,7 +37,7 @@ outputs:
 
 params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
-  description: "Bogdan Novosad blog"
+  description: "Staff software engineer building AI developer tools, GliderMCP, and complex .NET/TypeScript systems for real-world production codebases."
   author: Bogdan Novosad
   # author: ["Me", "You"] # multiple authors
 
@@ -69,15 +69,21 @@ params:
           url: tags
 
   homeInfoParams:
-    Title: "Hi there!"
+    Title: "Staff Software Engineer building AI developer tools for real-world .NET codebases"
     Content: >
-      I am a Software Engineer with 12+ years of extensive experience in software development across various roles. I am open to new job opportunities as a Senior C# Backend Engineer or Full-Stack Engineer. I specialize in .NET technologies, cloud architecture, and building scalable SaaS applications using modern DevOps practices.
+      I am Bogdan Novosad, a staff software engineer with 12+ years of experience building .NET/TypeScript systems, SaaS products, CI/CD workflows, and developer tooling for complex production codebases.
+
+      I created GliderMCP: local MCP tools that give AI coding agents compiler-backed semantic navigation, diagnostics, runtime evidence, and safer refactoring workflows for C#/.NET and TypeScript/JavaScript projects.
+
+      Open to Staff Software Engineer, AI Developer Tools, Developer Productivity / Platform, and Senior Backend .NET roles; full-time or B2B contract; especially US/global remote teams.
 
   socialIcons:
     - name: linkedin
       url: "https://www.linkedin.com/in/novosad/"
     - name: CV
       url: "/cv/"
+    - name: GliderMCP
+      url: "https://glidermcp.com/"
     - name: github
       url: "https://github.com/rexsacrorum"
     - name: telegram

@@ -52,6 +52,34 @@
           </section>
         {{- end }}
 
+        {{- with $cv.projects }}
+          <section class="cv-section" aria-labelledby="cv-projects">
+            <h2 class="cv-section-title" id="cv-projects">Selected Project</h2>
+            <div class="cv-roles">
+              {{- range . }}
+                <article class="cv-rolecard">
+                  <header class="cv-roleheader">
+                    <h3 class="cv-roletitle">{{ .name }}</h3>
+                    <div class="cv-rolemeta">
+                      {{- with .dates }}<span class="cv-roledates">{{ . }}</span>{{- end }}
+                    </div>
+                  </header>
+                  {{- with .summary }}
+                    <p class="cv-rolesummary">{{ . }}</p>
+                  {{- end }}
+                  {{- with .bullets }}
+                    <ul class="cv-bullets">
+                      {{- range . }}
+                        <li>{{ . }}</li>
+                      {{- end }}
+                    </ul>
+                  {{- end }}
+                </article>
+              {{- end }}
+            </div>
+          </section>
+        {{- end }}
+
         {{- with $cv.experience }}
           <section class="cv-section" aria-labelledby="cv-experience">
             <h2 class="cv-section-title" id="cv-experience">Experience</h2>
@@ -96,34 +124,6 @@
                     {{- end }}
                   </div>
                 </div>
-              {{- end }}
-            </div>
-          </section>
-        {{- end }}
-
-        {{- with $cv.projects }}
-          <section class="cv-section" aria-labelledby="cv-projects">
-            <h2 class="cv-section-title" id="cv-projects">Projects</h2>
-            <div class="cv-roles">
-              {{- range . }}
-                <article class="cv-rolecard">
-                  <header class="cv-roleheader">
-                    <h3 class="cv-roletitle">{{ .name }}</h3>
-                    <div class="cv-rolemeta">
-                      {{- with .dates }}<span class="cv-roledates">{{ . }}</span>{{- end }}
-                    </div>
-                  </header>
-                  {{- with .summary }}
-                    <p class="cv-rolesummary">{{ . }}</p>
-                  {{- end }}
-                  {{- with .bullets }}
-                    <ul class="cv-bullets">
-                      {{- range . }}
-                        <li>{{ . }}</li>
-                      {{- end }}
-                    </ul>
-                  {{- end }}
-                </article>
               {{- end }}
             </div>
           </section>
