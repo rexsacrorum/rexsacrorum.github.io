@@ -1,19 +1,21 @@
 name: Bogdan Novosad
-role: Staff Software Engineer | AI Developer Tools | .NET, Roslyn, MCP, TypeScript
+role: Staff Software Engineer | .NET & Microsoft Stack | SaaS & Legacy Modernization | Developer Tooling
 contact:
   email: bogdan@sacrorum.com
   website: https://sacrorum.com/
   linkedin: https://www.linkedin.com/in/novosad/
   location: Spain
-summary: 'Staff software engineer with 12+ years of experience building developer tools, SaaS products,
-  and large-scale .NET/TypeScript systems. I specialize in making complex codebases safer to understand,
-  change, and automate: legacy modernization, service boundaries, CI/CD automation, performance tooling,
-  and AI-assisted development workflows backed by compiler-grade semantic analysis.'
+summary: 'Staff software engineer with 12+ years of experience building SaaS products and large-scale
+  .NET systems on the Microsoft stack. I specialize in modernizing long-lived legacy systems, designing
+  clean service boundaries, and improving developer productivity through CI/CD automation, performance
+  and semantic tooling, and pragmatic architecture.'
 highlights:
-- 'Creator of GliderMCP, a local MCP product family for coding agents, including Roslyn-based C# navigation,
-  diagnostics, impact analysis, runtime evidence, and preview-first refactoring.'
-- 'Strong fit for Staff Software Engineer, AI Developer Tools, Developer Productivity / Platform, and
-  Senior Backend .NET roles.'
+- 'Staff-level IC on a high-scale e-learning/LMS platform serving ~7M daily active users: legacy
+  modernization, API/service design, RAG/LLM features, daily PR review, and architecture decisions.'
+- 'Built and shipped an adopted developer tool (5th in NuGet''s MCP Server listing, 107K+ downloads) for
+  C#/.NET semantic code analysis.'
+- 'Strong fit for Staff Software Engineer, Senior Backend .NET, Developer Productivity / Platform, and
+  SaaS product roles.'
 - 'Open to full-time or B2B contract roles with global remote teams.'
 skills:
 - group: Architecture & Staff-Level IC
@@ -24,17 +26,6 @@ skills:
   - Service boundaries
   - Developer productivity
   - Technical trade-offs
-- group: Developer Tools & AI Engineering
-  tags:
-  - Roslyn
-  - MCP
-  - Semantic code analysis
-  - Diagnostics
-  - Refactoring tools
-  - LLM coding agents
-  - RAG
-  - OpenAI API
-  - Prompt/tool design
 - group: Backend & Data
   tags:
   - C#
@@ -48,6 +39,19 @@ skills:
   - SQL Server
   - Redis
   - S3
+- group: Developer Tooling & Analysis
+  tags:
+  - Roslyn
+  - Semantic code analysis
+  - CI/CD automation
+  - Performance tooling (BenchmarkDotNet)
+  - Diagnostics
+- group: AI & LLM Features
+  tags:
+  - RAG
+  - OpenAI API
+  - LLM-based features
+  - Prompt/tool design
 - group: Frontend
   tags:
   - TypeScript
@@ -132,16 +136,9 @@ languages:
 projects:
 - name: GliderMCP — Creator
   dates: Jan 2026 — Present
-  summary: Local MCP product family for AI coding agents working on real-world C#, .NET, and TypeScript/JavaScript
-    codebases.
+  summary: Local MCP tooling that gives AI coding agents compiler-grade semantic evidence for C#/.NET and
+    TypeScript/JavaScript codebases.
   bullets:
-  - Built GliderMCP, a Roslyn-powered MCP server for C#/.NET semantic code navigation, references, implementations,
-    call graphs, diagnostics, impact analysis, and preview-first refactoring.
-  - 'Designed LLM-first tool APIs: bounded outputs, stable identifiers, batching, filtering, pagination,
-    cancellation, stdio/HTTP transports, and local-first execution.'
-  - Added workflows that help agents resolve symbols, find references/implementations/callers, inspect diagnostics,
-    analyze dependencies, and plan safer code changes without relying on grep.
-  - Expanded the product family with GliderTrace for .NET runtime evidence and TGlider for TypeScript/JavaScript
-    workspace intelligence.
-  - Published installable tools through NuGet/npm. As of 2026-06-01, glider appeared 5th in NuGet's MCP
-    Server listing with 81,506 total package downloads and latest version 6.13.2.
+  - Built a Roslyn-powered MCP server for C#/.NET semantic navigation, references, call graphs, diagnostics,
+    impact analysis, and preview-first refactoring.
+  - 'Adoption: 5th in NuGet''s MCP Server listing with 107k total downloads (as of 2026-12-07).'
