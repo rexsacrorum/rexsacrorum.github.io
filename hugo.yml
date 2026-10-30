@@ -1,7 +1,7 @@
 baseURL: 'https://sacrorum.com/'
 locale: 'en-us'
-title: 'Bogdan Novosad — Staff Software Engineer, AI Developer Tools'
-copyright: "Copyright 2024 Bogdan Novosad"
+title: 'Bogdan Novosad — Software Engineer: Backend, Platform, Developer Tooling'
+copyright: "Copyright 2026 Bogdan Novosad"
 defaultContentLanguage: "en"
 enableGitInfo: true
 enableRobotsTXT: true
@@ -37,7 +37,7 @@ outputs:
 
 params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
-  description: "Staff software engineer building AI developer tools, GliderMCP, and complex .NET/TypeScript systems for real-world production codebases."
+  description: "Software engineer building backend systems, developer tooling and GliderMCP in Go, Rust, C#/.NET and TypeScript."
   author: Bogdan Novosad
   # author: ["Me", "You"] # multiple authors
 
@@ -69,13 +69,13 @@ params:
           url: tags
 
   homeInfoParams:
-    Title: "Staff Software Engineer building AI developer tools for real-world .NET codebases"
+    Title: "Software engineer: backend, platform and developer tooling in Go, Rust and C#/.NET"
     Content: >
-      I am Bogdan Novosad, a staff software engineer with 12+ years of experience building .NET/TypeScript systems, SaaS products, CI/CD workflows, and developer tooling for complex production codebases.
+      I am Bogdan Novosad, a software engineer with 13 years of experience building backend systems, SaaS products, CI/CD and developer tooling, most recently on an LMS used by schools across Europe.
 
-      I created GliderMCP: local MCP tools that give AI coding agents compiler-backed semantic navigation, diagnostics, runtime evidence, and safer refactoring workflows for C#/.NET and TypeScript/JavaScript projects.
+      I created GliderMCP: local MCP tools in C#, Rust and TypeScript that give AI coding agents compiler-backed navigation, code search, diagnostics and shared project knowledge. I am also building TeoriaYa, a Go and SvelteKit app for learning Spanish driving theory in your own language.
 
-      Open to Staff Software Engineer, AI Developer Tools, Developer Productivity / Platform, and Senior Backend .NET roles; full-time or B2B contract; especially US/global remote teams.
+      Open to Senior/Staff backend, platform and developer-tooling roles (Go, Rust, .NET); full-time or B2B contract, remote in Europe or globally.
 
   socialIcons:
     - name: linkedin

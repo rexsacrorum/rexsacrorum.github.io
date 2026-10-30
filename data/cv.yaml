@@ -1,70 +1,85 @@
 name: Bogdan Novosad
-role: Staff Software Engineer | .NET & Microsoft Stack | SaaS & Legacy Modernization | Developer Tooling
+role: Senior / Staff Software Engineer | Go, Rust, C#/.NET | Agentic Development | Developer Tooling
 contact:
   email: bogdan@sacrorum.com
   website: https://sacrorum.com/
   linkedin: https://www.linkedin.com/in/novosad/
   location: Spain
-summary: 'Staff software engineer with 12+ years of experience building SaaS products and large-scale
-  .NET systems on the Microsoft stack. I specialize in modernizing long-lived legacy systems, designing
-  clean service boundaries, and improving developer productivity through CI/CD automation, performance
-  and semantic tooling, and pragmatic architecture.'
+summary: 'Software engineer with 13 years of experience in backend systems, SaaS products and developer
+  tooling, the last two years on a European learning platform for schools. Since early 2026 most of my
+  work is agentic development: I deliver production tickets through a multi-agent workflow I designed,
+  introduced it to my company and teach it to other engineers in seminars. With the same approach I built
+  and shipped my own products in Rust and Go. I own the whole slice from data model and API to frontend,
+  CI/CD and infrastructure.'
 highlights:
-- 'Staff-level IC on a high-scale e-learning/LMS platform serving ~7M daily active users: legacy
-  modernization, API/service design, RAG/LLM features, daily PR review, and architecture decisions.'
-- 'Built and shipped an adopted developer tool (5th in NuGet''s MCP Server listing, 107K+ downloads) for
-  C#/.NET semantic code analysis.'
-- 'Strong fit for Staff Software Engineer, Senior Backend .NET, Developer Productivity / Platform, and
-  SaaS product roles.'
-- 'Open to full-time or B2B contract roles with global remote teams.'
+- 'Pioneered agentic development at my company: designed the shared multi-agent workflow for Codex and
+  GitHub Copilot and run seminars on it for other engineers.'
+- 'Built TeoriaYa, a language-learning web app in Go, PostgreSQL and SvelteKit with a reviewed multilingual
+  content pipeline.'
+- 'Creator of GliderMCP: MCP tools for AI coding agents in Rust, C# and TypeScript. Glider has about
+  148K NuGet downloads.'
+- 'Open to full-time or B2B contract roles with remote teams in Europe or globally.'
 skills:
-- group: Architecture & Staff-Level IC
+- group: Languages
   tags:
-  - Architecture decisions
-  - PR reviews
-  - Legacy modernization
-  - Service boundaries
-  - Developer productivity
-  - Technical trade-offs
+  - Go
+  - Rust
+  - C#
+  - TypeScript
+  - SQL
+  - Python
+- group: Agentic Development
+  tags:
+  - Multi-agent workflows
+  - Claude Code
+  - Codex
+  - GitHub Copilot
+  - MCP servers
+  - AGENTS.md / skills
+  - Agent evaluation
 - group: Backend & Data
   tags:
-  - C#
-  - .NET
-  - ASP.NET Core
+  - Go (sqlc, golang-migrate)
+  - Rust (tokio, hyper, rusqlite)
+  - .NET / ASP.NET Core
   - REST
-  - gRPC
-  - EF Core
-  - Dapper
+  - SSE
+  - RabbitMQ
   - PostgreSQL
+  - MySQL/MariaDB
   - SQL Server
+  - MongoDB
+  - SQLite
   - Redis
-  - S3
-- group: Developer Tooling & Analysis
+  - S3 / R2
+- group: AI & LLM
+  tags:
+  - OpenAI API
+  - RAG
+  - Local embeddings
+  - Content pipelines with human review
+- group: Developer Tooling
   tags:
   - Roslyn
+  - tree-sitter
   - Semantic code analysis
-  - CI/CD automation
-  - Performance tooling (BenchmarkDotNet)
-  - Diagnostics
-- group: AI & LLM Features
-  tags:
-  - RAG
-  - OpenAI API
-  - LLM-based features
-  - Prompt/tool design
+  - Release engineering
 - group: Frontend
   tags:
+  - Svelte / SvelteKit
   - TypeScript
-  - Svelte
+  - Tailwind CSS
   - Angular
   - Vue.js
 - group: Cloud & Delivery
   tags:
   - AWS
+  - Cloudflare
   - Docker
   - Kubernetes
   - Terraform
   - GitLab CI
+  - GitHub Actions
   - ArgoCD
   - Prometheus
   - Grafana
@@ -72,56 +87,37 @@ experience:
 - title: Staff Software Engineer — Special Projects Team
   company: Software Country
   dates: Oct 2024 — Present (Direct contract, Remote)
-  summary: Staff-level IC on a high-scale e-learning/LMS platform serving ~7M daily active users. Work
-    spans legacy modernization, API/service design, Svelte UI migration, new microservices, RAG/LLM features,
-    daily PR review, and architecture decisions made jointly with the tech lead.
+  summary: Learning management platform used by schools and universities across Europe (~7M daily active
+    users) - a long-lived .NET monolith with Svelte frontends and surrounding services.
   bullets:
-  - Migrate legacy WinForms/MVC functionality toward REST APIs and Svelte-based user flows inside a long-lived
-    monolithic system.
-  - Contribute to new microservices for new functionality where service boundaries are clear and valuable.
-  - Build RAG-based LLM features using the OpenAI API to generate learning materials from multiple source
-    types.
-  - Review PRs daily and help keep changes safe across legacy .NET, modern .NET, Svelte, and service boundaries.
-  - Partner with the tech lead on architectural decisions, trade-offs, and implementation plans.
-- title: Full Stack Engineer
-  company: Aspose Pty Ltd
-  dates: Apr 2023 — Oct 2024 (Direct contract, Remote)
-  summary: Full-stack delivery of an online document viewer SaaS, covering architecture, backend services,
-    database design, frontend implementation, release automation, and operations.
-  bullets:
-  - Designed and built an online document viewer product using .NET services, Angular/TypeScript, PostgreSQL,
-    and S3.
-  - Led architecture and delivery decisions for the viewer product from implementation through deployment.
-  - Automated release flow with GitLab CI and ArgoCD so a push plus release tag packaged and released the
-    application, improving deployment frequency, reducing manual work, and keeping environments consistent.
-  - Delivered an OpenAI-based assistant for documentation/support workflows.
-- title: Senior Software Engineer
+  - Pioneered agentic development in the company - designed and maintain the shared agent workflow for
+    Codex and GitHub Copilot - four skills (general workflow, end-to-end ticket delivery, localization
+    terms, modernization assessment) and nine specialist roles from Jira research and architecture to a
+    single source writer, independent reviewer, verifier and GitLab delivery.
+  - Built the safety model into the workflow - one writer per change, review by a separate agent against
+    the final diff, build and Playwright verification, and no publishing, merging or ticket changes without
+    explicit human approval; shipped it with a versioned installer and wrote the repository AGENTS.md.
+  - Connected the agents to Jira, Confluence and GitLab through MCP, and to my own Glider and Scout servers
+    for compiler-backed C# navigation and code search in a 300+ project solution.
+  - Run seminars on agentic development for engineers in the company.
+  - Since early 2026 delivered most of my tickets through this workflow with my own review of every change -
+    the SCORM player replacement, ports of legacy C++ and WebForms code to C# and Svelte, security fixes and
+    build toolchain upgrades.
+  - Built backend features for the teacher AI toolkit - OpenAI Responses API with file processing so teachers
+    generate tests and assignments from their own materials, per-tenant rate limits and usage reporting.
+- title: Senior Software Engineer, then Full Stack Engineer
   company: Aspose
-  dates: Sep 2018 — Mar 2023
-  summary: Library engineering for Aspose.Words with emphasis on correctness, performance, diagnostics,
-    customer issues, and release-to-release stability.
-  bullets:
-  - Built CI-integrated performance tooling around BenchmarkDotNet to collect and compare metrics across
-    commits.
-  - Implemented a scheduler that ran representative document-processing scenarios on different documents,
-    including PDF conversion, conversion to other formats, table insertion, and layout/formatting flows.
-  - Detected metric deviations/regressions in library behavior before release.
-  - Implemented core document layout/formatting features and resolved customer-facing issues while keeping
-    performance stable release-to-release.
+  dates: Sep 2018 — Oct 2024
+  summary: On Aspose.Words I reverse-engineered Microsoft Word layout and formatting algorithms as a black
+    box, reimplemented them in the library and fixed performance issues. From 2023 I designed and built an
+    online document viewer SaaS (.NET services, Angular, PostgreSQL, S3) with release automation through
+    GitLab CI and ArgoCD, and an OpenAI-based assistant for documentation and support.
 - title: Full-Stack Engineer
   company: ADICOM
   dates: Jul 2013 — Sep 2018
-  summary: Full-stack development on legacy .NET systems with emphasis on maintainability, performance,
-    and service extraction.
-  bullets:
-  - Introduced unit testing with xUnit and AutoFixture into a legacy .NET system, improving maintainability
-    and confidence in future changes.
-  - Diagnosed a severe WCF service performance issue where a page could take ~20-30 seconds even under low
-    concurrency.
-  - Traced the bottleneck to expensive single-threaded cross-service communication overhead and removed/redesigned
-    the bottlenecked path, restoring usable performance.
-  - Extracted monolith functionality into services and delivered full-stack features across backend, database,
-    and frontend layers.
+  summary: Maintained and extended a legacy ASP.NET MVC monolith on .NET Framework, and built new projects
+    as .NET Core microservices with REST APIs and Vue.js frontends (also MongoDB, AngularJS, Knockout.js,
+    jQuery). Introduced unit testing with xUnit and AutoFixture.
 education:
 - school: Moscow Aviation Institute (National Research University)
   degree: Master's degree, Computer Science
@@ -133,12 +129,32 @@ certifications: []
 languages:
 - name: English
   level: C2 (EF SET, 2024)
+- name: Russian
+  level: Native
 projects:
+- name: TeoriaYa — Founder
+  dates: May 2026 — Present
+  summary: Language-learning product for immigrants in Spain - learners practice the driving-license theory
+    test in Spanish and tap any word or phrase to see it in their own language. Built end to end with AI agents.
+  bullets:
+  - Go API (modular monolith with separate HTTP and AI-worker roles), PostgreSQL with sqlc and golang-migrate,
+    SvelteKit learner and admin apps.
+  - Content pipeline - idempotent import, AI-assisted rewriting, generated images, translations and glossary
+    tooltips, each behind a staged human review gate before publishing.
+  - Retrieval over the official traffic rulebook with local embeddings, a versioned vector index, and an
+    evaluation set, also exposed to agents over MCP.
 - name: GliderMCP — Creator
   dates: Jan 2026 — Present
-  summary: Local MCP tooling that gives AI coding agents compiler-grade semantic evidence for C#/.NET and
-    TypeScript/JavaScript codebases.
+  summary: Local MCP servers that give AI coding agents compiler-backed and indexed evidence about a
+    codebase - Glider (C#/.NET), TGlider (TypeScript), Scout (code search, Rust), Keep (shared knowledge
+    store, Rust), and GliderTrace (.NET runtime evidence, early stage).
   bullets:
-  - Built a Roslyn-powered MCP server for C#/.NET semantic navigation, references, call graphs, diagnostics,
-    impact analysis, and preview-first refactoring.
-  - 'Adoption: 5th in NuGet''s MCP Server listing with 107k total downloads (as of 2026-12-07).'
+  - Glider - Roslyn-powered MCP server for C# navigation, references, call graphs, diagnostics, and
+    preview-first refactoring; about 148K NuGet downloads (as of 2026-10-30).
+  - Scout (Rust) - incrementally updated local index with literal, regex and fuzzy search, tree-sitter
+    declaration and structural search across nine languages, and optional on-device semantic search.
+  - Keep (Rust) - HTTP and MCP document store on SQLite with workspaces, role-based access, scoped
+    credentials with expiry and revocation, an audit log, and history-preserving schema migrations.
+  - Release engineering for native binaries on Linux, macOS and Windows (x64 and arm64) via npm, Homebrew,
+    NuGet and Docker Hub, built on a fleet of ephemeral self-hosted GitHub Actions runners.
+  - Docker-based harness that runs agents with and without the tools on the same tasks to measure their effect.
