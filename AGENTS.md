@@ -1,30 +1,22 @@
-# Agent Notes (Codex)
+# Agent Notes
 
-This repo is a Hugo site (PaperMod theme via Hugo Modules).
+Hand-written static site for https://novosad.xyz. No generator, no build step.
 
-## Quick commands
+- `site/` is deployed as-is to GitHub Pages by `.github/workflows/pages.yml` on push to `main`.
+- `site/index.html` is the landing page, `site/cv/index.html` the CV (keep the `/cv/` URL; LinkedIn links to it).
+- `site/assets/style.css` holds all styling, including the A4 print rules for the CV.
+- The custom domain is set in the repository's Pages settings, not via a CNAME file.
+- PDFs and images are in Git LFS (see `.gitattributes`); the workflow checks out with `lfs: true`.
 
-- Dev server: `hugo server -D`
-- Production build: `hugo --minify --gc`
+## Regenerating the CV PDF
 
-## Theme + styling
+After changing the CV page, serve `site/` locally and print it with headless Edge, then check it is still two A4 pages:
 
-- Theme is imported in `hugo.yml` via `module.imports` (no checked-in `themes/` content).
-- Prefer PaperMod variables and patterns; avoid adding heavy JS or external CSS frameworks for site pages.
-- Put site-specific styling overrides in `assets/css/extended/*.css` (PaperMod auto-includes it).
+    python -m http.server 8137 --directory site
+    msedge --headless --disable-gpu --no-pdf-header-footer --print-to-pdf=site/Bogdan_Novosad_CV.pdf http://localhost:8137/cv/
 
-## CV page
+## Content rules
 
-The CV is a first-class Hugo page at `/cv/`:
-
-- Content stub: `content/cv/index.md`
-- Template: `layouts/cv/single.html`
-- Data source (edit this for content updates): `data/cv.yaml`
-- Styling: `assets/css/extended/cv.css`
-
-Legacy standalone HTML is kept at `static/cv-standalone/index.html` (served at `/cv-standalone/`); avoid using `static/cv/` for the CV URL to prevent conflicts with the Hugo page.
-
-## Content hygiene
-
-- Keep CV content ATS-friendly (plain text, consistent headings, minimal icons).
-- Prefer ASCII punctuation (avoid “smart quotes”) unless there’s a specific reason; it helps prevent encoding issues in downstream tools.
+- Keep the CV ATS-friendly: real text, plain headings, single-column body.
+- Never mention the employer's product or client names; describe it as a learning management platform used by schools across Europe.
+- Describe what the GliderMCP tools do, not productivity gains.
