@@ -31,7 +31,7 @@
   <header class="wrap bar">
     <a class="mark" href="/">novosad<span>.</span>xyz</a>
     <nav aria-label="Main">
-      <a class="hide-sm" href="#work">Work</a>
+      <a class="hide-sm" href="#workflow">Workflow</a>
       <a class="hide-sm" href="#projects">Projects</a>
       <a href="/cv/">CV</a>
       <a href="#contact">Contact</a>
@@ -62,30 +62,37 @@
       </div>
     </section>
 
-    <section class="wrap block" id="work" aria-labelledby="work-title">
-      <h2 class="label" id="work-title"><small>01</small>What I do</h2>
-      <div class="grid">
-        <article class="cell">
-          <span class="n">A</span>
-          <h3>Agentic development</h3>
-          <p>Designed my company's shared multi-agent workflow for Codex and GitHub Copilot: specialist roles, one writer per change, review by a separate agent and no publishing without human approval. I run seminars on it for other engineers.</p>
-        </article>
-        <article class="cell">
-          <span class="n">B</span>
-          <h3>Backend and platform</h3>
-          <p>APIs, data models and services in Go, Rust and C#/.NET on PostgreSQL, MySQL, Redis and RabbitMQ, delivered through GitLab CI, GitHub Actions, Docker and Kubernetes.</p>
-        </article>
-        <article class="cell">
-          <span class="n">C</span>
-          <h3>Developer tooling</h3>
-          <p>MCP servers that give AI coding agents compiler-backed and indexed evidence about a codebase, built on Roslyn and tree-sitter, with release engineering for native binaries on three platforms.</p>
-        </article>
-        <article class="cell">
-          <span class="n">D</span>
-          <h3>Large codebases</h3>
-          <p>A long-lived .NET monolith serving ~7M daily active users: ports of legacy C++ and WebForms code to C# and Svelte, security fixes, toolchain upgrades and AI features for teachers.</p>
-        </article>
-      </div>
+    <section class="wrap block" id="workflow" aria-labelledby="workflow-title">
+      <h2 class="label" id="workflow-title"><small>01</small>How I ship with agents</h2>
+      <p class="lead">Agents do the legwork, every step has one owner, and a person decides what ships.</p>
+      <ol class="flow">
+        <li>
+          <span class="n">1</span>
+          <h3>Research</h3>
+          <p>Agents pull the ticket, docs and code context from Jira, Confluence and GitLab over MCP.</p>
+        </li>
+        <li>
+          <span class="n">2</span>
+          <h3>Plan</h3>
+          <p>An architecture role maps the affected components and checks the design against the code.</p>
+        </li>
+        <li>
+          <span class="n">3</span>
+          <h3>Write</h3>
+          <p>One agent owns the source change. Never two writers on the same files.</p>
+        </li>
+        <li>
+          <span class="n">4</span>
+          <h3>Review and verify</h3>
+          <p>A separate agent reviews the final diff; builds and Playwright tests run before anything moves on.</p>
+        </li>
+        <li>
+          <span class="n">5</span>
+          <h3>Approve</h3>
+          <p>Nothing is pushed, merged or changed in Jira without explicit human approval. I review every change.</p>
+        </li>
+      </ol>
+      <p class="facts">Codex and GitHub Copilot · 4 skills · 9 specialist roles · taught in internal seminars</p>
     </section>
 
     <section class="wrap block" id="projects" aria-labelledby="projects-title">
