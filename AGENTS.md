@@ -4,7 +4,7 @@ Hand-written static site for https://novosad.xyz. No generator, no build step.
 
 - `site/` is deployed as-is to GitHub Pages by `.github/workflows/pages.yml` on push to `main`.
 - `site/index.html` is the landing page, `site/cv/index.html` the CV (keep the `/cv/` URL; LinkedIn links to it).
-- `site/assets/style.css` holds all styling, including the A4 print rules for the CV.
+- `site/assets/style.css` holds all styling, including the A4 print rules for the CV. Pages caches assets for 10 minutes, so bump the `?v=` on its link in every page when it changes.
 - The custom domain is set in the repository's Pages settings, not via a CNAME file.
 - PDFs and images are in Git LFS (see `.gitattributes`); the workflow checks out with `lfs: true`.
 
