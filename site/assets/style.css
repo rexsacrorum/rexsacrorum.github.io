@@ -262,7 +262,7 @@ section.block { padding-top: clamp(3rem, 7vw, 5rem); padding-bottom: clamp(1rem,
 .project li b { color: var(--ink); font-weight: 600; }
 .project .tags { margin: 0; font-size: inherit; }
 .project .tags li { border-top: 0; }
-.project .foot { margin-top: auto; padding-top: 1.5rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; }
+.project .foot { margin-top: auto; padding-top: 1.5rem; display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.75rem; }
 
 .tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0; padding: 0; list-style: none; }
 .tags li {
