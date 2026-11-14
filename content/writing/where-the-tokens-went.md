@@ -8,7 +8,7 @@ summary: I measured 25 of my own agent sessions. The main agent re-reading its o
 dek: Rules of thumb for an agentic workflow, with the numbers behind them. I measured 25 of my own agent sessions. The main agent re-reading its own history was the largest cost, eight independent reviews were 6% of the bill, and my first count was wrong by a quarter.
 ---
 
-I write almost all my code through a multi-agent workflow. A main agent plans and integrates, and specialist agents implement, review and verify. I had rules for when to delegate. I did not have numbers. The articles I read about agents argued that more agents are better, or that they are a waste, and none of them showed a bill.
+I write almost all my code through a multi-agent workflow. A main agent plans and integrates, and specialist agents implement, review and verify. I had rules for when to delegate. I did not have numbers. I had read arguments for more agents and against them. What I lacked was a bill for my own work.
 
 So I read my own session transcripts and counted. This article has the numbers, the eight rules I now work by, and what I have not measured. The workflow is public: [agent-engineering-workflow](https://github.com/rexsacrorum/agent-engineering-workflow) is Markdown plus one Python script, wired for Claude Code.
 
@@ -146,7 +146,7 @@ Its value is that it has not seen the reasoning. A reviewer that read the first 
 
 ### 4. Some changes are reviewed at any size
 
-Access rights, data migrations and anything that spends money. A review costs a few dollars. A miss in these areas costs more.
+Access rights, data migrations and anything that spends money get a reviewer even when the edit is one line. In the measured session a review cost under $3.
 
 ### 5. Every role has a condition under which you skip it
 
@@ -164,9 +164,9 @@ For a long run, use the client's own notification: a CI monitor, or a background
 
 I had a rule: back up the database before any migration. It lived in `AGENTS.md`. The repository also had a `CLAUDE.md`, and when both exist Claude Code reads only `CLAUDE.md` by default ([memory documentation](https://code.claude.com/docs/en/memory)). The workflow skill pointed at the rule, but a small edit never loads the skill. So a one-line migration, the case the rule was written for, would have run without it. The fix was one import line. The general check: for each rule, name the smallest task that needs it and trace what that task actually loads.
 
-## Measure, and distrust the count
+## How I measure it now
 
-METR's 2025 trial found that experienced developers took 19% longer with AI tools while believing they had been 20% faster. METR now marks that result as out of date for current tools, and I would not quote the 19% as a fact about today ([METR study](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/)). The gap between felt and measured speed is the part that lasts. I felt that the reviewer was expensive and the main agent cheap. It was the other way round.
+METR's 2025 trial found that experienced developers took 19% longer with AI tools while believing they had been 20% faster. METR now marks that result as out of date for current tools, and I would not quote the 19% as a fact about today ([METR study](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/)). What I take from it is only that felt speed and measured speed differed. My own guess was wrong in the same way: I expected the reviews to be the expensive part, and they were 6% of the session.
 
 The loop I use is small. One line per finished task goes into a log file: roles called, tokens by role, review findings accepted, and what the review missed. The usage command fills in the tokens. Once a week I ask an agent to read the new lines and propose at most three changes to the instructions, and I accept or reject them. One warning from Claude Code's guide applies here: a reviewer asked to find problems always finds something, so a count of findings is not a target.
 
