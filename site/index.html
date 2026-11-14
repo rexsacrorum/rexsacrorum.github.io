@@ -65,7 +65,7 @@
 
     <section class="wrap block" id="workflow" aria-labelledby="workflow-title">
       <h2 class="label" id="workflow-title"><small>01</small>How I ship with agents</h2>
-      <p class="lead">Agents do the legwork, every step has one owner, and a person decides what ships.</p>
+      <p class="lead">One agent keeps the plan, every file has one writer, a fresh reviewer checks the result, and a person decides what ships.</p>
       <ol class="flow">
         <li>
           <span class="n">1</span>
@@ -75,17 +75,17 @@
         <li>
           <span class="n">2</span>
           <h3>Plan</h3>
-          <p>An architecture role maps the affected components and checks the design against the code.</p>
+          <p>The main agent plans and keeps the decisions. An architecture role reads the plan once, before a risky stage.</p>
         </li>
         <li>
           <span class="n">3</span>
           <h3>Write</h3>
-          <p>One agent owns the source change. Never two writers on the same files.</p>
+          <p>One writer per set of files. Parallel writers only on parts that do not overlap.</p>
         </li>
         <li>
           <span class="n">4</span>
           <h3>Review and verify</h3>
-          <p>A separate agent reviews the final diff; builds and Playwright tests run before anything moves on.</p>
+          <p>An agent that has not seen the reasoning reviews the final diff. Builds and Playwright tests run on a cheaper model.</p>
         </li>
         <li>
           <span class="n">5</span>
@@ -93,7 +93,7 @@
           <p>Nothing is pushed, merged or changed in Jira without explicit human approval. I review every change.</p>
         </li>
       </ol>
-      <p class="facts">Claude Code, Codex and GitHub Copilot · 4 skills · 9 specialist roles · taught in internal seminars</p>
+      <p class="facts">Claude Code, Codex and GitHub Copilot · 4 skills · 9 specialist roles · taught in internal seminars · <a href="/writing/where-the-tokens-went/">measured here</a> · <a href="https://github.com/rexsacrorum/agent-engineering-workflow">open source</a></p>
     </section>
 
     <section class="wrap block" id="projects" aria-labelledby="projects-title">
