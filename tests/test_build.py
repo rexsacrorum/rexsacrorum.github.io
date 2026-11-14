@@ -109,6 +109,21 @@ class SiteTests(unittest.TestCase):
             for name in ('feed.xml', 'sitemap.xml'):
                 ElementTree.parse(out / name)
 
+    def test_reading_time_counts_prose_and_not_chart_data(self):
+        with tempfile.TemporaryDirectory() as directory:
+            articles = build.build(Path(directory) / 'dist')
+        for article in articles:
+            prose = build.re.sub(r'<(figure|pre)\b.*?</\1>', ' ', article['html'], flags=build.re.S)
+            words = len(build.re.sub(r'<[^>]+>', ' ', prose).split())
+            self.assertNotIn('<details', prose)
+            self.assertEqual(article['minutes'], str(max(1, round(words / 230))))
+
+    def test_source_files_hold_no_control_characters(self):
+        root = Path(__file__).resolve().parents[1]
+        for path in [root / 'build.py', *root.glob('templates/*.html'), *root.glob('content/writing/*.md')]:
+            text = path.read_text(encoding='utf-8')
+            self.assertTrue(all(ch in '\n\t' or ord(ch) >= 32 for ch in text), path.name)
+
     def test_a_broken_link_stops_the_build(self):
         with tempfile.TemporaryDirectory() as directory:
             out = Path(directory)
