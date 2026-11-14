@@ -29,7 +29,7 @@ Claude Code stores every session as a transcript, with one more transcript for e
 python scripts/workflow.py usage <session.jsonl>
 ```
 
-I priced the tokens at the public [list prices](https://platform.claude.com/docs/en/about-claude/pricing) of November 2026. I work on a subscription, so these dollars are a list-price equivalent and not what I paid. They are still a fair unit for comparing one part of a session with another.
+I priced the tokens at the public [list prices](https://platform.claude.com/docs/en/about-claude/pricing) of November 2026. I work on a subscription, so these dollars are a list-price equivalent and not what I paid. They are still a fair unit for comparing one part of a session with another. Cache writes are priced at the one-hour rate, which overstates the subagents.
 
 I looked at one long session in detail: 23 pull requests on a pre-release prototype, with the main agent on the top model tier and the specialists one tier below. Then I ran the same count over the 25 largest sessions on my machine, across personal and work projects.
 
@@ -122,7 +122,7 @@ Those reports were still about 1,500 words each. The workflow now limits a repor
 
 ## The rules
 
-These are adapted from the coordination contract in the repository, each with the number or source it rests on.
+These are adapted from the coordination contract in the repository, each with the number or source it rests on. In this form they have been in force for a few days, and the log that will show whether they work is still empty.
 
 ### 1. Choose roles by the shape of the task, not its size
 
@@ -169,13 +169,6 @@ I had a rule: back up the database before any migration. It lived in `AGENTS.md`
 METR's 2025 trial found that experienced developers took 19% longer with AI tools while believing they had been 20% faster. METR now marks that result as out of date for current tools, and I would not quote the 19% as a fact about today ([METR study](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/)). The gap between felt and measured speed is the part that lasts. I felt that the reviewer was expensive and the main agent cheap. It was the other way round.
 
 The loop I use is small. One line per finished task goes into a log file: roles called, tokens by role, review findings accepted, and what the review missed. The usage command fills in the tokens. Once a week I ask an agent to read the new lines and propose at most three changes to the instructions, and I accept or reject them. One warning from Claude Code's guide applies here: a reviewer asked to find problems always finds something, so a count of findings is not a target.
-
-## What I am not claiming
-
-- That delegating more is cheaper. The sessions did different work, and I have no controlled comparison.
-- That review catches a known share of defects. I counted its cost, not its benefit.
-- That these dollars are what anyone pays. They are list-price equivalents, with cache writes priced at the one-hour rate, which overstates the subagents.
-- That the new rules work. The report limit and the task table have been in force for days, and the log that will judge them is empty.
 
 ## Take it
 
