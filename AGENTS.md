@@ -1,18 +1,34 @@
 # Agent Notes
 
-Hand-written static site for https://novosad.xyz. No generator, no build step.
+Static site for https://novosad.xyz. The landing page and the CV are hand-written HTML; articles are Markdown rendered by `build.py`.
 
-- `site/` is deployed as-is to GitHub Pages by `.github/workflows/pages.yml` on push to `main`.
+- `python build.py` copies `site/` to `dist/` and renders `content/writing/*.md` into `dist/writing/<slug>/`. It also writes the writing index, `sitemap.xml` and `feed.xml`, and fills the `<!-- writing:latest -->` marker on the landing page. `dist/` is not committed.
+- `.github/workflows/pages.yml` runs the tests and the build on push to `main` and deploys `dist/`.
+- `python build.py --serve` builds and serves `dist/` on http://localhost:8137. Run it again after an edit.
 - `site/index.html` is the landing page, `site/cv/index.html` the CV (keep the `/cv/` URL; LinkedIn links to it).
-- `site/assets/style.css` holds all styling, including the A4 print rules for the CV. Pages caches assets for 10 minutes, so bump the `?v=` on its link in every page when it changes.
+- `site/assets/style.css` holds all styling, including the A4 print rules for the CV and the chart styles. Pages caches assets for 10 minutes, so bump the `?v=` on its link in every page and in `templates/base.html` when it changes. The same goes for `charts.js`.
 - The custom domain is set in the repository's Pages settings, not via a CNAME file.
-- PDFs and images are in Git LFS (see `.gitattributes`); the workflow checks out with `lfs: true`.
+- PDFs and images are in Git LFS (see `.gitattributes`); the workflow checks out with `lfs: true`. Charts are inline SVG and HTML, so they are not LFS files.
+
+## Writing an article
+
+Add `content/writing/<name>.md`. The front matter needs `title`, `slug`, `date` (ISO) and `summary`; `heading`, `dek` and `kicker` are optional, and `draft: true` keeps the article out of the build.
+
+The body is a deliberately small Markdown subset: `##` and `###` headings, paragraphs, `-` and `1.` lists (one level), pipe tables, fenced code, `> ` asides, raw HTML blocks, and inline code, links, bold and italic. Anything else stops the build with the file and line. This is on purpose: a typo must fail the build and not ship as broken HTML.
+
+A chart is a fenced `chart` block holding JSON. The types are `stats`, `bars` (with optional `panels`), `dots`, `line`, `stack` and `segments`; `build.py` has one function per type and the article in `content/writing/` shows each. Rules for charts:
+
+- Give every `dots`, `line`, `stack` and `segments` chart an `alt` that states the finding in words. Every number a tooltip shows must also be in the text, the note or the `alt`.
+- Marks use `--series-1` to `--series-3` from `style.css`. Those three colours were checked for colour-blind separation and contrast on both surfaces; `stack` refuses a fourth series. Fold extra series into "Other" or use small multiples.
+- One hue for a single series. Never two y-axes. Text wears the text colours, never a series colour.
+
+Sources are linked where the claim is made. Do not quote more than a short phrase from a source; paraphrase and link.
 
 ## Regenerating the CV PDF
 
-After changing the CV page, serve `site/` locally and print it with headless Edge, then check it is still two A4 pages:
+After changing the CV page, build and serve the site locally and print the CV with headless Edge, then check it is still two A4 pages:
 
-    python -m http.server 8137 --directory site
+    python build.py --serve
     msedge --headless --disable-gpu --no-pdf-header-footer --print-to-pdf=site/Bogdan_Novosad_CV.pdf http://localhost:8137/cv/
 
 ## Content rules

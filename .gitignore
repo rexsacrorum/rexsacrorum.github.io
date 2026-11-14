@@ -9,3 +9,7 @@ public/
 
 # Node modules
 node_modules/
+
+# Build output
+dist/
+__pycache__/
