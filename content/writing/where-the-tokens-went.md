@@ -38,7 +38,7 @@ Four limits apply to everything below. This is one developer. The sessions did d
 ## The main agent's history is the bill
 
 ```chart
-{"type": "bars", "title": "One session, 23 pull requests: share of cost by role", "caption": "List-price equivalent, about $367 in total.",
+{"type": "bars", "title": "One session, 23 pull requests: share of cost by role", "caption": "List-price equivalent, about $367 in total.", "max": 100,
  "rows": [["Main agent", 51, "51% · $188"], ["Advisor calls", 24, "24% · $90"], ["Implementers (14)", 18, "18% · $65"], ["Reviewers (8)", 6, "6% · $22"], ["Architecture (1)", 1, "1% · $2.50"]]}
 ```
 
@@ -48,7 +48,7 @@ The main agent was about half of the session. More than half of that half was ne
 {"type": "line", "title": "What the main agent re-read on each request", "caption": "Input tokens per request, in thousands, by request number over the session. Each point is the mean of 8 requests.",
  "values": [93, 131, 192, 215, 242, 278, 297, 310, 325, 336, 345, 351, 358, 365, 373, 386, 395, 407, 419, 437, 452, 462, 481, 495, 506, 525, 550, 569, 586, 600, 610, 623, 631, 644, 665, 681, 690, 704, 714, 725, 653, 110, 122, 132, 147, 171, 185, 214, 230, 240, 252, 265, 285, 297, 334, 373, 402, 440, 480, 507, 526, 538, 555, 571, 584, 593, 603, 613, 626, 635, 644, 660, 679, 697, 711, 492, 121, 145, 159, 173, 194, 210, 223, 234, 250, 268, 282, 290, 304, 317, 325, 335, 352, 369, 378, 393, 412, 422, 438, 460, 479, 506, 537, 552, 565, 580, 602, 613, 629, 646, 657, 668, 687, 708, 727, 740, 752, 771, 786, 798, 811, 826, 833, 840, 846, 854, 870, 884, 898, 906, 922, 942, 954, 546, 139],
  "x_step": 8, "x_ticks": [0, 250, 500, 750, 1000], "y_ticks": [0, 250, 500, 750, 1000], "y_format": "{v}K",
- "tip": "request {x}: {v}K input tokens",
+ "tip": "around request {x}: {v}K input tokens",
  "alt": "Line chart of input tokens per request across about 1,070 requests. The context grows steadily from about 100 thousand tokens to 700 to 950 thousand, drops back to about 100 thousand at each of three compactions, and grows again.",
  "note": "The three drops are compactions, where the client replaces the history with a summary. Between them every request re-reads everything before it."}
 ```
@@ -67,8 +67,8 @@ What was in that history? In the detailed session, about four fifths of the char
 
 ```chart
 {"type": "segments", "title": "What went into the main agent's history", "caption": "Share of characters in one session, not of cost. Screenshots are not counted.",
- "parts": [["Tool calls it made", 42.5, "a"], ["Output of those tools", 36.9, "b"], ["My messages, system notes and subagent reports", 14.0, "c"], ["The agent's own text", 6.6, "d"]],
- "alt": "Segmented bar: tool calls 43%, tool output 37%, messages from the user, system notes and subagent reports 14%, the agent's own text 7%."}
+ "parts": [["Tool calls it made", 42.4, "a"], ["Output of those tools", 36.9, "b"], ["My messages, system notes and subagent reports", 14.0, "c"], ["The agent's own text", 6.6, "d"]],
+ "alt": "Segmented bar: tool calls 42%, tool output 37%, messages from the user, system notes and subagent reports 14%, the agent's own text 7%."}
 ```
 
 Everything else, including our whole conversation, was the remaining fifth. The main agent ran 703 shell commands and 74 batches of browser actions itself. The verifier role, which exists to run checks and read logs on a cheaper model, was never called.
@@ -106,7 +106,7 @@ I still use the advisor. But one question to it costs about $2 at list price, cl
 ## The tier matters less than where the output lands
 
 ```chart
-{"type": "bars", "title": "List prices by model tier, November 2026", "caption": "Dollars per million tokens.",
+{"type": "bars", "title": "List prices by model tier, November 2026", "caption": "Dollars per million tokens. Each panel has its own scale.",
  "panels": [
   {"title": "Cached read", "rows": [["Top", 0.20, "$0.20"], ["Strong", 0.20, "$0.20"], ["Mid", 0.10, "$0.10"], ["Cheap", 0.01, "$0.01"]]},
   {"title": "Output", "rows": [["Top", 40, "$40"], ["Strong", 20, "$20"], ["Mid", 10, "$10"], ["Cheap", 0.5, "$0.50"]]}

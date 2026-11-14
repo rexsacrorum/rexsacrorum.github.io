@@ -2,6 +2,7 @@ import importlib.util
 from pathlib import Path
 import tempfile
 import unittest
+from xml.etree import ElementTree
 
 SPEC = importlib.util.spec_from_file_location('build', Path(__file__).resolve().parents[1] / 'build.py')
 build = importlib.util.module_from_spec(SPEC)
@@ -29,15 +30,34 @@ class MarkdownTests(unittest.TestCase):
 
     def test_unsupported_markdown_stops_the_build(self):
         for text in ('# Top heading', '```\nnever closed', '    indented', 'an `unclosed span', '| a |\n| b |',
-                     '```chart\nnot json\n```', '```chart\n{"type": "pie"}\n```', '```chart\n{"type": "dots", "values": [1]}\n```'):
+                     'an **unclosed bold', '- a\n  - nested', '| a | b |\n| --- | --- |\n| only one |',
+                     '## Same\n\n## Same', '## !!!',
+                     '```chart\nnot json\n```', '```chart\n{"type": "pie"}\n```', '```chart\n{"type": "dots", "values": [1]}\n```',
+                     '```chart\n{"type": "stats", "items": [{"value": "1"}]}\n```',
+                     '```chart\n{"type": "line", "values": [5], "y_ticks": [0, 10], "alt": "x"}\n```',
+                     '```chart\n{"type": "line", "values": [5, 50], "y_ticks": [0, 10], "alt": "x"}\n```',
+                     '```chart\n{"type": "stack", "series": ["a", "b"], "rows": [[60, 60]], "alt": "x"}\n```',
+                     '```chart\n{"type": "dots", "values": [150], "alt": "x"}\n```'):
             with self.assertRaises(build.BuildError, msg=text):
                 build.markdown(text)
+
+    def test_text_that_only_looks_like_markup_stays_text(self):
+        html = build.markdown('Costs are 5 * 3 * 2 here.\n\n<5% of cost is a paragraph.\n\n2026. was a year.')
+        self.assertNotIn('<em>', html)
+        self.assertIn('<p>&lt;5% of cost is a paragraph.</p>', html)
+        self.assertIn('<p>2026. was a year.</p>', html)
+        self.assertIn('<em>word</em>', build.markdown('One *word* in italics.'))
 
     def test_front_matter(self):
         meta, body = build.front_matter('---\ntitle: A: b\nslug: a\ndate: 2026-01-02\nsummary: s\n---\nBody', 'x.md')
         self.assertEqual((meta['title'], body), ('A: b', 'Body'))
-        with self.assertRaises(build.BuildError):
-            build.front_matter('---\ntitle: A\n---\nBody', 'x.md')
+        for text in ('---\ntitle: A\n---\nBody', '---\ntitle: A\nslug: a\ndate: 2026-01-02\nsummary: s\nBody',
+                     '---\ntitle: A\nslug: a\ndate: yesterday\nsummary: s\n---\nBody',
+                     '---\ntitle: A\nslug: a\ndate: 2026-01-02\nsummary: s\ndraft: maybe\n---\nBody'):
+            with self.assertRaises(build.BuildError, msg=text):
+                build.front_matter(text, 'x.md')
+        meta, _ = build.front_matter('---\ntitle: A\nslug: a\ndate: 2026-01-02\nsummary: s\ndraft: True\n---\nBody', 'x.md')
+        self.assertEqual(meta['draft'], 'true')
 
 
 class ChartTests(unittest.TestCase):
@@ -57,6 +77,21 @@ class ChartTests(unittest.TestCase):
         with self.assertRaises(build.BuildError):
             build.chart({'type': 'stack', 'series': ['a', 'b', 'c', 'd'], 'rows': [[1, 1, 1, 1]], 'alt': 'x'})
 
+    def test_charts_with_hover_only_values_carry_a_data_table(self):
+        dots = build.chart({'type': 'dots', 'values': [10, 30], 'alt': 'x', 'unit': '%'})
+        self.assertIn('<details class="data">', dots)
+        self.assertIn('10%, 30%', dots)
+        stack = build.chart({'type': 'stack', 'series': ['a', 'b'], 'rows': [[60, 40]], 'alt': 'x'})
+        self.assertIn('<td>60%</td><td>40%</td>', stack)
+        line = build.chart({'type': 'line', 'values': [1, 9], 'y_ticks': [0, 10], 'alt': 'x'})
+        self.assertIn('<details class="data">', line)
+
+    def test_segments_show_each_rounded_share_once(self):
+        html = build.chart({'type': 'segments', 'parts': [['big', 60, 'a'], ['small', 5, 'b'], ['rest', 35, 'c']], 'alt': 'x'})
+        self.assertIn('>60%</span>', html)
+        self.assertIn('small <span class="share">5%</span>', html)
+        self.assertIn('rest <span class="share">35%</span>', html)
+
     def test_labels_are_escaped(self):
         html = build.chart({'type': 'segments', 'parts': [['<b>x</b>', 1, 'a']], 'alt': 'x'})
         self.assertNotIn('<b>x</b>', html)
@@ -71,7 +106,8 @@ class SiteTests(unittest.TestCase):
             self.assertNotIn(build.LATEST, (out / 'index.html').read_text(encoding='utf-8'))
             for article in articles:
                 self.assertTrue((out / 'writing' / article['slug'] / 'index.html').is_file())
-            self.assertIn('<feed', (out / 'feed.xml').read_text(encoding='utf-8'))
+            for name in ('feed.xml', 'sitemap.xml'):
+                ElementTree.parse(out / name)
 
     def test_a_broken_link_stops_the_build(self):
         with tempfile.TemporaryDirectory() as directory:

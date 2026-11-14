@@ -14,12 +14,12 @@ Static site for https://novosad.xyz. The landing page and the CV are hand-writte
 
 Add `content/writing/<name>.md`. The front matter needs `title`, `slug`, `date` (ISO) and `summary`; `heading`, `dek` and `kicker` are optional, and `draft: true` keeps the article out of the build.
 
-The body is a deliberately small Markdown subset: `##` and `###` headings, paragraphs, `-` and `1.` lists (one level), pipe tables, fenced code, `> ` asides, raw HTML blocks, and inline code, links, bold and italic. Anything else stops the build with the file and line. This is on purpose: a typo must fail the build and not ship as broken HTML.
+The body is a deliberately small Markdown subset: `##` and `###` headings, paragraphs, `-` and `1.` lists (one level), pipe tables, fenced code, `> ` asides, raw HTML blocks, and inline code, links, bold and italic. Unsupported block syntax (other headings, nested lists, indented text, ragged tables, unclosed code or `**`) stops the build with the file and line, so that a typo fails the build and does not ship as broken HTML. Two limits are not caught: a URL containing a parenthesis must be percent-encoded, and a raw HTML block must start with a block tag such as `<div>` or `<figure>`.
 
 A chart is a fenced `chart` block holding JSON. The types are `stats`, `bars` (with optional `panels`), `dots`, `line`, `stack` and `segments`; `build.py` has one function per type and the article in `content/writing/` shows each. Rules for charts:
 
-- Give every `dots`, `line`, `stack` and `segments` chart an `alt` that states the finding in words. Every number a tooltip shows must also be in the text, the note or the `alt`.
-- Marks use `--series-1` to `--series-3` from `style.css`. Those three colours were checked for colour-blind separation and contrast on both surfaces; `stack` refuses a fourth series. Fold extra series into "Other" or use small multiples.
+- Give every `dots`, `line`, `stack` and `segments` chart an `alt` that states the finding in words. The build adds a "Show the data" table to `dots`, `line` and `stack`, so no value exists only in a tooltip; state the finding itself in the text or the note.
+- Marks use `--series-1` to `--series-3` from `style.css`. Those three colours were checked for colour-blind separation on both surfaces; the green is below 3:1 contrast on the light surface, which the data table makes up for. `stack` refuses a fourth series. Fold extra series into "Other" or use small multiples.
 - One hue for a single series. Never two y-axes. Text wears the text colours, never a series colour.
 
 Sources are linked where the claim is made. Do not quote more than a short phrase from a source; paraphrase and link.

@@ -40,14 +40,14 @@ def esc(text):
 
 # --- Markdown subset
 
-INLINE = re.compile(r'\*\*(.+?)\*\*|\*(.+?)\*|\[([^\]]+)\]\(([^)\s]+)\)')
+INLINE = re.compile(r'\*\*(\S(?:.*?\S)?)\*\*|(?<![\w*])\*(\S(?:[^*]*?\S)?)\*(?![\w*])|\[([^\]]+)\]\(([^)\s]+)\)')
 
 
-def inline(text):
+def inline(text, where='text'):
     """Code spans, links, bold and italic. Everything else is escaped."""
     parts = text.split('`')
     if len(parts) % 2 == 0:
-        raise BuildError(f'Unclosed code span: {text[:60]}')
+        raise BuildError(f'{where}: unclosed code span: {text[:60]}')
     out = []
     for index, part in enumerate(parts):
         if index % 2:
@@ -62,8 +62,14 @@ def inline(text):
                 return f'<em>{italic}</em>'
             return f'<a href="{url}">{label}</a>'
 
-        out.append(INLINE.sub(replace, esc(part)))
+        rendered = INLINE.sub(replace, esc(part))
+        if '**' in re.sub(r'<[^>]+>', '', rendered):
+            raise BuildError(f'{where}: unclosed ** in: {text[:60]}')
+        out.append(rendered)
     return ''.join(out)
+
+
+RAW_HTML = re.compile(r'<(div|figure|details|aside|section|table|ul|ol|p|blockquote|svg|img|iframe|video|hr)\b')
 
 
 def slug(text):
@@ -73,7 +79,9 @@ def slug(text):
 def front_matter(text, path):
     if not text.startswith('---\n'):
         raise BuildError(f'{path}: missing front matter')
-    head, _, body = text[4:].partition('\n---\n')
+    head, closed, body = text[4:].partition('\n---\n')
+    if not closed:
+        raise BuildError(f'{path}: front matter has no closing --- line')
     meta = {}
     for line in head.splitlines():
         key, sep, value = line.partition(':')
@@ -83,7 +91,13 @@ def front_matter(text, path):
     for key in ('title', 'slug', 'date', 'summary'):
         if not meta.get(key):
             raise BuildError(f'{path}: front matter needs "{key}"')
-    date.fromisoformat(meta['date'])
+    try:
+        date.fromisoformat(meta['date'])
+    except ValueError:
+        raise BuildError(f'{path}: "date" must be an ISO date such as 2026-11-14') from None
+    meta['draft'] = meta.get('draft', 'false').lower()
+    if meta['draft'] not in ('true', 'false'):
+        raise BuildError(f'{path}: "draft" must be true or false')
     return meta, body
 
 
@@ -91,14 +105,17 @@ def table(lines, where):
     rows = [[cell.strip() for cell in line.strip().strip('|').split('|')] for line in lines]
     if len(rows) < 3 or not all(re.fullmatch(r':?-+:?', cell) for cell in rows[1]):
         raise BuildError(f'{where}: a table needs a header, a separator line and at least one row')
-    head = ''.join(f'<th>{inline(cell)}</th>' for cell in rows[0])
-    body = ''.join('<tr>' + ''.join(f'<td>{inline(cell)}</td>' for cell in row) + '</tr>' for row in rows[2:])
+    if any(len(row) != len(rows[0]) for row in rows):
+        raise BuildError(f'{where}: every table row needs {len(rows[0])} cells')
+    head = ''.join(f'<th>{inline(cell, where)}</th>' for cell in rows[0])
+    body = ''.join('<tr>' + ''.join(f'<td>{inline(cell, where)}</td>' for cell in row) + '</tr>' for row in rows[2:])
     return f'<div class="table"><table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table></div>'
 
 
 def markdown(text, path='article'):
-    lines = text.split('\n')
+    lines = text.replace('\r\n', '\n').split('\n')
     out = []
+    ids = set()
     index = 0
 
     def take(predicate):
@@ -132,34 +149,41 @@ def markdown(text, path='article'):
         elif line.startswith('## ') or line.startswith('### '):
             level = 2 if line.startswith('## ') else 3
             title = line[level + 1:].strip()
-            out.append(f'<h{level} id="{slug(title)}">{inline(title)}</h{level}>')
+            anchor = slug(title)
+            if not anchor or anchor in ids:
+                raise BuildError(f'{where}: heading "{title}" needs a unique id; reword it')
+            ids.add(anchor)
+            out.append(f'<h{level} id="{anchor}">{inline(title, where)}</h{level}>')
             index += 1
         elif line.startswith('#'):
             raise BuildError(f'{where}: only ## and ### headings are supported; the title comes from the front matter')
-        elif line.startswith('- ') or re.match(r'\d+\. ', line):
+        elif line.startswith('- ') or line.startswith('1. '):
             ordered = not line.startswith('- ')
             marker = re.compile(r'\d+\. ' if ordered else r'- ')
             items = []
             while index < len(lines) and (marker.match(lines[index]) or (items and lines[index].startswith('  ') and lines[index].strip())):
                 if marker.match(lines[index]):
                     items.append(marker.sub('', lines[index], count=1))
+                elif re.match(r'\s+(- |\d+\. )', lines[index]):
+                    raise BuildError(f'{path}:{index + 1}: nested lists are not supported')
                 else:
                     items[-1] += ' ' + lines[index].strip()
                 index += 1
             tag = 'ol' if ordered else 'ul'
-            out.append(f'<{tag}>' + ''.join(f'<li>{inline(item)}</li>' for item in items) + f'</{tag}>')
+            out.append(f'<{tag}>' + ''.join(f'<li>{inline(item, where)}</li>' for item in items) + f'</{tag}>')
         elif line.startswith('|'):
             out.append(table(take(lambda l: l.startswith('|')), where))
         elif line.startswith('> '):
             quote = ' '.join(l[2:].strip() for l in take(lambda l: l.startswith('> ')))
-            out.append(f'<p class="aside">{inline(quote)}</p>')
-        elif line.startswith('<'):
+            out.append(f'<p class="aside">{inline(quote, where)}</p>')
+        elif RAW_HTML.match(line):
             out.append('\n'.join(take(lambda l: l.strip())))
         elif line.startswith(' '):
             raise BuildError(f'{where}: indented text outside a list is not supported')
         else:
-            paragraph = take(lambda l: l.strip() and not re.match(r'(```|#|- |\d+\. |\||> |<)', l))
-            out.append(f'<p>{inline(" ".join(l.strip() for l in paragraph))}</p>')
+            first = index
+            paragraph = take(lambda l: l.strip() and (index == first or not (re.match(r'(```|#|- |1\. |\||> )', l) or RAW_HTML.match(l))))
+            out.append(f'<p>{inline(" ".join(l.strip() for l in paragraph), where)}</p>')
     return '\n'.join(out)
 
 
@@ -167,17 +191,24 @@ def markdown(text, path='article'):
 #
 # Every chart is a <figure>. Colors come from CSS custom properties in site/assets/style.css
 # (--series-1..3), which were checked for the light and the dark surface. Marks carry
-# data-tip for the hover layer in site/assets/charts.js; every value is also in the
-# figure's text or its aria-label, so the tooltip never gates information.
+# data-tip for the hover layer in site/assets/charts.js; every value is also in a visible
+# label or in the figure's data table, so the tooltip never gates information.
 
-def figure(spec, inner, extra_class=''):
+def figure(spec, inner, extra_class='', data=''):
     caption = f'<b>{esc(spec["title"])}</b>' if spec.get('title') else ''
     if spec.get('caption'):
         caption += esc(spec['caption'])
     note = f'<p class="note">{inline(spec["note"])}</p>' if spec.get('note') else ''
     head = f'<figcaption>{caption}</figcaption>' if caption else ''
     classes = ('fig ' + extra_class).strip()
-    return f'<figure class="{classes}">{head}{inner}{note}</figure>'
+    return f'<figure class="{classes}">{head}{inner}{note}{data}</figure>'
+
+
+def data_table(header, rows):
+    """The values behind a chart, for readers without hover: touch, keyboard, no script."""
+    head = ''.join(f'<th>{esc(cell)}</th>' for cell in header)
+    body = ''.join('<tr>' + ''.join(f'<td>{esc(cell)}</td>' for cell in row) + '</tr>' for row in rows)
+    return f'<details class="data"><summary>Show the data</summary><div class="table"><table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table></div></details>'
 
 
 def need(spec, where, *keys):
@@ -209,13 +240,18 @@ def chart_bars(spec, where):
             for panel in spec['panels'])
         return figure(spec, f'<div class="panels">{panels}</div>')
     need(spec, where, 'rows')
-    return figure(spec, bar_rows(spec['rows'], spec.get('max') or max(row[1] for row in spec['rows'])))
+    top = spec.get('max') or max(row[1] for row in spec['rows'])
+    if any(row[1] > top for row in spec['rows']):
+        raise BuildError(f'{where}: a bar is larger than "max"')
+    return figure(spec, bar_rows(spec['rows'], top))
 
 
 def chart_dots(spec, where):
     need(spec, where, 'values', 'alt')
     values = sorted(spec['values'])
     low, high = spec.get('min', 0), spec.get('max', 100)
+    if values[0] < low or values[-1] > high:
+        raise BuildError(f'{where}: a value is outside {low} to {high}')
     unit = spec.get('unit', '')
     width, left, right, radius, step = 480, 22, 22, 6, 13
 
@@ -242,7 +278,8 @@ def chart_dots(spec, where):
                   f'<text class="strong" x="{x(median) + 6:.1f}" y="16">median {median:g}{esc(unit)}</text>')
     svg = (f'<svg viewBox="0 0 {width} {base + 28}" role="img" aria-label="{esc(spec["alt"])}">'
            f'<line class="axis" x1="{left}" y1="{base}" x2="{width - right}" y2="{base}"/>{ticks}{middle}{marks}</svg>')
-    return figure(spec, svg)
+    listed = ', '.join(f'{value:g}{unit}' for value in values)
+    return figure(spec, svg, data=data_table(['Values, sorted'], [[listed]]))
 
 
 def chart_line(spec, where):
@@ -251,6 +288,8 @@ def chart_line(spec, where):
     step = spec.get('x_step', 1)
     width, height, left, right, top, bottom = 640, 260, 46, 14, 14, 34
     y_max = max(spec['y_ticks'])
+    if len(values) < 2 or max(values) > y_max or min(values) < 0:
+        raise BuildError(f'{where}: a line needs at least two values, all between 0 and the largest y tick')
     x_max = (len(values) - 1) * step
 
     def x(index):
@@ -273,7 +312,8 @@ def chart_line(spec, where):
            f'{grid}{xs}{x_label}<polygon class="area" points="{area}"/><polyline class="line" points="{points}"/>'
            f'<line class="cross" x1="0" y1="{top}" x2="0" y2="{height - bottom}"/><circle class="cross-dot" r="4"/>'
            f'<rect class="hit" x="{left}" y="{top}" width="{width - left - right}" height="{height - top - bottom}"/></svg>')
-    return figure(spec, svg, 'wide')
+    listed = ', '.join(f'{value:g}' for value in values)
+    return figure(spec, svg, 'wide', data_table([f'Values in order, one per {step} on the x axis'], [[listed]]))
 
 
 def legend(names):
@@ -286,11 +326,14 @@ def chart_stack(spec, where):
         raise BuildError(f'{where}: the palette has three validated series; fold the rest into "Other"')
     rows = []
     for row in spec['rows']:
+        if len(row) != len(spec['series']) or abs(sum(row) - 100) > 0.5:
+            raise BuildError(f'{where}: every stack row needs one share per series, adding up to 100')
         label = ', '.join(f'{name} {value:g}%' for name, value in zip(spec['series'], row))
         segments = ''.join(f'<i class="s{index + 1}" style="flex-grow:{value}"></i>' for index, value in enumerate(row) if value > 0)
         rows.append(f'<div class="row" data-tip="{esc(label)}">{segments}</div>')
     body = f'{legend(spec["series"])}<div class="stack" role="img" aria-label="{esc(spec["alt"])}">{"".join(rows)}</div>'
-    return figure(spec, body)
+    table_rows = [[str(number)] + [f'{value:g}%' for value in row] for number, row in enumerate(spec['rows'], 1)]
+    return figure(spec, body, data=data_table(['Row'] + spec['series'], table_rows))
 
 
 def chart_segments(spec, where):
@@ -299,10 +342,13 @@ def chart_segments(spec, where):
     blocks = []
     keys = []
     for name, value, tone in spec['parts']:
+        if tone not in ('a', 'b', 'c', 'd'):
+            raise BuildError(f'{where}: a segment tone is one of a, b, c, d')
         share = value / total * 100
-        text = f'{share:.0f}%' if share >= 9 else ''
-        blocks.append(f'<span class="seg {esc(tone)}" style="flex-grow:{value}" data-tip="{esc(name)}: {share:.0f}%">{text}</span>')
-        keys.append(f'<li><i class="key {esc(tone)}"></i>{esc(name)}' + ('' if text else f' <span class="muted">{share:.0f}%</span>') + '</li>')
+        # Only the two series tones carry a label inside; on the neutrals the contrast is too low.
+        text = f'{share:.0f}%' if share >= 9 and tone in ('a', 'b') else ''
+        blocks.append(f'<span class="seg {tone}" style="flex-grow:{value}" data-tip="{esc(name)}: {share:.0f}%">{text}</span>')
+        keys.append(f'<li><i class="key {tone}"></i>{esc(name)}' + ('' if text else f' <span class="share">{share:.0f}%</span>') + '</li>')
     body = f'<div class="segs" role="img" aria-label="{esc(spec["alt"])}">{"".join(blocks)}</div><ul class="legend">{"".join(keys)}</ul>'
     return figure(spec, body)
 
@@ -313,7 +359,10 @@ CHARTS = {'stats': chart_stats, 'bars': chart_bars, 'dots': chart_dots, 'line': 
 def chart(spec, where='chart'):
     if not isinstance(spec, dict) or spec.get('type') not in CHARTS:
         raise BuildError(f'{where}: chart "type" must be one of {", ".join(CHARTS)}')
-    return CHARTS[spec['type']](spec, where)
+    try:
+        return CHARTS[spec['type']](spec, where)
+    except (KeyError, IndexError, TypeError, ValueError, ZeroDivisionError) as error:
+        raise BuildError(f'{where}: chart "{spec["type"]}" has a missing or malformed field: {error!r}') from None
 
 
 # --- pages
@@ -337,7 +386,7 @@ def load_articles():
     articles = []
     for path in sorted(CONTENT.glob('*.md')):
         meta, body = front_matter(path.read_text(encoding='utf-8'), path.name)
-        if meta.get('draft') == 'true':
+        if meta['draft'] == 'true':
             continue
         meta['html'] = markdown(body, path.name)
         words = len(re.sub(r'<[^>]+>', ' ', meta['html']).split())
@@ -391,7 +440,7 @@ def build(out):
     sitemap += ''.join(f'  <url><loc>{url}</loc></url>\n' for url in urls) + '</urlset>\n'
     (out / 'sitemap.xml').write_text(sitemap, encoding='utf-8', newline='\n')
 
-    updated = (articles[0]['date'] if articles else date.today().isoformat()) + 'T00:00:00Z'
+    updated = (articles[0]['date'] if articles else '2026-01-01') + 'T00:00:00Z'
     entries = ''.join(
         f'  <entry>\n    <title>{esc(a["title"])}</title>\n    <link href="{BASE_URL}{a["url"]}"/>\n    <id>{BASE_URL}{a["url"]}</id>\n'
         f'    <updated>{a["date"]}T00:00:00Z</updated>\n    <summary>{esc(a["summary"])}</summary>\n  </entry>\n' for a in articles)

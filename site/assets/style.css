@@ -433,7 +433,12 @@ button.btn { font: inherit; font-size: 0.875rem; cursor: pointer; }
 .fig { margin: 2rem 0; padding: clamp(1.1rem, 3vw, 1.6rem); border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); }
 .fig figcaption { margin: 0 0 1.1rem; font-size: 0.9375rem; color: var(--muted); }
 .fig figcaption b { display: block; font-weight: 600; color: var(--ink); }
-.fig .note { margin: 0.9rem 0 0; font-size: 0.8125rem; line-height: 1.5; color: var(--faint); }
+.fig .note { margin: 0.9rem 0 0; font-size: 0.8125rem; line-height: 1.5; color: var(--muted); }
+.fig .data { margin: 0.9rem 0 0; font-size: 0.8125rem; color: var(--muted); }
+.fig .data summary { cursor: pointer; width: max-content; }
+.fig .data .table { margin: 0.6rem 0 0; }
+.fig .data table { font: 500 0.75rem/1.5 var(--mono); }
+.fig .data th, .fig .data td { padding: 0.3rem 0.9rem 0.3rem 0; overflow-wrap: anywhere; }
 .fig svg { display: block; width: 100%; max-width: 30rem; height: auto; overflow: visible; }
 .fig.wide svg { max-width: none; }
 .fig svg text { font: 500 13px var(--mono); fill: var(--muted); }
@@ -465,14 +470,14 @@ button.btn { font: inherit; font-size: 0.875rem; cursor: pointer; }
 .legend { display: flex; flex-wrap: wrap; gap: 0.35rem 1.1rem; margin: 0 0 0.9rem; padding: 0; list-style: none; font-size: 0.875rem; color: var(--muted); }
 .prose .legend { padding: 0; }
 .legend li { display: flex; align-items: center; gap: 0.45rem; margin: 0; }
-.legend .muted { color: var(--faint); }
+.legend .share { color: var(--ink); font-weight: 600; }
 .key { display: inline-block; flex: none; width: 0.7rem; height: 0.7rem; border-radius: 2px; }
 .s1, .key.a { background: var(--series-1); }
 .s2 { background: var(--series-2); }
 .s3 { background: var(--series-3); }
 .key.b, .seg.b { background: var(--series-1-soft); }
-.key.c, .seg.c { background: var(--faint); }
-.key.d, .seg.d { background: var(--line); }
+.key.c, .seg.c { background: var(--muted); }
+.key.d, .seg.d { background: var(--faint); }
 
 .stack { display: grid; gap: 3px; }
 .stack .row { display: flex; gap: 2px; height: 9px; }
@@ -485,8 +490,6 @@ button.btn { font: inherit; font-size: 0.875rem; cursor: pointer; }
 .seg { display: flex; align-items: center; min-width: 2px; padding-left: 0.5rem; border-radius: 4px; overflow: hidden; font: 600 0.8125rem/1 var(--sans); }
 .seg.a { background: var(--series-1); color: var(--on-series); }
 .seg.b { color: var(--on-series-soft); }
-.seg.c { color: #14110d; }
-.seg.d { color: var(--ink); }
 .segs + .legend { margin-bottom: 0; }
 
 .tip {

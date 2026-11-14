@@ -1,9 +1,9 @@
 // Hover layer for the charts that build.py renders. Every value shown here is also in the
-// page text or the chart's aria-label, so the charts read correctly without this script.
+// chart's visible labels or its "Show the data" table, so the charts read without this script.
 (function () {
   var tip = document.createElement("div");
   tip.className = "tip";
-  tip.setAttribute("role", "status");
+  tip.setAttribute("aria-hidden", "true");
   document.body.appendChild(tip);
 
   function show(text, x, y) {
@@ -12,18 +12,21 @@
     var width = tip.offsetWidth;
     var left = Math.min(Math.max(8, x - width / 2), document.documentElement.clientWidth - width - 8);
     tip.style.left = left + window.scrollX + "px";
-    tip.style.top = y + window.scrollY - tip.offsetHeight - 12 + "px";
+    var top = y - tip.offsetHeight - 12;
+    tip.style.top = (top < 4 ? y + 16 : top) + window.scrollY + "px";
   }
 
   function hide() {
     tip.style.display = "none";
   }
 
-  document.addEventListener("pointermove", function (event) {
+  function point(event) {
     var mark = event.target.closest && event.target.closest("[data-tip]");
     if (mark) show(mark.getAttribute("data-tip"), event.clientX, event.clientY);
     else if (!event.target.closest || !event.target.closest(".line-chart")) hide();
-  });
+  }
+  document.addEventListener("pointermove", point);
+  document.addEventListener("pointerdown", point);
   document.addEventListener("pointerleave", hide);
   window.addEventListener("scroll", hide, { passive: true });
 
@@ -34,7 +37,7 @@
     var hit = svg.querySelector(".hit");
     var last = data.values.length - 1;
 
-    hit.addEventListener("pointermove", function (event) {
+    function track(event) {
       var box = svg.getBoundingClientRect();
       var scale = svg.viewBox.baseVal.width / box.width;
       var x = (event.clientX - box.left) * scale;
@@ -49,7 +52,9 @@
       svg.classList.add("active");
       var text = data.tip.replace("{x}", (index * data.step).toLocaleString("en-US")).replace("{v}", data.values[index].toLocaleString("en-US"));
       show(text, box.left + px / scale, box.top + py / scale);
-    });
+    }
+    hit.addEventListener("pointermove", track);
+    hit.addEventListener("pointerdown", track);
     hit.addEventListener("pointerleave", function () {
       svg.classList.remove("active");
       hide();
