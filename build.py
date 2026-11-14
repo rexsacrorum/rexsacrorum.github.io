@@ -389,7 +389,8 @@ def load_articles():
         if meta['draft'] == 'true':
             continue
         meta['html'] = markdown(body, path.name)
-        words = len(re.sub(r'<[^>]+>', ' ', meta['html']).split())
+        prose = re.sub(r'<(details|svg|figure).*?</>', ' ', meta['html'], flags=re.S)
+        words = len(re.sub(r'<[^>]+>', ' ', prose).split())
         meta['minutes'] = str(max(1, round(words / 230)))
         meta['url'] = f'/writing/{meta["slug"]}/'
         articles.append(meta)
