@@ -13,7 +13,3 @@ node_modules/
 # Build output
 dist/
 __pycache__/
-
-# Wrangler state
-.wrangler/
-.dev.vars

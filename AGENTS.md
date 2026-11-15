@@ -37,13 +37,7 @@ Static site for https://novosad.xyz. The landing page and the CV are hand-writte
 
 ### Mail
 
-`mail` takes a one-line message of up to 1000 characters. `MAIL_ENDPOINT` at the top of `shell.js` is empty, so today it opens the visitor's mail client with a `mailto:` link to bogdan@novosad.xyz. With a URL there, the script also asks for an optional reply address and sends `POST` with JSON `{"message": "...", "reply": "..."}`, expects a 2xx answer, and falls back to `mailto:` on any failure.
-
-The backend is the Cloudflare Worker in `worker/` (`src/index.js`, `wrangler.jsonc`). It is not part of the site build and is deployed by hand from that folder with `npx wrangler@latest deploy`; the route is `https://api.novosad.xyz/mail`. Its tests run with `node --test worker/`.
-
-- The recipient is the `MAIL_TO` secret of the Worker (`npx wrangler@latest secret put MAIL_TO`), a verified destination address of the Cloudflare account. It is never taken from the request and is not in this repository. The sender is `MAIL_FROM` in `wrangler.jsonc`, on the domain onboarded in Cloudflare Email Service.
-- Limits: 1000 characters, a 4 KB body, JSON only, only the `https://novosad.xyz` origin, two messages a minute from one address and six from everybody. The rate limits are Cloudflare's rate limiting bindings: approximate and counted per location.
-- Nothing secret belongs in `shell.js` or `wrangler.jsonc`.
+`mail` takes a one-line message of up to 1000 characters. `MAIL_ENDPOINT` at the top of `shell.js` is empty, so today it opens the visitor's mail client with a `mailto:` link to bogdan@novosad.xyz. When a backend exists, put its URL there: the script then also asks for an optional reply address and sends `POST` with JSON `{"message": "...", "reply": "..."}`, expects a 2xx answer, and falls back to `mailto:` on any failure. The backend must fix the recipient on its side, limit the length and the rate, allow only the site's origin, and keep its secrets out of this repository and out of the page.
 
 ## Writing an article
 
