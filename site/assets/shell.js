@@ -11,6 +11,8 @@
   var MAIL_MAX = 1000;
   // The story is fetched on first use, so its version lives here and not in the page shells.
   var STORY_URL = "/assets/story.json?v=1";
+  // The pause between the paragraphs of a scene, in milliseconds.
+  var PACE = 380;
   var PROMPT = "guest:~$";
 
   var media = function (query) { return !!window.matchMedia && window.matchMedia(query).matches; };
@@ -69,7 +71,7 @@
   panel.setAttribute("role", "dialog");
   panel.setAttribute("aria-modal", "true");
   // The way out is not shown on the screen, so a screen reader is told it here.
-  panel.setAttribute("aria-label", "Terminal. To leave it, type colon q and press Enter.");
+  panel.setAttribute("aria-label", "Terminal. To leave it, type exit and press Enter.");
 
   var out = el("div", "term-out");
   out.setAttribute("role", "log");
@@ -142,7 +144,7 @@
   }
 
   // --- commands. A command that needs several lines of input sets a mode:
-  // { prompt, input(line), stop() }. The game and mail are modes; a later `ask` would be one too.
+  // { prompt, input(line), stop() }, and skip() when it prints in steps. The game and mail are modes; a later `ask` would be one too.
 
   var mode = null;
   function enter(next) { mode = next; ps.textContent = next.prompt; }
@@ -202,7 +204,6 @@
         var name = /^(~|\/|\.\.)\/?$/.test(raw) ? "home" : raw.replace(/^(~\/|\.\/|\/)/, "").replace(/\/$/, "");
         if (!pages[name]) { print("open: " + Object.keys(pages).join(", ")); return; }
         print("opening " + pages[name]);
-        keep(false);
         location.href = pages[name];
       }
     },
@@ -217,16 +218,16 @@
     },
     clear: { about: "clear the screen", run: function () { out.textContent = ""; } },
 
-    // Not in help. The only way out is :q, as in the editor nobody can leave.
-    ":q": { run: function () { close(); } },
-    exit: { run: function (args, rest, name) { print(name + ": no such way out."); stuck(); } },
+    // Not in help. There is no close button: the way out is exit, or :q as in the editor.
+    exit: { run: function () { close(); } },
+    shutdown: { run: function (args) { power(args.some(function (arg) { return /^(-\w*r\w*|--reboot)$/.test(arg); })); } },
     review: { run: review },
     noisia: { run: function () { print(window.crt ? window.crt() : "no phosphor on this page"); } },
     sudo: { run: function () { print("guest is not in the sudoers file. a person will review this incident."); } },
     pwd: { run: function () { print("/home/guest"); } },
     echo: { run: function (args, rest) { print(rest); } }
   };
-  var aliases = { "?": "help", man: "help", ":q!": ":q", ":wq": ":q", ":x": ":q", zz: ":q", quit: "exit", close: "exit", logout: "exit", q: "exit", cd: "open", go: "open", less: "cat", more: "cat", home: "open home", cv: "cat cv", dir: "ls" };
+  var aliases = { "?": "help", man: "help", ":q!": "exit", ":wq": "exit", ":x": "exit", zz: "exit", ":q": "exit", quit: "exit", close: "exit", logout: "exit", q: "exit", reboot: "shutdown -r", poweroff: "shutdown", halt: "shutdown", cd: "open", go: "open", less: "cat", more: "cat", home: "open home", cv: "cat cv", dir: "ls" };
 
   function exec(line) {
     if (!line) return;
@@ -242,15 +243,17 @@
     commands[name].run(words.slice(1), line.slice(words[0].length).trim(), first);
   }
 
-  // After a few tries at the door, one oblique hint. The plain one is in the browser console.
+  // Esc does not close the panel. After three tries, one hint; the plain one is in the browser console.
   var tries = 0;
   function stuck() {
-    if (++tries === 3) dim("hint: you have been stuck in an editor like this before.");
+    if (++tries === 3) dim("hint: a shell is left with exit.");
   }
 
   var past = [];
   var at = 0;
   function submit(line) {
+    // While a mode is still printing, Enter only makes it finish.
+    if (mode && mode.skip && mode.skip()) return;
     line = line.trim();
     var row = print(ps.textContent + " " + line, "term-echo");
     if (line && !mode) {
@@ -277,7 +280,7 @@
     }).then(function (data) {
       story = data;
       wait.remove();
-      if (!mode) out.scrollTop = play().offsetTop;
+      if (!mode) play();
     }, function () {
       wait.textContent = "the story did not load. try again in a minute.";
     });
@@ -287,6 +290,9 @@
     var state = {};
     var picks = [];
     var total = Object.keys(story.scenes).filter(function (id) { return story.scenes[id].end; }).length;
+    // The rows of the current screen that are not printed yet.
+    var pending = [];
+    var timer = 0;
 
     // A condition is "flag", "!flag", "count>=2" or "count<2"; "set" adds one to each name.
     function holds(conditions) {
@@ -301,24 +307,22 @@
       (names || []).forEach(function (name) { state[name] = (state[name] || 0) + 1; });
     }
     function freeze() {
-      Array.prototype.forEach.call(out.querySelectorAll(".term-pick:not([disabled])"), function (button) { button.disabled = true; });
+      Array.prototype.forEach.call(out.querySelectorAll(".term-pick"), function (button) { button.disabled = true; });
     }
 
-    function show(id) {
+    // Queue the paragraphs of a scene, and of the scenes it leads to without asking; the choices go last.
+    function queue(id) {
       var scene = story.scenes[id];
-      var first = null;
       bump(scene.set);
-      scene.text.forEach(function (paragraph) {
-        var row = print(paragraph, "term-para");
-        first = first || row;
-      });
+      scene.text.forEach(function (paragraph) { pending.push(el("div", "term-row term-para", paragraph)); });
       if (scene.next) {
-        show(scene.next.filter(function (route) { return holds(route.when); })[0].to);
-        return first;
+        queue(scene.next.filter(function (route) { return holds(route.when); })[0].to);
+        return;
       }
+      var last = document.createDocumentFragment();
       if (scene.end) {
         endings[scene.end] = true;
-        dim("ending: " + scene.end + " · " + Object.keys(endings).length + " of " + total + " found");
+        last.appendChild(el("div", "term-row term-dim", "ending: " + scene.end + " · " + Object.keys(endings).length + " of " + total + " found"));
         picks = [{ label: "Start again", again: true }, { label: "Leave", quit: true }];
       } else {
         picks = scene.choices.filter(function (choice) { return holds(choice.when); });
@@ -330,25 +334,50 @@
           submit(String(index + 1));
           (touch ? out : input).focus({ preventScroll: true });
         });
-        out.appendChild(button);
+        last.appendChild(button);
       });
-      return first;
+      pending.push(last);
+    }
+    function reveal() {
+      out.appendChild(pending.shift());
+      if (pending.length) timer = setTimeout(reveal, PACE);
+    }
+    // Print the rest of the screen at once. Says whether there was anything to print.
+    function skip() {
+      if (!pending.length) return false;
+      clearTimeout(timer);
+      while (pending.length) out.appendChild(pending.shift());
+      return true;
+    }
+    // Every scene is a screen of its own: wipe the last one, print the head, then the scene.
+    function turn(id, head) {
+      clearTimeout(timer);
+      pending = [];
+      out.textContent = "";
+      head.forEach(function (row) { out.appendChild(row); });
+      out.scrollTop = 0;
+      queue(id);
+      if (calm) skip();
+      else reveal();
     }
 
     function start() {
       state = {};
-      var title = print(story.title.toUpperCase(), "term-title");
-      dim("answer with a number. quit leaves the story.");
-      show(story.start);
-      return title;
+      turn(story.start, [
+        el("div", "term-row term-title", story.title.toUpperCase()),
+        el("div", "term-row term-dim", "answer with a number. quit leaves the story.")
+      ]);
     }
     function stop() {
+      clearTimeout(timer);
+      pending = [];
       freeze();
       leave();
     }
 
     enter({
       prompt: ">",
+      skip: skip,
       input: function (line) {
         var word = line.toLowerCase();
         var pick = /^\d+$/.test(word) ? picks[+word - 1] : null;
@@ -356,21 +385,130 @@
           stop();
           dim("the queue is empty. for now.");
         } else if (word === "again" || word === "restart" || (pick && pick.again)) {
-          freeze();
           start();
         } else if (pick) {
-          var taken = out.querySelectorAll(".term-pick:not([disabled])")[+word - 1];
-          freeze();
-          if (taken) taken.classList.add("took");
           bump(pick.set);
-          show(pick.to);
+          turn(pick.to, [el("div", "term-row term-echo", "> " + pick.label)]);
         } else {
           dim("a number from 1 to " + picks.length + ", or quit.");
         }
       },
       stop: stop
     });
-    return start();
+    start();
+  }
+
+  // --- shutdown and shutdown -r. The machine goes down line by line; it comes back as Omarchy.
+
+  var DOWN = [
+    "[  OK  ] Stopped target Graphical Interface.",
+    "[  OK  ] Stopped Hyprland session.",
+    "[  OK  ] Stopped target Network.",
+    "[  OK  ] Unmounted /home.",
+    "[  OK  ] Reached target Unmount All Filesystems."
+  ];
+  var BOOT = [
+    "Omarchy Bootloader",
+    "Loading Linux linux ...",
+    "Loading initial ramdisk ...",
+    ":: running early hook [udev]",
+    ":: running hook [plymouth]",
+    ":: Triggering uevents...",
+    ":: mounting '/dev/mapper/root' on real root"
+  ];
+  // The logo, and the band of light that leans across it, are taken from Omarchy:
+  // https://github.com/omacom/omarchy, MIT License, Copyright (c) David Heinemeier Hansson.
+  var LOGO = [
+    "                 ▄▄▄",
+    " ▄█████▄    ▄███████████▄    ▄███████   ▄███████   ▄███████   ▄█   █▄    ▄█   █▄",
+    "███   ███  ███   ███   ███  ███   ███  ███   ███  ███   ███  ███   ███  ███   ███",
+    "███   ███  ███   ███   ███  ███   ███  ███   ███  ███   █▀   ███   ███  ███   ███",
+    "███   ███  ███   ███   ███ ▄███▄▄▄███ ▄███▄▄▄██▀  ███       ▄███▄▄▄███▄ ███▄▄▄███",
+    "███   ███  ███   ███   ███ ▀███▀▀▀███ ▀███▀▀▀▀    ███      ▀▀███▀▀▀███  ▀▀▀▀▀▀███",
+    "███   ███  ███   ███   ███  ███   ███ ██████████  ███   █▄   ███   ███  ▄██   ███",
+    "███   ███  ███   ███   ███  ███   ███  ███   ███  ███   ███  ███   ███  ███   ███",
+    " ▀█████▀    ▀█   ███   █▀   ███   █▀   ███   ███  ███████▀   ███   █▀    ▀█████▀",
+    "                                       ███   █▀"
+  ];
+  // The band moves one column a frame, leans two columns a row and is five columns wide.
+  var SHEEN = { frame: 25, slant: 2, half: 2 };
+
+  function power(restart) {
+    var timer = 0;
+    var off = false;
+    // Print the lines one by one, hold the screen for a moment, then go on.
+    function run(lines, pace, hold, then) {
+      var n = 0;
+      (function next() {
+        if (n === lines.length) { timer = setTimeout(then, hold); return; }
+        print(lines[n++]);
+        out.scrollTop = out.scrollHeight;
+        if (calm) next();
+        else timer = setTimeout(next, pace);
+      })();
+    }
+    // The splash: the logo, then one pass of the sheen. A screen reader gets the name once.
+    function splash(then) {
+      var art = el("pre", "term-logo");
+      art.setAttribute("aria-hidden", "true");
+      var rows = LOGO.map(function (line) { return art.appendChild(el("div", "", line)); });
+      out.appendChild(el("div", "sr", "Omarchy"));
+      out.appendChild(art);
+      if (calm) { timer = setTimeout(then, 1400); return; }
+      var width = Math.max.apply(null, LOGO.map(function (line) { return line.length; }));
+      var last = width + rows.length * SHEEN.slant + SHEEN.half;
+      var centre = -SHEEN.half;
+      function frame() {
+        if (centre > last) { timer = setTimeout(then, 700); return; }
+        rows.forEach(function (row, index) {
+          var line = LOGO[index];
+          var at = centre - index * SHEEN.slant;
+          var from = Math.max(0, at - SHEEN.half);
+          var to = Math.max(0, at + SHEEN.half + 1);
+          row.textContent = line.slice(0, from);
+          row.appendChild(el("b", "", line.slice(from, to)));
+          row.appendChild(document.createTextNode(line.slice(to)));
+        });
+        centre++;
+        timer = setTimeout(frame, SHEEN.frame);
+      }
+      timer = setTimeout(frame, 500);
+    }
+    function boot() {
+      off = false;
+      out.textContent = "";
+      run(BOOT, 150, 500, function () {
+        out.textContent = "";
+        splash(function () {
+          out.textContent = "";
+          done();
+          greet();
+        });
+      });
+    }
+    function done() {
+      clearTimeout(timer);
+      panel.classList.remove("term-busy");
+      input.value = "";
+      leave();
+    }
+    enter({
+      prompt: "",
+      input: function () {},
+      // Nothing can be typed while the machine is down; a key or a tap switches it back on.
+      skip: function () {
+        if (off) boot();
+        return true;
+      },
+      stop: done
+    });
+    panel.classList.add("term-busy");
+    run(DOWN.concat("[  OK  ] Reached target System " + (restart ? "Reboot." : "Power Off.")), 130, 700, function () {
+      out.textContent = "";
+      if (restart) { timer = setTimeout(boot, 900); return; }
+      off = true;
+      out.appendChild(el("div", "sr", "The machine is off. Press a key to switch it on."));
+    });
   }
 
   // --- mail. With no backend configured the text goes to the visitor's own mail client.
@@ -433,15 +571,6 @@
 
   // --- opening and closing
 
-  // An open terminal survives a reload: it stays open until the visitor types :q.
-  var KEEP = "term";
-  function keep(on) {
-    try {
-      if (on) sessionStorage.setItem(KEEP, "1");
-      else sessionStorage.removeItem(KEEP);
-    } catch (error) {}
-  }
-
   var opened = false;
   var greeted = false;
   var others = [];
@@ -470,8 +599,7 @@
     mark.setAttribute("aria-expanded", "true");
     fit();
     input.focus({ preventScroll: true });
-    keep(true);
-    console.log("%cStuck in the terminal? Type :q and press Enter.", "color:#8a938c;font-family:monospace");
+    console.log("%cStuck in the terminal? Type exit and press Enter.", "color:#8a938c;font-family:monospace");
     if (!greeted) {
       greeted = true;
       greet();
@@ -485,7 +613,6 @@
     root.classList.remove("term-open");
     mark.setAttribute("aria-expanded", "false");
     mark.focus({ preventScroll: true });
-    keep(false);
   }
 
   // With the script on, the prompt opens the terminal. Home stays reachable with the `home`
@@ -505,10 +632,10 @@
     event.stopPropagation();
     open();
   });
-  // Following a link out of the terminal, or `open`, is a way of leaving it too.
-  out.addEventListener("click", function (event) {
-    var link = event.target.closest && event.target.closest("a[href]");
-    if (link && link.protocol !== "mailto:") keep(false);
+  // A tap prints the rest of a paced screen. The tap that picked an answer is not one of those.
+  panel.addEventListener("click", function (event) {
+    if (event.target.closest && event.target.closest(".term-pick")) return;
+    if (mode && mode.skip) mode.skip();
   });
 
   form.addEventListener("submit", function (event) {
@@ -548,6 +675,7 @@
       }
       return;
     }
+    if (mode && mode.skip && event.key.length === 1) mode.skip();
     if (event.key === "Escape") {
       event.preventDefault();
       stuck();
@@ -565,8 +693,4 @@
       input.focus({ preventScroll: true });
     }
   });
-
-  try {
-    if (sessionStorage.getItem(KEEP)) open();
-  } catch (error) {}
 })();

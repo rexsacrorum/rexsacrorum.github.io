@@ -388,13 +388,17 @@ footer.foot {
 .term-out { position: relative; flex: 0 1 auto; min-height: 0; padding-top: 1rem; padding-bottom: 0.4rem; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--faint) transparent; white-space: pre-wrap; overflow-wrap: anywhere; }
 .term-out:focus { outline: none; }
 .term-row { min-height: 1.6em; }
+/* During shutdown the input line stays focusable and is not shown. */
+.term-busy .term-line { opacity: 0; }
+/* The Omarchy logo in its own green. It is 82 columns wide, so the type shrinks to fit a phone. */
+.term-logo { margin: 1.5rem 0; color: #9ece6a; font: inherit; font-size: min(1em, calc((100vw - 2.5rem) / 50)); line-height: 1.2; white-space: pre; }
+.term-logo b { color: #fff; font-weight: inherit; }
 .term-echo, .term-dim { color: var(--muted); }
 .term-title { margin-top: 0.8em; font-weight: 700; color: var(--accent); }
 .term-para { max-width: 46rem; margin: 0.8em 0; }
 .term-pick { appearance: none; display: block; padding: 0.15rem 0; border: 0; background: none; color: var(--accent); font: inherit; text-align: left; white-space: pre-wrap; cursor: pointer; }
 .term-pick:hover { text-decoration: underline; }
 .term-pick:disabled { color: var(--faint); text-decoration: none; cursor: default; }
-.term-pick.took { color: var(--muted); }
 .term-line { display: flex; align-items: baseline; gap: 0.6em; padding-bottom: 0.9rem; }
 .term-line span { color: var(--muted); white-space: nowrap; }
 .term-line input { flex: 1; min-width: 0; padding: 0; border: 0; border-radius: 0; outline: none; background: none; color: var(--ink); font: inherit; caret-color: var(--accent); }
