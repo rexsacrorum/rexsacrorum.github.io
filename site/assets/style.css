@@ -388,6 +388,8 @@ footer.foot {
 .term-out { position: relative; flex: 0 1 auto; min-height: 0; padding-top: 1rem; padding-bottom: 0.4rem; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--faint) transparent; white-space: pre-wrap; overflow-wrap: anywhere; }
 .term-out:focus { outline: none; }
 .term-row { min-height: 1.6em; }
+/* During shutdown the input line stays focusable and is not shown. */
+.term-busy .term-line { opacity: 0; }
 .term-echo, .term-dim { color: var(--muted); }
 .term-title { margin-top: 0.8em; font-weight: 700; color: var(--accent); }
 .term-para { max-width: 46rem; margin: 0.8em 0; }

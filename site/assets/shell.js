@@ -71,7 +71,7 @@
   panel.setAttribute("role", "dialog");
   panel.setAttribute("aria-modal", "true");
   // The way out is not shown on the screen, so a screen reader is told it here.
-  panel.setAttribute("aria-label", "Terminal. To leave it, type colon q and press Enter.");
+  panel.setAttribute("aria-label", "Terminal. To leave it, type exit and press Enter.");
 
   var out = el("div", "term-out");
   out.setAttribute("role", "log");
@@ -204,7 +204,6 @@
         var name = /^(~|\/|\.\.)\/?$/.test(raw) ? "home" : raw.replace(/^(~\/|\.\/|\/)/, "").replace(/\/$/, "");
         if (!pages[name]) { print("open: " + Object.keys(pages).join(", ")); return; }
         print("opening " + pages[name]);
-        keep(false);
         location.href = pages[name];
       }
     },
@@ -219,16 +218,16 @@
     },
     clear: { about: "clear the screen", run: function () { out.textContent = ""; } },
 
-    // Not in help. The only way out is :q, as in the editor nobody can leave.
-    ":q": { run: function () { close(); } },
-    exit: { run: function (args, rest, name) { print(name + ": no such way out."); stuck(); } },
+    // Not in help. There is no close button: the way out is exit, or :q as in the editor.
+    exit: { run: function () { close(); } },
+    shutdown: { run: function (args) { power(args.some(function (arg) { return /^(-\w*r\w*|--reboot)$/.test(arg); })); } },
     review: { run: review },
     noisia: { run: function () { print(window.crt ? window.crt() : "no phosphor on this page"); } },
     sudo: { run: function () { print("guest is not in the sudoers file. a person will review this incident."); } },
     pwd: { run: function () { print("/home/guest"); } },
     echo: { run: function (args, rest) { print(rest); } }
   };
-  var aliases = { "?": "help", man: "help", ":q!": ":q", ":wq": ":q", ":x": ":q", zz: ":q", quit: "exit", close: "exit", logout: "exit", q: "exit", cd: "open", go: "open", less: "cat", more: "cat", home: "open home", cv: "cat cv", dir: "ls" };
+  var aliases = { "?": "help", man: "help", ":q!": "exit", ":wq": "exit", ":x": "exit", zz: "exit", ":q": "exit", quit: "exit", close: "exit", logout: "exit", q: "exit", reboot: "shutdown -r", poweroff: "shutdown", halt: "shutdown", cd: "open", go: "open", less: "cat", more: "cat", home: "open home", cv: "cat cv", dir: "ls" };
 
   function exec(line) {
     if (!line) return;
@@ -244,10 +243,10 @@
     commands[name].run(words.slice(1), line.slice(words[0].length).trim(), first);
   }
 
-  // After a few tries at the door, one oblique hint. The plain one is in the browser console.
+  // Esc does not close the panel. After three tries, one hint; the plain one is in the browser console.
   var tries = 0;
   function stuck() {
-    if (++tries === 3) dim("hint: you have been stuck in an editor like this before.");
+    if (++tries === 3) dim("hint: a shell is left with exit.");
   }
 
   var past = [];
@@ -399,6 +398,78 @@
     start();
   }
 
+  // --- shutdown and shutdown -r. The machine goes down line by line; it comes back as Omarchy.
+
+  var DOWN = [
+    "[  OK  ] Stopped target Graphical Interface.",
+    "[  OK  ] Stopped Hyprland session.",
+    "[  OK  ] Stopped target Network.",
+    "[  OK  ] Unmounted /home.",
+    "[  OK  ] Reached target Unmount All Filesystems."
+  ];
+  var BOOT = [
+    "Limine: booting Omarchy",
+    "Loading Linux linux ...",
+    "Loading initial ramdisk ...",
+    ":: running early hook [udev]",
+    ":: running hook [plymouth]",
+    ":: Triggering uevents...",
+    ":: mounting '/dev/mapper/root' on real root",
+    "Welcome to Omarchy!",
+    "[  OK  ] Reached target Network.",
+    "[  OK  ] Started Hyprland session.",
+    "[  OK  ] Reached target Graphical Interface.",
+    "omarchy login: guest (automatic login)"
+  ];
+
+  function power(restart) {
+    var timer = 0;
+    var off = false;
+    // Print the lines one by one, hold the screen for a moment, then go on.
+    function run(lines, pace, hold, then) {
+      var n = 0;
+      (function next() {
+        if (n === lines.length) { timer = setTimeout(then, hold); return; }
+        print(lines[n++]);
+        out.scrollTop = out.scrollHeight;
+        if (calm) next();
+        else timer = setTimeout(next, pace);
+      })();
+    }
+    function boot() {
+      off = false;
+      out.textContent = "";
+      run(BOOT, 150, 900, function () {
+        out.textContent = "";
+        done();
+        greet();
+      });
+    }
+    function done() {
+      clearTimeout(timer);
+      panel.classList.remove("term-busy");
+      input.value = "";
+      leave();
+    }
+    enter({
+      prompt: "",
+      input: function () {},
+      // Nothing can be typed while the machine is down; a key or a tap switches it back on.
+      skip: function () {
+        if (off) boot();
+        return true;
+      },
+      stop: done
+    });
+    panel.classList.add("term-busy");
+    run(DOWN.concat("[  OK  ] Reached target System " + (restart ? "Reboot." : "Power Off.")), 130, 700, function () {
+      out.textContent = "";
+      if (restart) { timer = setTimeout(boot, 900); return; }
+      off = true;
+      out.appendChild(el("div", "sr", "The machine is off. Press a key to switch it on."));
+    });
+  }
+
   // --- mail. With no backend configured the text goes to the visitor's own mail client.
 
   function mail(args, rest) {
@@ -459,15 +530,6 @@
 
   // --- opening and closing
 
-  // An open terminal survives a reload: it stays open until the visitor types :q.
-  var KEEP = "term";
-  function keep(on) {
-    try {
-      if (on) sessionStorage.setItem(KEEP, "1");
-      else sessionStorage.removeItem(KEEP);
-    } catch (error) {}
-  }
-
   var opened = false;
   var greeted = false;
   var others = [];
@@ -496,8 +558,7 @@
     mark.setAttribute("aria-expanded", "true");
     fit();
     input.focus({ preventScroll: true });
-    keep(true);
-    console.log("%cStuck in the terminal? Type :q and press Enter.", "color:#8a938c;font-family:monospace");
+    console.log("%cStuck in the terminal? Type exit and press Enter.", "color:#8a938c;font-family:monospace");
     if (!greeted) {
       greeted = true;
       greet();
@@ -511,7 +572,6 @@
     root.classList.remove("term-open");
     mark.setAttribute("aria-expanded", "false");
     mark.focus({ preventScroll: true });
-    keep(false);
   }
 
   // With the script on, the prompt opens the terminal. Home stays reachable with the `home`
@@ -531,10 +591,7 @@
     event.stopPropagation();
     open();
   });
-  // Following a link out of the terminal, or `open`, is a way of leaving it too.
-  out.addEventListener("click", function (event) {
-    var link = event.target.closest && event.target.closest("a[href]");
-    if (link && link.protocol !== "mailto:") keep(false);
+  panel.addEventListener("click", function () {
     if (mode && mode.skip) mode.skip();
   });
 
@@ -593,8 +650,4 @@
       input.focus({ preventScroll: true });
     }
   });
-
-  try {
-    if (sessionStorage.getItem(KEEP)) open();
-  } catch (error) {}
 })();
