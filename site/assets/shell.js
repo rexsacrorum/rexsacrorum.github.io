@@ -54,8 +54,7 @@
       "telegram  [t.me/rexsacrorum](https://t.me/rexsacrorum)"
     ],
     ".plan": [
-      "now: building [wearbrands.co](https://wearbrands.co/), a fashion search across shops: all brands in one place.",
-      "Go, Postgres with pgvector, SvelteKit."
+      "now: building [wearbrands.co](https://wearbrands.co/), a fashion search across shops: all brands in one place."
     ],
     ".last_review": [
       "The agents write all the code now. One person still reads it.",
