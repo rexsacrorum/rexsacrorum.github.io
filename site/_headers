@@ -1,0 +1,15 @@
+# Response headers for the static files, read by Cloudflare at deploy time.
+# They do not apply to responses produced by functions.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# Every link to a file under /assets/ carries ?v=, bumped when the file changes,
+# so a new version is a new URL. A day, not a year: a forgotten bump then heals itself.
+/assets/*
+  Cache-Control: public, max-age=86400
+
+# Keep the deployment hosts out of search results; only novosad.xyz is the site.
+https://:worker.:account.workers.dev/*
+  X-Robots-Tag: noindex
