@@ -151,11 +151,21 @@
   var commands = {
     help: {
       about: "this list",
-      run: function () {
+      usage: ["help [command]", "with a command, what it takes."],
+      run: function (args) {
+        if (args[0]) {
+          // `help ls` shows the usage of one command; a hidden command stays hidden.
+          var name = args[0].toLowerCase();
+          if (Object.prototype.hasOwnProperty.call(aliases, name)) name = aliases[name].split(" ")[0];
+          var known = Object.prototype.hasOwnProperty.call(commands, name) && commands[name].about;
+          if (!known) { print("help: no entry for " + args[0] + "."); return; }
+          (commands[name].usage || [name, commands[name].about + "."]).forEach(function (line) { print(line); });
+          return;
+        }
         Object.keys(commands).forEach(function (name) {
           if (commands[name].about) print((name + "        ").slice(0, 8) + commands[name].about);
         });
-        dim("not everything is listed. ls has flags.");
+        dim("not everything is listed. help <command> says more.");
       }
     },
     whoami: {
@@ -166,6 +176,7 @@
     },
     ls: {
       about: "list the files",
+      usage: ["ls [-a]", "list the files.", "-a  do not skip the names that start with a dot."],
       run: function (args) {
         var all = args.some(function (arg) { return /^-\w*a/i.test(arg); });
         var names = Object.keys(files).filter(function (name) { return all || name.charAt(0) !== "."; });
@@ -174,6 +185,7 @@
     },
     cat: {
       about: "read a file: cat cv",
+      usage: ["cat <file>", "print a file. the .txt can be left out: cat cv"],
       run: function (args) {
         var name = (args[0] || "").toLowerCase().replace(/^(\.\/|~\/)/, "");
         if (!name) { print("cat: which file? ls lists them."); return; }
@@ -185,6 +197,7 @@
     },
     open: {
       about: "go to a page: open cv",
+      usage: ["open <page>", "go to a page: home, cv, writing or pdf."],
       run: function (args) {
         var raw = (args[0] || "").toLowerCase();
         var name = /^(~|\/|\.\.)\/?$/.test(raw) ? "home" : raw.replace(/^(~\/|\.\/|\/)/, "").replace(/\/$/, "");
@@ -194,7 +207,7 @@
         location.href = pages[name];
       }
     },
-    mail: { about: "send me a message", run: mail },
+    mail: { about: "send me a message", usage: ["mail [message]", "send me one line, up to 1000 characters. without a message it asks for one."], run: mail },
     theme: {
       about: "switch the theme",
       run: function () {
@@ -214,7 +227,7 @@
     pwd: { run: function () { print("/home/guest"); } },
     echo: { run: function (args, rest) { print(rest); } }
   };
-  var aliases = { "?": "help", ":q!": ":q", ":wq": ":q", ":x": ":q", zz: ":q", quit: "exit", close: "exit", logout: "exit", q: "exit", cd: "open", go: "open", less: "cat", more: "cat", home: "open home", cv: "cat cv", dir: "ls" };
+  var aliases = { "?": "help", man: "help", ":q!": ":q", ":wq": ":q", ":x": ":q", zz: ":q", quit: "exit", close: "exit", logout: "exit", q: "exit", cd: "open", go: "open", less: "cat", more: "cat", home: "open home", cv: "cat cv", dir: "ls" };
 
   function exec(line) {
     if (!line) return;
