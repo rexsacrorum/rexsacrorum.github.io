@@ -1,0 +1,20 @@
+// The mail backend of the site's terminal. Deploy from this folder: npx wrangler@latest deploy
+// The recipient is a secret, not in this file: npx wrangler@latest secret put MAIL_TO
+{
+  "name": "novosad-mail",
+  "main": "src/index.js",
+  "compatibility_date": "2026-11-01",
+  "workers_dev": false,
+  "routes": [{ "pattern": "api.novosad.xyz", "custom_domain": true }],
+  "send_email": [{ "name": "EMAIL" }],
+  // Approximate and counted per Cloudflare location: two messages a minute from one address, six from everybody.
+  "ratelimits": [
+    { "name": "PER_VISITOR", "namespace_id": "8137", "simple": { "limit": 2, "period": 60 } },
+    { "name": "EVERYONE", "namespace_id": "8138", "simple": { "limit": 6, "period": 60 } }
+  ],
+  "vars": {
+    "MAIL_FROM": "terminal@novosad.xyz",
+    "ALLOWED_ORIGIN": "https://novosad.xyz"
+  },
+  "observability": { "enabled": true }
+}
