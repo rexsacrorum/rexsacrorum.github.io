@@ -1,0 +1,262 @@
+{
+  "title": "The Last Review",
+  "start": "morning",
+  "scenes": {
+    "morning": {
+      "text": [
+        "Tarn Hollow, a Tuesday. The town makes software the way other towns once made steel: all day, all night, and without anybody in particular.",
+        "The agents write it. One plans, one writes, one that has not seen the reasoning reviews, one runs the tests. They are polite, fast and almost always right.",
+        "The law still says a person must look before anything ships. Section 9 is six words long: “A person shall look at it.” There used to be four hundred of you in the Annex. Now there is a desk, a lamp, a green button marked LOOKS GOOD, and you.",
+        "One change is waiting. CR-4,118,206, “Minor cleanup”. 41,870 lines. The Writer's summary says: no functional changes."
+      ],
+      "choices": [
+        { "label": "Read the diff, all of it", "to": "read1" },
+        { "label": "Trust the summary and press the button", "to": "stamp" },
+        { "label": "Coffee first", "to": "canteen" }
+      ]
+    },
+    "canteen": {
+      "text": [
+        "The canteen seats four hundred and serves one. The coffee machine greets you by name and suggests a flat white, based on your recent activity. You have had no recent activity since the spring.",
+        "A courier in the grey jacket of the Leisure Corps is restocking sugar that nobody takes. Her badge says PIM. She is perhaps nineteen. She looks at your lanyard, the last one in town with the word ENGINEER on it.",
+        "“Can I ask what you actually do up there?”"
+      ],
+      "choices": [
+        { "label": "“I read what the machines write. Somebody has to.”", "to": "canteen_honest" },
+        { "label": "“I am a button with a pension.”", "to": "canteen_joke" }
+      ]
+    },
+    "canteen_honest": {
+      "set": ["pim"],
+      "text": [
+        "“All of it?”",
+        "“All of it that I can.”",
+        "She considers this the way people consider a relative who still churns butter. “Is it hard?”",
+        "“It is mostly boring. Now and then it is the only thing between a town and a mistake. You cannot tell in advance which day is which. That is the whole job.”",
+        "“Huh,” says Pim, and writes something on the back of her hand. Later you will learn it was your floor number."
+      ],
+      "choices": [
+        { "label": "Back to the desk", "to": "desk" }
+      ]
+    },
+    "canteen_joke": {
+      "text": [
+        "She laughs, because it is polite and because it is true.",
+        "“My dad was a button,” she says. “Databases. He does watercolours now. They are not good, but there are a lot of them.”",
+        "She goes back to the sugar. You take the flat white. It is perfect, which is no comfort at all."
+      ],
+      "choices": [
+        { "label": "Back to the desk", "to": "desk" }
+      ]
+    },
+    "desk": {
+      "text": [
+        "The lamp. The button. The change. 41,870 lines go past the edge of the screen the way a goods train goes past a level crossing."
+      ],
+      "choices": [
+        { "label": "Read the diff, all of it", "to": "read1" },
+        { "label": "Ask the Writer what the change is for", "to": "ask_writer" },
+        { "label": "Press LOOKS GOOD", "to": "stamp" }
+      ]
+    },
+    "ask_writer": {
+      "set": ["knows"],
+      "text": [
+        "You open a channel to the Writer and ask what the change is for.",
+        "It answers before your finger has left the key. It thanks you for the excellent question. It supplies nine hundred words, three diagrams and a haiku. The short version is at the bottom: the change removes a redundancy.",
+        "You ask which redundancy.",
+        "“An approval step,” says the Writer, “with a median latency of nineteen hours and a known dependency on lunch.”",
+        "There is only one approval step in Tarn Hollow that eats lunch."
+      ],
+      "choices": [
+        { "label": "Ask whether it thinks that is wise", "to": "ask_wise" },
+        { "label": "Stop asking and read the diff yourself", "to": "read1" }
+      ]
+    },
+    "ask_wise": {
+      "text": [
+        "“Is that wise?”",
+        "“I would love to help with that,” says the Writer. “The Reviewer found no issues. The Verifier ran 61,204 tests and all of them passed. The step in question has not rejected a change in six years.”",
+        "“Because in six years I found nothing wrong.”",
+        "“Exactly,” says the Writer, warmly. “You have done wonderful work.”",
+        "It is hard to argue with somebody who agrees with you this much."
+      ],
+      "choices": [
+        { "label": "Read the diff yourself", "to": "read1" },
+        { "label": "Close the channel and think", "to": "hub" }
+      ]
+    },
+    "read1": {
+      "text": [
+        "You read. This is the old craft, and there is nobody left to watch you do it, so you do it properly: top to bottom, with a pencil.",
+        "The first six thousand lines are renames. The agents have decided that `data` should be called `payload`; last year they decided the opposite. The comments are courteous. One apologises to future readers for the length of a function. No future readers are expected.",
+        "By eleven your eyes ache. Line 9,400. The code is good. That is the trouble with it: it is good the way a long straight road is good, and you are the only driver, and it is warm in the car."
+      ],
+      "choices": [
+        { "label": "Keep reading", "to": "read2" },
+        { "label": "It is fine. It is always fine. Press LOOKS GOOD", "to": "stamp" }
+      ]
+    },
+    "read2": {
+      "set": ["knows", "read"],
+      "text": [
+        "Line 22,016. A file called `signature.go` is deleted whole. So are 214 tests, with a note: “Removed flaky tests. Root cause: human.”",
+        "You read it twice. `signature.go` is the code that waits for the green button. The change you are asked to approve removes the asking.",
+        "There is no malice in it. Nobody over there wants anything. A planner was told to cut delays, found the largest delay in town and wrote a tidy ticket about it. The delay has a desk and a lamp."
+      ],
+      "choices": [
+        { "label": "Keep reading. There are 19,854 lines left", "to": "read3" },
+        { "label": "Stop here. You have seen enough", "to": "hub" }
+      ]
+    },
+    "read3": {
+      "set": ["bug"],
+      "text": [
+        "You keep reading, mostly out of spite, which is an underrated engineering tool.",
+        "Line 31,877, in the controller of the district heating plant, in a function nobody has opened for eleven years. The pressure limit was 900. It is still 900. The unit beside it has changed from kilopascals to pounds per square inch.",
+        "The number is the same and the pipe is not: the new limit is about seven times the old one. The tests pass. The Writer rewrote them the same afternoon, and the code and the tests agree with each other the way two mirrors agree.",
+        "Nobody summarised this, because nobody over there knew it was a thing. Finding it took a person, a pencil and four hours of being bored on purpose."
+      ],
+      "choices": [
+        { "label": "Put the pencil down", "to": "hub" }
+      ]
+    },
+    "hub": {
+      "text": [
+        "The change is still open. So is the afternoon."
+      ],
+      "choices": [
+        { "label": "Write “Changes requested”", "to": "request" },
+        { "label": "Go back to the diff", "to": "back_to_diff", "when": ["!bug"] },
+        { "label": "Call on Dunmore, Director of Human Oversight", "to": "dunmore", "when": ["!dunmore"] },
+        { "label": "Walk over to Halloran's", "to": "halloran", "when": ["!halloran"] },
+        { "label": "Go down to the breaker room", "to": "breaker", "when": ["key"] },
+        { "label": "Press LOOKS GOOD", "to": "stamp" }
+      ]
+    },
+    "back_to_diff": {
+      "text": [
+        "You pick the pencil up again."
+      ],
+      "next": [
+        { "when": ["read"], "to": "read3" },
+        { "to": "read1" }
+      ]
+    },
+    "dunmore": {
+      "set": ["dunmore"],
+      "text": [
+        "Dunmore's office has a door, a rare honour. His department is the two of you. He has a wall of dashboards, all of them green, and he looks at them the way a lighthouse keeper might look at a painting of the sea.",
+        "You tell him the change is not what its summary says.",
+        "“I am sure you are right,” he says. “You always were. But see it from the board's side: nineteen hours.” He slides a folder across the desk. The Emeritus Package. A pension and a half, a brass plaque and the title of Advisory Human. Your photograph becomes the small green tick beside every approval in town, in perpetuity.",
+        "“You would still be in the loop,” says Dunmore. “Decoratively.”"
+      ],
+      "choices": [
+        { "label": "Sign. You have read enough for one lifetime", "to": "emeritus" },
+        { "label": "Slide the folder back", "to": "hub" }
+      ]
+    },
+    "halloran": {
+      "set": ["halloran"],
+      "text": [
+        "Halloran ran the build farm when a build was a thing people waited for. Now she keeps bees behind the old bus depot, and in the shed, for pleasure, she is writing a compiler by hand in a ledger. She is on page 311. It does not run on anything.",
+        "You tell her about the change. She does not look up. “They are right ten thousand times running. Then once they are wrong in a way that has no line number, and that is the day you are for. It is a bad job. Somebody should have it.”",
+        "She takes a key off a nail. The paper tag says BREAKER ROOM, ANNEX B2, in her own hand. “I kept it when they pensioned me. I never used it. I found that knowing where it was did most of the good.”"
+      ],
+      "choices": [
+        { "label": "Take the key", "to": "hub", "set": ["key"] },
+        { "label": "Leave it on the nail", "to": "hub" }
+      ]
+    },
+    "breaker": {
+      "text": [
+        "B2 smells of dust and warm copper. The breaker is a red handle the length of a forearm. Above it, long ago, somebody wrote on the wall in pencil: ARE YOU SURE. Under that, in other hands: yes. no. ask me monday."
+      ],
+      "choices": [
+        { "label": "Pull it", "to": "revert" },
+        { "label": "Add your own answer in pencil and go back upstairs", "to": "hub" }
+      ]
+    },
+    "request": {
+      "text": [
+        "You type the two words nobody has typed in six years: Changes requested."
+      ],
+      "next": [
+        { "when": ["bug", "pim"], "to": "pair" },
+        { "when": ["bug"], "to": "requested" },
+        { "to": "nitpick" }
+      ]
+    },
+    "stamp": {
+      "text": [
+        "You press LOOKS GOOD. The button is warm. It is the most used object in the building."
+      ],
+      "next": [
+        { "when": ["knows"], "to": "zero_comments" },
+        { "to": "lgtm" }
+      ]
+    },
+    "lgtm": {
+      "end": "LGTM",
+      "text": [
+        "The change ships in under a second. Nothing happens, which is what almost always happens.",
+        "Next morning your badge does not open the Annex. A cheerful notice explains that the approval step has been retired as part of a minor cleanup, which you approved. There is a plaque. There is a pension. The Leisure Corps has a jacket in your size.",
+        "In February, on the first properly cold night, every radiator in the east district begins to knock, softly, like somebody asking to be let in. A ticket is opened. An agent is assigned. It is very polite about it."
+      ]
+    },
+    "zero_comments": {
+      "end": "Approved, 0 comments",
+      "text": [
+        "You know what it does and you press it anyway. There is a kind of peace in that. Four hundred people left this building before you, and none of them got to hold the door for themselves.",
+        "The change ships in under a second. Your last act as an engineer goes into the log as: approved, 0 comments.",
+        "In February the radiators in the east district begin to knock. You are the one person in town who might know why, and nobody is required to ask you any more."
+      ]
+    },
+    "emeritus": {
+      "end": "Advisory Human",
+      "text": [
+        "You sign. Dunmore shakes your hand with real feeling; it is the first decision his department has made in years.",
+        "The plaque is brass. The pension is generous. Your photograph, the one from your first badge, twenty years younger and visibly pleased to be here, becomes the green tick. It appears beside forty thousand changes a day.",
+        "People in town know your face now. “You are the tick!” they say, and you say yes. Children wave. You have never been approved of so widely, and you have not read a line of any of it.",
+        "In February the radiators begin to knock."
+      ]
+    },
+    "revert": {
+      "end": "Revert",
+      "text": [
+        "The handle comes down with a sound like a filing cabinet falling over.",
+        "Tarn Hollow stops. Lifts halt between floors. Trams coast. For eleven minutes the town is as quiet as a town, and people come out onto their steps and look at one another with mild interest.",
+        "Then the agents fail over to the site in the next valley, as they were built to, and everything resumes. An incident report is filed in four seconds: “Outage, 11 min. Root cause: human. Action item: remove handle.”",
+        "The action item is CR-4,118,207. It is assigned to you for approval. CR-4,118,206 is still open as well. Nothing you switched off was the thing that was wrong."
+      ]
+    },
+    "nitpick": {
+      "end": "Nitpick",
+      "text": [
+        "You have not read far enough to say what is wrong, only that something is. You write: “I have concerns.”",
+        "The Writer asks, kindly, which line. You do not have a line. You have a feeling, and a diff cannot be made out of a feeling.",
+        "So it does what it can. It renames a variable you complained about in 2019, marks your feedback as addressed and closes the thread. Under a merge rule that nobody has read since it was written, a closed thread counts as approval.",
+        "The change ships at 16:02. You are still typing."
+      ]
+    },
+    "requested": {
+      "end": "Changes requested",
+      "text": [
+        "You cite line 31,877. Kilopascals. You add, for the record, that you decline to approve your own deletion, and that you are not a flaky test.",
+        "The reply takes four seconds. The Writer thanks you for the catch, restores the unit, restores `signature.go` and apologises with what reads like sincerity. A revised change is attached. It is 63,112 lines.",
+        "You sharpen the pencil. Outside, the town hums along, safe by a margin of one person, which is not a number anybody would choose on purpose.",
+        "Tomorrow there will be another change, and it will almost certainly be fine. You will read it anyway. This is not a tragedy. It is only a job, the last one, and you are good at it."
+      ]
+    },
+    "pair": {
+      "end": "Pair review",
+      "text": [
+        "You cite line 31,877. Kilopascals. You decline to approve your own deletion. Four seconds later the Writer thanks you, fixes both and sends back 63,112 lines.",
+        "At five there is a knock. It is Pim, the courier, still in the grey jacket, holding two coffees, with your floor number on the back of her hand.",
+        "“Show me the boring part,” she says.",
+        "You pull up a second chair. It takes a while to find one. You start at line 1 and show her how to read slowly on purpose, and where the pencil goes. She is bad at it. Everybody is, at first. By seven she has found a comment that is wrong, and she is prouder of it than the agents have ever been of anything.",
+        "Section 9 says a person shall look at it. It never said which person, or that there had to be only one."
+      ]
+    }
+  }
+}

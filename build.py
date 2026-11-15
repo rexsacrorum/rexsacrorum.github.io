@@ -452,6 +452,7 @@ def build(out):
     (out / 'feed.xml').write_text(feed, encoding='utf-8', newline='\n')
 
     check_links(out)
+    check_story(out / 'assets' / 'story.json')
     return articles
 
 
@@ -478,6 +479,91 @@ def check_links(out):
                 raise BuildError(f'{page.relative_to(out)}: broken link "{target}"')
             if anchor and f'id="{anchor}"' not in file.read_text(encoding='utf-8'):
                 raise BuildError(f'{page.relative_to(out)}: "{target}" has no such anchor')
+
+
+CONDITION = re.compile(r'(!?)(\w+)(?:(>=|<)(\d+))?')
+
+
+def holds(conditions, state):
+    """The same rule as in site/assets/shell.js: "flag", "!flag", "count>=2" or "count<2"."""
+    for condition in conditions:
+        negate, name, op, number = CONDITION.fullmatch(condition).groups()
+        value = state.get(name, 0)
+        yes = value > 0 if not op else value < int(number) if op == '<' else value >= int(number)
+        if yes == bool(negate):
+            return False
+    return True
+
+
+def check_story(path):
+    """The text game is a scene graph. Every target must exist, no state may be a dead end,
+    and every scene and every ending must be reachable. Returns the titles of the endings."""
+    def fail(message):
+        raise BuildError(f'{path.name}: {message}')
+
+    def names(value, where):
+        if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
+            fail(f'{where} must be a list of strings')
+        return value
+
+    try:
+        story = json.loads(path.read_text(encoding='utf-8'))
+    except (OSError, ValueError) as error:
+        fail(error)
+    scenes = story.get('scenes') if isinstance(story, dict) else None
+    if not isinstance(scenes, dict) or not isinstance(story.get('title'), str) or story.get('start') not in scenes:
+        fail('needs "title", "scenes" and a "start" that names a scene')
+    for key, scene in scenes.items():
+        where = f'scene "{key}"'
+        if not isinstance(scene, dict) or not names(scene.get('text'), f'{where}: "text"') or not all(scene['text']):
+            fail(f'{where} needs "text", a list of paragraphs')
+        if sum(name in scene for name in ('choices', 'next', 'end')) != 1:
+            fail(f'{where} needs exactly one of "choices", "next" and "end"')
+        if 'end' in scene and not (isinstance(scene['end'], str) and scene['end']):
+            fail(f'{where}: "end" is the title of the ending')
+        if not all(re.fullmatch(r'\w+', name) for name in names(scene.get('set', []), f'{where}: "set"')):
+            fail(f'{where}: "set" holds plain names')
+        exits = scene.get('choices', scene.get('next', []))
+        if not isinstance(exits, list) or ('end' not in scene and not exits):
+            fail(f'{where} has no way out')
+        for exit in exits:
+            if not isinstance(exit, dict) or exit.get('to') not in scenes:
+                fail(f'{where} leads to an unknown scene')
+            if 'choices' in scene and not (isinstance(exit.get('label'), str) and exit['label']):
+                fail(f'{where}: every choice needs a "label"')
+            for condition in names(exit.get('when', []), f'{where}: "when"'):
+                if not CONDITION.fullmatch(condition):
+                    fail(f'{where}: cannot read the condition "{condition}"')
+            if not all(re.fullmatch(r'\w+', name) for name in names(exit.get('set', []), f'{where}: "set"')):
+                fail(f'{where}: "set" holds plain names')
+
+    def bump(state, keys):
+        state = dict(state)
+        for key in keys:
+            state[key] = min(state.get(key, 0) + 1, 9)
+        return state
+
+    # Walk every (scene, state) pair the player can get into.
+    first = (story['start'], ())
+    seen, queue = {first}, [first]
+    while queue:
+        key, frozen = queue.pop()
+        scene = scenes[key]
+        state = bump(dict(frozen), scene.get('set', []))
+        if 'end' in scene:
+            continue
+        exits = [exit for exit in scene.get('choices', scene.get('next')) if holds(exit.get('when', []), state)]
+        if not exits:
+            fail(f'scene "{key}" can leave the player with no way out')
+        for exit in exits[:1] if 'next' in scene else exits:
+            step = (exit['to'], tuple(sorted(bump(state, exit.get('set', [])).items())))
+            if step not in seen:
+                seen.add(step)
+                queue.append(step)
+    lost = sorted(set(scenes) - {key for key, _ in seen})
+    if lost:
+        fail(f'no path leads to: {", ".join(lost)}')
+    return sorted({scene['end'] for scene in scenes.values() if 'end' in scene})
 
 
 def main():
