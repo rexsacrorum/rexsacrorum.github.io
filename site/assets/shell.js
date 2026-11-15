@@ -393,7 +393,7 @@
       });
     }
     function gotMessage(line) {
-      if (!line) { cancel(); return; }
+      if (!line || /^:(q|q!|wq|x)$/.test(line)) { cancel(); return; }
       if (line.length > MAIL_MAX) {
         print("that is " + line.length + " characters and the limit is " + MAIL_MAX + ". shorter, please.");
         return;
@@ -404,6 +404,7 @@
       enter({ prompt: "reply-to>", input: gotReply, stop: cancel });
     }
     function gotReply(line) {
+      if (/^:(q|q!|wq|x)$/.test(line)) { cancel(); return; }
       if (line && (line.length > 200 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(line))) {
         print("that does not look like an address. again, or enter to skip.");
         return;

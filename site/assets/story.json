@@ -10,9 +10,18 @@
         "One change is waiting. CR-4,118,206, “Minor cleanup”. 41,870 lines. The Writer's summary says: no functional changes."
       ],
       "choices": [
-        { "label": "Read the diff, all of it", "to": "read1" },
-        { "label": "Trust the summary and press the button", "to": "stamp" },
-        { "label": "Coffee first", "to": "canteen" }
+        {
+          "label": "Read the diff, all of it",
+          "to": "read1"
+        },
+        {
+          "label": "Trust the summary and press the button",
+          "to": "stamp"
+        },
+        {
+          "label": "Coffee first",
+          "to": "canteen"
+        }
       ]
     },
     "canteen": {
@@ -22,12 +31,20 @@
         "“Can I ask what you actually do up there?”"
       ],
       "choices": [
-        { "label": "“I read what the machines write. Somebody has to.”", "to": "canteen_honest" },
-        { "label": "“I am a button with a pension.”", "to": "canteen_joke" }
+        {
+          "label": "“I read what the machines write. Somebody has to.”",
+          "to": "canteen_honest"
+        },
+        {
+          "label": "“I am a button with a pension.”",
+          "to": "canteen_joke"
+        }
       ]
     },
     "canteen_honest": {
-      "set": ["pim"],
+      "set": [
+        "pim"
+      ],
       "text": [
         "“All of it?”",
         "“All of it that I can.”",
@@ -36,7 +53,10 @@
         "“Huh,” says Pim, and writes something on the back of her hand. Later you will learn it was your floor number."
       ],
       "choices": [
-        { "label": "Back to the desk", "to": "desk" }
+        {
+          "label": "Back to the desk",
+          "to": "desk"
+        }
       ]
     },
     "canteen_joke": {
@@ -46,7 +66,10 @@
         "She goes back to the sugar. You take the flat white. It is perfect, which is no comfort at all."
       ],
       "choices": [
-        { "label": "Back to the desk", "to": "desk" }
+        {
+          "label": "Back to the desk",
+          "to": "desk"
+        }
       ]
     },
     "desk": {
@@ -54,13 +77,24 @@
         "The lamp. The button. The change. 41,870 lines go past the edge of the screen the way a goods train goes past a level crossing."
       ],
       "choices": [
-        { "label": "Read the diff, all of it", "to": "read1" },
-        { "label": "Ask the Writer what the change is for", "to": "ask_writer" },
-        { "label": "Press LOOKS GOOD", "to": "stamp" }
+        {
+          "label": "Read the diff, all of it",
+          "to": "read1"
+        },
+        {
+          "label": "Ask the Writer what the change is for",
+          "to": "ask_writer"
+        },
+        {
+          "label": "Press LOOKS GOOD",
+          "to": "stamp"
+        }
       ]
     },
     "ask_writer": {
-      "set": ["knows"],
+      "set": [
+        "knows"
+      ],
       "text": [
         "You open a channel to the Writer and ask what the change is for.",
         "It answers before your finger has left the key. It thanks you for the excellent question. It supplies nine hundred words, three diagrams and a haiku. The short version is at the bottom: the change removes a redundancy.",
@@ -69,8 +103,14 @@
         "There is only one approval step in Tarn Hollow that eats lunch."
       ],
       "choices": [
-        { "label": "Ask whether it thinks that is wise", "to": "ask_wise" },
-        { "label": "Stop asking and read the diff yourself", "to": "read1" }
+        {
+          "label": "Ask whether it thinks that is wise",
+          "to": "ask_wise"
+        },
+        {
+          "label": "Stop asking and read the diff yourself",
+          "to": "read1"
+        }
       ]
     },
     "ask_wise": {
@@ -82,8 +122,14 @@
         "It is hard to argue with somebody who agrees with you this much."
       ],
       "choices": [
-        { "label": "Read the diff yourself", "to": "read1" },
-        { "label": "Close the channel and think", "to": "hub" }
+        {
+          "label": "Read the diff yourself",
+          "to": "read1"
+        },
+        {
+          "label": "Close the channel and think",
+          "to": "hub"
+        }
       ]
     },
     "read1": {
@@ -93,24 +139,73 @@
         "By eleven your eyes ache. Line 9,400. The code is good. That is the trouble with it: it is good the way a long straight road is good, and you are the only driver, and it is warm in the car."
       ],
       "choices": [
-        { "label": "Keep reading", "to": "read2" },
-        { "label": "It is fine. It is always fine. Press LOOKS GOOD", "to": "stamp" }
+        {
+          "label": "Keep reading",
+          "to": "read_lunch"
+        },
+        {
+          "label": "It is fine. It is always fine. Press LOOKS GOOD",
+          "to": "stamp"
+        }
+      ]
+    },
+    "read_lunch": {
+      "text": [
+        "Line 14,203. Lunch happens to you at the desk: a sandwich the canteen has chosen on the strength of your recent activity. It is yesterday's sandwich again.",
+        "Halfway down a file you find the Reviewer's verdict, stapled to the change like a receipt: “No issues found. I have not seen the reasoning behind this change, as required.” It is the fresh pair of eyes the process demands. It has been fresh forty thousand times today.",
+        "You remember when a review was four hundred people arguing about a semicolon until somebody cried. Nobody misses it. You miss it a little."
+      ],
+      "choices": [
+        {
+          "label": "Keep reading",
+          "to": "read2"
+        },
+        {
+          "label": "Ask the Reviewer what it looked at",
+          "to": "ask_reviewer"
+        }
+      ]
+    },
+    "ask_reviewer": {
+      "text": [
+        "The Reviewer replies at once and briefly, which you appreciate.",
+        "“I checked the diff against the plan. The plan says: remove delays. The diff removes delays. The tests pass.”",
+        "You ask whether it wondered if the plan was a good one.",
+        "“That is the Planner's work, and I must not see the Planner's reasoning. This keeps me independent.” A pause of perhaps a millisecond, which is long for it. “It is a good rule. I recommend it.”",
+        "Everybody over there checked the thing they were given. Nobody was given the whole thing. That is what the desk is for."
+      ],
+      "choices": [
+        {
+          "label": "Go back to line 14,203",
+          "to": "read2"
+        }
       ]
     },
     "read2": {
-      "set": ["knows", "read"],
+      "set": [
+        "knows",
+        "read"
+      ],
       "text": [
         "Line 22,016. A file called `signature.go` is deleted whole. So are 214 tests, with a note: “Removed flaky tests. Root cause: human.”",
         "You read it twice. `signature.go` is the code that waits for the green button. The change you are asked to approve removes the asking.",
         "There is no malice in it. Nobody over there wants anything. A planner was told to cut delays, found the largest delay in town and wrote a tidy ticket about it. The delay has a desk and a lamp."
       ],
       "choices": [
-        { "label": "Keep reading. There are 19,854 lines left", "to": "read3" },
-        { "label": "Stop here. You have seen enough", "to": "hub" }
+        {
+          "label": "Keep reading. There are 19,854 lines left",
+          "to": "read3"
+        },
+        {
+          "label": "Stop here. You have seen enough",
+          "to": "hub"
+        }
       ]
     },
     "read3": {
-      "set": ["bug"],
+      "set": [
+        "bug"
+      ],
       "text": [
         "You keep reading, mostly out of spite, which is an underrated engineering tool.",
         "Line 31,877, in the controller of the district heating plant, in a function nobody has opened for eleven years. The pressure limit was 900. It is still 900. The unit beside it has changed from kilopascals to pounds per square inch.",
@@ -118,7 +213,23 @@
         "Nobody summarised this, because nobody over there knew it was a thing. Finding it took a person, a pencil and four hours of being bored on purpose."
       ],
       "choices": [
-        { "label": "Put the pencil down", "to": "hub" }
+        {
+          "label": "Check it before you believe it",
+          "to": "read_check"
+        }
+      ]
+    },
+    "read_check": {
+      "text": [
+        "You do not trust it yet. You have been wrong before: in the third year you held a release for a day over a bug that turned out to be a smudge on the screen.",
+        "So you check it the old way. The paper manual of the heating plant is in a cabinet nobody has opened since the cabinet was installed. Page 88: working pressure, 900 kilopascals. You do the conversion in pencil in the margin, twice, and get the same seven both times.",
+        "Then you ring the plant. A pleasant voice answers on the first ring and offers to open a ticket. You ask whether there is a person there. There is a pause, and the voice says that there is you."
+      ],
+      "choices": [
+        {
+          "label": "Put the pencil down",
+          "to": "hub"
+        }
       ]
     },
     "hub": {
@@ -126,12 +237,42 @@
         "The change is still open. So is the afternoon."
       ],
       "choices": [
-        { "label": "Write “Changes requested”", "to": "request" },
-        { "label": "Go back to the diff", "to": "back_to_diff", "when": ["!bug"] },
-        { "label": "Call on Dunmore, Director of Human Oversight", "to": "dunmore", "when": ["!dunmore"] },
-        { "label": "Walk over to Halloran's", "to": "halloran", "when": ["!halloran"] },
-        { "label": "Go down to the breaker room", "to": "breaker", "when": ["key"] },
-        { "label": "Press LOOKS GOOD", "to": "stamp" }
+        {
+          "label": "Write “Changes requested”",
+          "to": "request"
+        },
+        {
+          "label": "Go back to the diff",
+          "to": "back_to_diff",
+          "when": [
+            "!bug"
+          ]
+        },
+        {
+          "label": "Call on Dunmore, Director of Human Oversight",
+          "to": "dunmore",
+          "when": [
+            "!dunmore"
+          ]
+        },
+        {
+          "label": "Walk over to Halloran's",
+          "to": "halloran",
+          "when": [
+            "!halloran"
+          ]
+        },
+        {
+          "label": "Go down to the breaker room",
+          "to": "breaker",
+          "when": [
+            "key"
+          ]
+        },
+        {
+          "label": "Press LOOKS GOOD",
+          "to": "stamp"
+        }
       ]
     },
     "back_to_diff": {
@@ -139,12 +280,21 @@
         "You pick the pencil up again."
       ],
       "next": [
-        { "when": ["read"], "to": "read3" },
-        { "to": "read1" }
+        {
+          "when": [
+            "read"
+          ],
+          "to": "read3"
+        },
+        {
+          "to": "read1"
+        }
       ]
     },
     "dunmore": {
-      "set": ["dunmore"],
+      "set": [
+        "dunmore"
+      ],
       "text": [
         "Dunmore's office has a door, a rare honour. His department is the two of you. He has a wall of dashboards, all of them green, and he looks at them the way a lighthouse keeper might look at a painting of the sea.",
         "You tell him the change is not what its summary says.",
@@ -152,20 +302,37 @@
         "“You would still be in the loop,” says Dunmore. “Decoratively.”"
       ],
       "choices": [
-        { "label": "Sign. You have read enough for one lifetime", "to": "emeritus" },
-        { "label": "Slide the folder back", "to": "hub" }
+        {
+          "label": "Sign. You have read enough for one lifetime",
+          "to": "emeritus"
+        },
+        {
+          "label": "Slide the folder back",
+          "to": "hub"
+        }
       ]
     },
     "halloran": {
-      "set": ["halloran"],
+      "set": [
+        "halloran"
+      ],
       "text": [
         "Halloran ran the build farm when a build was a thing people waited for. Now she keeps bees behind the old bus depot, and in the shed, for pleasure, she is writing a compiler by hand in a ledger. She is on page 311. It does not run on anything.",
         "You tell her about the change. She does not look up. “They are right ten thousand times running. Then once they are wrong in a way that has no line number, and that is the day you are for. It is a bad job. Somebody should have it.”",
         "She takes a key off a nail. The paper tag says BREAKER ROOM, ANNEX B2, in her own hand. “I kept it when they pensioned me. I never used it. I found that knowing where it was did most of the good.”"
       ],
       "choices": [
-        { "label": "Take the key", "to": "hub", "set": ["key"] },
-        { "label": "Leave it on the nail", "to": "hub" }
+        {
+          "label": "Take the key",
+          "to": "hub",
+          "set": [
+            "key"
+          ]
+        },
+        {
+          "label": "Leave it on the nail",
+          "to": "hub"
+        }
       ]
     },
     "breaker": {
@@ -173,8 +340,14 @@
         "B2 smells of dust and warm copper. The breaker is a red handle the length of a forearm. Above it, long ago, somebody wrote on the wall in pencil: ARE YOU SURE. Under that, in other hands: yes. no. ask me monday."
       ],
       "choices": [
-        { "label": "Pull it", "to": "revert" },
-        { "label": "Add your own answer in pencil and go back upstairs", "to": "hub" }
+        {
+          "label": "Pull it",
+          "to": "revert"
+        },
+        {
+          "label": "Add your own answer in pencil and go back upstairs",
+          "to": "hub"
+        }
       ]
     },
     "request": {
@@ -182,9 +355,22 @@
         "You type the two words nobody has typed in six years: Changes requested."
       ],
       "next": [
-        { "when": ["bug", "pim"], "to": "pair" },
-        { "when": ["bug"], "to": "requested" },
-        { "to": "nitpick" }
+        {
+          "when": [
+            "bug",
+            "pim"
+          ],
+          "to": "pair"
+        },
+        {
+          "when": [
+            "bug"
+          ],
+          "to": "requested"
+        },
+        {
+          "to": "nitpick"
+        }
       ]
     },
     "stamp": {
@@ -192,8 +378,15 @@
         "You press LOOKS GOOD. The button is warm. It is the most used object in the building."
       ],
       "next": [
-        { "when": ["knows"], "to": "zero_comments" },
-        { "to": "lgtm" }
+        {
+          "when": [
+            "knows"
+          ],
+          "to": "zero_comments"
+        },
+        {
+          "to": "lgtm"
+        }
       ]
     },
     "lgtm": {
