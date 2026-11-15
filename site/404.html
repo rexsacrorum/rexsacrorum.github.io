@@ -5,22 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Not found — Bogdan Novosad</title>
   <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0a0c0b">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
-  <link rel="stylesheet" href="/assets/style.css?v=6">
+  <script>try{var t=localStorage.getItem("scheme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <link rel="stylesheet" href="/assets/style.css?v=7">
+  <script src="/assets/theme.js?v=3" defer></script>
+  <script src="/assets/term.js?v=1" defer></script>
 </head>
 <body>
   <header class="wrap bar">
-    <a class="mark" href="/">novosad<span>.</span>xyz</a>
+    <a class="mark" href="/" aria-label="novosad.xyz, home">sacrorum<i>:~$</i><span class="cursor" aria-hidden="true"></span></a>
+    <nav aria-label="Main">
+      <button class="theme" type="button" aria-label="Switch theme"><span class="to-light">light</span><span class="to-dark">dark</span></button>
+    </nav>
   </header>
   <main class="wrap hero">
-    <p class="kicker">404</p>
-    <h1>Page <em>not found</em></h1>
-    <p class="headline">That page is gone. The home page has the projects, the writing and the CV.</p>
+    <p class="cmd">cd that/page</p>
+    <h1 class="headline">404: no such file or directory</h1>
+    <div class="intro">
+      <p>That page is gone. The home page has the projects, the writing and the CV.</p>
+    </div>
     <div class="actions">
-      <a class="btn primary" href="/">Home</a>
-      <a class="btn" href="/cv/">CV</a>
+      <a class="btn primary" href="/">home</a>
+      <a class="btn" href="/writing/">writing</a>
+      <a class="btn" href="/cv/">cv</a>
     </div>
   </main>
 </body>

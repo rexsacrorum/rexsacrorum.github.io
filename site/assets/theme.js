@@ -1,12 +1,11 @@
+// Dark is the default for everyone; "light" is the blue theme. The choice is kept under "scheme".
 (function () {
   var root = document.documentElement;
   var button = document.querySelector(".theme");
   if (!button) return;
   button.addEventListener("click", function () {
-    var current = root.getAttribute("data-theme") ||
-      (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-    var next = current === "dark" ? "light" : "dark";
+    var next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
     root.setAttribute("data-theme", next);
-    try { localStorage.setItem("theme", next); } catch (e) {}
+    try { localStorage.setItem("scheme", next); } catch (e) {}
   });
 })();

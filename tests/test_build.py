@@ -103,7 +103,11 @@ class SiteTests(unittest.TestCase):
             out = Path(directory) / 'dist'
             articles = build.build(out)
             self.assertTrue((out / 'index.html').is_file())
-            self.assertNotIn(build.LATEST, (out / 'index.html').read_text(encoding='utf-8'))
+            landing = (out / 'index.html').read_text(encoding='utf-8')
+            self.assertNotIn(build.LATEST, landing)
+            self.assertNotIn(build.ISSUE, landing)
+            if articles:
+                self.assertIn('issue ' + articles[0]['date'][:7].replace('-', '.'), landing)
             for article in articles:
                 self.assertTrue((out / 'writing' / article['slug'] / 'index.html').is_file())
             for name in ('feed.xml', 'sitemap.xml'):

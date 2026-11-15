@@ -28,6 +28,7 @@ TEMPLATES = ROOT / 'templates'
 BASE_URL = 'https://novosad.xyz'
 STATIC_PAGES = ('/', '/cv/')
 LATEST = '<!-- writing:latest -->'
+ISSUE = '<!-- writing:issue -->'
 
 
 class BuildError(Exception):
@@ -434,7 +435,9 @@ def build(out):
     landing = (out / 'index.html').read_text(encoding='utf-8')
     if landing.count(LATEST) != 1:
         raise BuildError(f'site/index.html must contain {LATEST} exactly once')
-    (out / 'index.html').write_text(landing.replace(LATEST, listing(articles[:5])), encoding='utf-8', newline='\n')
+    issue = ' · issue ' + articles[0]['date'][:7].replace('-', '.') if articles else ''
+    landing = landing.replace(LATEST, listing(articles[:5])).replace(ISSUE, issue)
+    (out / 'index.html').write_text(landing, encoding='utf-8', newline='\n')
 
     urls = [BASE_URL + page for page in STATIC_PAGES] + [BASE_URL + '/writing/'] + [BASE_URL + a['url'] for a in articles]
     sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
