@@ -11,6 +11,8 @@
   var MAIL_MAX = 1000;
   // The story is fetched on first use, so its version lives here and not in the page shells.
   var STORY_URL = "/assets/story.json?v=1";
+  // The pause between the paragraphs of a scene, in milliseconds.
+  var PACE = 380;
   var PROMPT = "guest:~$";
 
   var media = function (query) { return !!window.matchMedia && window.matchMedia(query).matches; };
@@ -142,7 +144,7 @@
   }
 
   // --- commands. A command that needs several lines of input sets a mode:
-  // { prompt, input(line), stop() }. The game and mail are modes; a later `ask` would be one too.
+  // { prompt, input(line), stop() }, and skip() when it prints in steps. The game and mail are modes; a later `ask` would be one too.
 
   var mode = null;
   function enter(next) { mode = next; ps.textContent = next.prompt; }
@@ -251,6 +253,8 @@
   var past = [];
   var at = 0;
   function submit(line) {
+    // While a mode is still printing, Enter only makes it finish.
+    if (mode && mode.skip && mode.skip()) return;
     line = line.trim();
     var row = print(ps.textContent + " " + line, "term-echo");
     if (line && !mode) {
@@ -277,7 +281,7 @@
     }).then(function (data) {
       story = data;
       wait.remove();
-      if (!mode) out.scrollTop = play().offsetTop;
+      if (!mode) play();
     }, function () {
       wait.textContent = "the story did not load. try again in a minute.";
     });
@@ -287,6 +291,9 @@
     var state = {};
     var picks = [];
     var total = Object.keys(story.scenes).filter(function (id) { return story.scenes[id].end; }).length;
+    // The rows of the current screen that are not printed yet.
+    var pending = [];
+    var timer = 0;
 
     // A condition is "flag", "!flag", "count>=2" or "count<2"; "set" adds one to each name.
     function holds(conditions) {
@@ -301,24 +308,22 @@
       (names || []).forEach(function (name) { state[name] = (state[name] || 0) + 1; });
     }
     function freeze() {
-      Array.prototype.forEach.call(out.querySelectorAll(".term-pick:not([disabled])"), function (button) { button.disabled = true; });
+      Array.prototype.forEach.call(out.querySelectorAll(".term-pick"), function (button) { button.disabled = true; });
     }
 
-    function show(id) {
+    // Queue the paragraphs of a scene, and of the scenes it leads to without asking; the choices go last.
+    function queue(id) {
       var scene = story.scenes[id];
-      var first = null;
       bump(scene.set);
-      scene.text.forEach(function (paragraph) {
-        var row = print(paragraph, "term-para");
-        first = first || row;
-      });
+      scene.text.forEach(function (paragraph) { pending.push(el("div", "term-row term-para", paragraph)); });
       if (scene.next) {
-        show(scene.next.filter(function (route) { return holds(route.when); })[0].to);
-        return first;
+        queue(scene.next.filter(function (route) { return holds(route.when); })[0].to);
+        return;
       }
+      var last = document.createDocumentFragment();
       if (scene.end) {
         endings[scene.end] = true;
-        dim("ending: " + scene.end + " · " + Object.keys(endings).length + " of " + total + " found");
+        last.appendChild(el("div", "term-row term-dim", "ending: " + scene.end + " · " + Object.keys(endings).length + " of " + total + " found"));
         picks = [{ label: "Start again", again: true }, { label: "Leave", quit: true }];
       } else {
         picks = scene.choices.filter(function (choice) { return holds(choice.when); });
@@ -330,25 +335,50 @@
           submit(String(index + 1));
           (touch ? out : input).focus({ preventScroll: true });
         });
-        out.appendChild(button);
+        last.appendChild(button);
       });
-      return first;
+      pending.push(last);
+    }
+    function reveal() {
+      out.appendChild(pending.shift());
+      if (pending.length) timer = setTimeout(reveal, PACE);
+    }
+    // Print the rest of the screen at once. Says whether there was anything to print.
+    function skip() {
+      if (!pending.length) return false;
+      clearTimeout(timer);
+      while (pending.length) out.appendChild(pending.shift());
+      return true;
+    }
+    // Every scene is a screen of its own: wipe the last one, print the head, then the scene.
+    function turn(id, head) {
+      clearTimeout(timer);
+      pending = [];
+      out.textContent = "";
+      head.forEach(function (row) { out.appendChild(row); });
+      out.scrollTop = 0;
+      queue(id);
+      if (calm) skip();
+      else reveal();
     }
 
     function start() {
       state = {};
-      var title = print(story.title.toUpperCase(), "term-title");
-      dim("answer with a number. quit leaves the story.");
-      show(story.start);
-      return title;
+      turn(story.start, [
+        el("div", "term-row term-title", story.title.toUpperCase()),
+        el("div", "term-row term-dim", "answer with a number. quit leaves the story.")
+      ]);
     }
     function stop() {
+      clearTimeout(timer);
+      pending = [];
       freeze();
       leave();
     }
 
     enter({
       prompt: ">",
+      skip: skip,
       input: function (line) {
         var word = line.toLowerCase();
         var pick = /^\d+$/.test(word) ? picks[+word - 1] : null;
@@ -356,21 +386,17 @@
           stop();
           dim("the queue is empty. for now.");
         } else if (word === "again" || word === "restart" || (pick && pick.again)) {
-          freeze();
           start();
         } else if (pick) {
-          var taken = out.querySelectorAll(".term-pick:not([disabled])")[+word - 1];
-          freeze();
-          if (taken) taken.classList.add("took");
           bump(pick.set);
-          show(pick.to);
+          turn(pick.to, [el("div", "term-row term-echo", "> " + pick.label)]);
         } else {
           dim("a number from 1 to " + picks.length + ", or quit.");
         }
       },
       stop: stop
     });
-    return start();
+    start();
   }
 
   // --- mail. With no backend configured the text goes to the visitor's own mail client.
@@ -509,6 +535,7 @@
   out.addEventListener("click", function (event) {
     var link = event.target.closest && event.target.closest("a[href]");
     if (link && link.protocol !== "mailto:") keep(false);
+    if (mode && mode.skip) mode.skip();
   });
 
   form.addEventListener("submit", function (event) {
@@ -548,6 +575,7 @@
       }
       return;
     }
+    if (mode && mode.skip && event.key.length === 1) mode.skip();
     if (event.key === "Escape") {
       event.preventDefault();
       stuck();

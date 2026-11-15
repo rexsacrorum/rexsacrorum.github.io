@@ -394,7 +394,6 @@ footer.foot {
 .term-pick { appearance: none; display: block; padding: 0.15rem 0; border: 0; background: none; color: var(--accent); font: inherit; text-align: left; white-space: pre-wrap; cursor: pointer; }
 .term-pick:hover { text-decoration: underline; }
 .term-pick:disabled { color: var(--faint); text-decoration: none; cursor: default; }
-.term-pick.took { color: var(--muted); }
 .term-line { display: flex; align-items: baseline; gap: 0.6em; padding-bottom: 0.9rem; }
 .term-line span { color: var(--muted); white-space: nowrap; }
 .term-line input { flex: 1; min-width: 0; padding: 0; border: 0; border-radius: 0; outline: none; background: none; color: var(--ink); font: inherit; caret-color: var(--accent); }

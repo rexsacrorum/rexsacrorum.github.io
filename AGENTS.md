@@ -30,6 +30,7 @@ Static site for https://novosad.xyz. The landing page and the CV are hand-writte
 `review` (not in `help`; `ls -a` shows `.last_review`, which names it, next to `.plan`, a line about current work) starts a text game. The story is data: `site/assets/story.json`, fetched on first use. The engine in `shell.js` only walks it, so the text can be edited without touching code.
 
 - A scene has `text` (a list of paragraphs) and exactly one of `choices`, `next` and `end`. A choice is `{ "label", "to" }`. `next` is a list of routes `{ "to" }` taken without asking, first match wins, so the last one needs no condition. `end` is the title of an ending.
+- Every scene is a screen of its own. Starting the game wipes the terminal, and each choice wipes the last scene and prints the chosen label on the first line. The paragraphs appear one by one (`PACE` in `shell.js`), the choices last; a key, a tap or Enter prints the rest at once, and with `prefers-reduced-motion` nothing is paced. A mode that prints in steps has a `skip()` for this.
 - `"set": ["name"]` on a scene or a choice adds one to a counter. `"when": [...]` on a choice or a route lists conditions that must all hold: `"name"`, `"!name"`, `"name>=2"` or `"name<2"`.
 - `build.py` (`check_story`) stops the build when a target does not exist, when some state leaves the player with no choice, or when a scene or an ending cannot be reached.
 - After editing the story, bump `?v=` in `STORY_URL` in `shell.js`, and then the version of `shell.js` in the page shells.
