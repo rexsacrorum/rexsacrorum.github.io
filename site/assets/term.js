@@ -23,6 +23,21 @@
     return on ? "phosphor warmed up" : "back to flat panels";
   }
 
+  // --- uptime in the footer: "up 13489 days, 04:12:07", counted in the visitor's time zone
+
+  var up = document.querySelector("[data-since]");
+  if (up) {
+    var parts = up.getAttribute("data-since").split("-");
+    var since = new Date(+parts[0], parts[1] - 1, +parts[2]).getTime();
+    var two = function (n) { return (n < 10 ? "0" : "") + n; };
+    var tick = function () {
+      var s = Math.floor((Date.now() - since) / 1000);
+      up.textContent = "up " + Math.floor(s / 86400) + " days, " + two(Math.floor(s % 86400 / 3600)) + ":" + two(Math.floor(s % 3600 / 60)) + ":" + two(s % 60);
+    };
+    tick();
+    setInterval(tick, 1000);
+  }
+
   // --- console
 
   var dim = "color:#8a938c;font-family:monospace";
