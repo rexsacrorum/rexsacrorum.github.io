@@ -14,3 +14,6 @@ node_modules/
 dist/
 .wrangler/
 __pycache__/
+
+# Local values for wrangler dev
+.dev.vars
