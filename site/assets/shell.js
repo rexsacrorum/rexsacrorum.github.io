@@ -408,19 +408,30 @@
     "[  OK  ] Reached target Unmount All Filesystems."
   ];
   var BOOT = [
-    "Limine: booting Omarchy",
+    "Omarchy Bootloader",
     "Loading Linux linux ...",
     "Loading initial ramdisk ...",
     ":: running early hook [udev]",
     ":: running hook [plymouth]",
     ":: Triggering uevents...",
-    ":: mounting '/dev/mapper/root' on real root",
-    "Welcome to Omarchy!",
-    "[  OK  ] Reached target Network.",
-    "[  OK  ] Started Hyprland session.",
-    "[  OK  ] Reached target Graphical Interface.",
-    "omarchy login: guest (automatic login)"
+    ":: mounting '/dev/mapper/root' on real root"
   ];
+  // The logo, and the band of light that leans across it, are taken from Omarchy:
+  // https://github.com/omacom/omarchy, MIT License, Copyright (c) David Heinemeier Hansson.
+  var LOGO = [
+    "                 ▄▄▄",
+    " ▄█████▄    ▄███████████▄    ▄███████   ▄███████   ▄███████   ▄█   █▄    ▄█   █▄",
+    "███   ███  ███   ███   ███  ███   ███  ███   ███  ███   ███  ███   ███  ███   ███",
+    "███   ███  ███   ███   ███  ███   ███  ███   ███  ███   █▀   ███   ███  ███   ███",
+    "███   ███  ███   ███   ███ ▄███▄▄▄███ ▄███▄▄▄██▀  ███       ▄███▄▄▄███▄ ███▄▄▄███",
+    "███   ███  ███   ███   ███ ▀███▀▀▀███ ▀███▀▀▀▀    ███      ▀▀███▀▀▀███  ▀▀▀▀▀▀███",
+    "███   ███  ███   ███   ███  ███   ███ ██████████  ███   █▄   ███   ███  ▄██   ███",
+    "███   ███  ███   ███   ███  ███   ███  ███   ███  ███   ███  ███   ███  ███   ███",
+    " ▀█████▀    ▀█   ███   █▀   ███   █▀   ███   ███  ███████▀   ███   █▀    ▀█████▀",
+    "                                       ███   █▀"
+  ];
+  // The band moves one column a frame, leans two columns a row and is five columns wide.
+  var SHEEN = { frame: 25, slant: 2, half: 2 };
 
   function power(restart) {
     var timer = 0;
@@ -436,13 +447,43 @@
         else timer = setTimeout(next, pace);
       })();
     }
+    // The splash: the logo, then one pass of the sheen. A screen reader gets the name once.
+    function splash(then) {
+      var art = el("pre", "term-logo");
+      art.setAttribute("aria-hidden", "true");
+      var rows = LOGO.map(function (line) { return art.appendChild(el("div", "", line)); });
+      out.appendChild(el("div", "sr", "Omarchy"));
+      out.appendChild(art);
+      if (calm) { timer = setTimeout(then, 1400); return; }
+      var width = Math.max.apply(null, LOGO.map(function (line) { return line.length; }));
+      var last = width + rows.length * SHEEN.slant + SHEEN.half;
+      var centre = -SHEEN.half;
+      function frame() {
+        if (centre > last) { timer = setTimeout(then, 700); return; }
+        rows.forEach(function (row, index) {
+          var line = LOGO[index];
+          var at = centre - index * SHEEN.slant;
+          var from = Math.max(0, at - SHEEN.half);
+          var to = Math.max(0, at + SHEEN.half + 1);
+          row.textContent = line.slice(0, from);
+          row.appendChild(el("b", "", line.slice(from, to)));
+          row.appendChild(document.createTextNode(line.slice(to)));
+        });
+        centre++;
+        timer = setTimeout(frame, SHEEN.frame);
+      }
+      timer = setTimeout(frame, 500);
+    }
     function boot() {
       off = false;
       out.textContent = "";
-      run(BOOT, 150, 900, function () {
+      run(BOOT, 150, 500, function () {
         out.textContent = "";
-        done();
-        greet();
+        splash(function () {
+          out.textContent = "";
+          done();
+          greet();
+        });
       });
     }
     function done() {
