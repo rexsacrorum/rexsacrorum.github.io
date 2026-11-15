@@ -121,7 +121,7 @@ class SiteTests(unittest.TestCase):
 
     def test_source_files_hold_no_control_characters(self):
         root = Path(__file__).resolve().parents[1]
-        for path in [root / 'build.py', *root.glob('templates/*.html'), *root.glob('content/writing/*.md')]:
+        for path in [root / 'build.py', *root.glob('templates/*.html'), *root.glob('content/writing/*.md'), *root.glob('site/assets/*.js*')]:
             text = path.read_text(encoding='utf-8')
             self.assertTrue(all(ch in '\n\t' or ord(ch) >= 32 for ch in text), path.name)
 
@@ -131,6 +131,59 @@ class SiteTests(unittest.TestCase):
             (out / 'index.html').write_text('<a href="/missing/">x</a>', encoding='utf-8')
             with self.assertRaises(build.BuildError):
                 build.check_links(out)
+
+
+class TerminalTests(unittest.TestCase):
+    ROOT = Path(__file__).resolve().parents[1]
+    SHELLS = ('site/index.html', 'site/cv/index.html', 'site/404.html', 'templates/base.html')
+
+    def story(self, scenes):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'story.json'
+            path.write_text(build.json.dumps({'title': 'T', 'start': 'a', 'scenes': scenes}), encoding='utf-8')
+            return build.check_story(path)
+
+    def test_the_story_has_several_endings_and_no_dead_ends(self):
+        endings = build.check_story(self.ROOT / 'site' / 'assets' / 'story.json')
+        self.assertGreaterEqual(len(endings), 3)
+
+    def test_a_small_story_passes(self):
+        self.assertEqual(self.story({
+            'a': {'text': ['x'], 'choices': [{'label': 'go', 'to': 'b', 'set': ['key']}, {'label': 'stay', 'to': 'b'}]},
+            'b': {'text': ['x'], 'next': [{'when': ['key'], 'to': 'good'}, {'to': 'bad'}]},
+            'good': {'text': ['x'], 'end': 'Good'},
+            'bad': {'text': ['x'], 'end': 'Bad'}}), ['Bad', 'Good'])
+
+    def test_a_broken_story_stops_the_build(self):
+        end = {'text': ['x'], 'end': 'E'}
+        for scenes in (
+                {'a': {'text': ['x'], 'choices': [{'label': 'go', 'to': 'nowhere'}]}},
+                {'a': {'text': ['x'], 'choices': []}},
+                {'a': {'text': ['x']}},
+                {'a': {'text': [], 'end': 'E'}},
+                {'a': {'text': ['x'], 'choices': [{'to': 'e'}]}, 'e': end},
+                {'a': {'text': ['x'], 'choices': [{'label': 'go', 'to': 'e', 'when': ['a b']}]}, 'e': end},
+                # A choice that needs a flag nobody sets leaves the player stuck.
+                {'a': {'text': ['x'], 'choices': [{'label': 'go', 'to': 'e', 'when': ['key']}]}, 'e': end},
+                # A route with no default.
+                {'a': {'text': ['x'], 'next': [{'when': ['key'], 'to': 'e'}]}, 'e': end},
+                # A scene nothing leads to.
+                {'a': {'text': ['x'], 'choices': [{'label': 'go', 'to': 'e'}]}, 'e': end, 'island': end}):
+            with self.assertRaises(build.BuildError, msg=scenes):
+                self.story(scenes)
+
+    def test_every_page_loads_the_same_asset_versions(self):
+        versions = {}
+        for name in self.SHELLS:
+            found = dict(build.re.findall(r'/assets/([\w.]+)\?v=(\d+)', (self.ROOT / name).read_text(encoding='utf-8')))
+            for asset in ('style.css', 'theme.js', 'term.js', 'shell.js'):
+                self.assertIn(asset, found, name)
+            for asset, version in found.items():
+                self.assertEqual(versions.setdefault(asset, version), version, f'{name}: {asset}')
+
+    def test_the_prompt_is_a_home_link_without_the_script(self):
+        for name in self.SHELLS:
+            self.assertIn('<a class="mark" href="/"', (self.ROOT / name).read_text(encoding='utf-8'), name)
 
 
 if __name__ == '__main__':

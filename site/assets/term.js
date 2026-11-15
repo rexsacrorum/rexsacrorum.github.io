@@ -50,7 +50,7 @@
       "hire()    start an email",
       "crt()     the monitor I grew up with"
     ].join("\n"), dim);
-    return "also: try typing noisia on the page";
+    return "also: try typing noisia on the page, or click the prompt in the header";
   };
   window.whoami = function () { return "Bogdan Novosad, Staff Software Engineer. Go, Rust, C#/.NET. Spain."; };
   window.cv = function () { location.href = "/cv/"; return "opening /cv/"; };
@@ -163,6 +163,8 @@
   var typed = "";
   document.addEventListener("keydown", function (event) {
     if (event.ctrlKey || event.metaKey || event.altKey) return;
+    // The terminal panel (shell.js) has the keyboard while it is open.
+    if (root.classList.contains("term-open")) return;
     var target = event.target;
     if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.tagName === "SELECT" || target.isContentEditable)) return;
 
