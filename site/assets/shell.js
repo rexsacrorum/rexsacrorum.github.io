@@ -53,6 +53,9 @@
       "github    [github.com/rexsacrorum](https://github.com/rexsacrorum)",
       "telegram  [t.me/rexsacrorum](https://t.me/rexsacrorum)"
     ],
+    ".plan": [
+      "now: building [wearbrands.co](https://wearbrands.co/)"
+    ],
     ".last_review": [
       "The agents write all the code now. One person still reads it.",
       "run: review"

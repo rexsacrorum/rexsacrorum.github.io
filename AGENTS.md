@@ -27,7 +27,7 @@ Static site for https://novosad.xyz. The landing page and the CV are hand-writte
 
 ### The story
 
-`review` (not in `help`; `ls -a` shows `.last_review`, which names it) starts a text game. The story is data: `site/assets/story.json`, fetched on first use. The engine in `shell.js` only walks it, so the text can be edited without touching code.
+`review` (not in `help`; `ls -a` shows `.last_review`, which names it, next to `.plan`, a line about current work) starts a text game. The story is data: `site/assets/story.json`, fetched on first use. The engine in `shell.js` only walks it, so the text can be edited without touching code.
 
 - A scene has `text` (a list of paragraphs) and exactly one of `choices`, `next` and `end`. A choice is `{ "label", "to" }`. `next` is a list of routes `{ "to" }` taken without asking, first match wins, so the last one needs no condition. `end` is the title of an ending.
 - `"set": ["name"]` on a scene or a choice adds one to a counter. `"when": [...]` on a choice or a route lists conditions that must all hold: `"name"`, `"!name"`, `"name>=2"` or `"name<2"`.
