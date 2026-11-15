@@ -632,7 +632,9 @@
     event.stopPropagation();
     open();
   });
-  panel.addEventListener("click", function () {
+  // A tap prints the rest of a paced screen. The tap that picked an answer is not one of those.
+  panel.addEventListener("click", function (event) {
+    if (event.target.closest && event.target.closest(".term-pick")) return;
     if (mode && mode.skip) mode.skip();
   });
 
