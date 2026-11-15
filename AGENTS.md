@@ -16,14 +16,14 @@ Static site for https://novosad.xyz. The landing page and the CV are hand-writte
 
 ## The terminal
 
-`site/assets/shell.js` turns the header prompt (`.mark`) into a button that drops a terminal panel from the top. Without the script the prompt stays a link to the home page; with it, home is reached by the `home` command or a ctrl/middle click. The key under Esc opens the panel too.
+`site/assets/shell.js` turns the header prompt (`.mark`) into a button that drops a terminal from the top over the whole screen. Without the script the prompt stays a link to the home page; with it, home is reached by the `home` command or a ctrl/middle click. The key under Esc opens the panel too.
 
-- The only way out is `:q` (also `:q!`, `:wq`, `:x`). This is deliberate: there is no close button, Esc does not close, and `exit` refuses. The plain hint is printed to the browser console when the panel opens, the panel's `aria-label` tells a screen reader, and three failed tries print an oblique hint. Do not add a visible hint or a close control.
+- The only way out is `:q` (also `:q!`, `:wq`, `:x`, `ZZ`). This is deliberate: there is no close button, Esc does not close, and `exit` refuses. The plain hint is printed to the browser console when the panel opens, the panel's `aria-label` tells a screen reader, and three failed tries print an oblique hint. Do not add a visible hint or a close control.
 - An open terminal survives a reload and a move to another page: the `term` key in `sessionStorage` reopens it until the visitor types `:q`. `open <page>` and a link in the output clear the key, since they are a way of leaving.
 - While the panel is open the rest of the page is `inert`, and `term.js` ignores keys (it checks the `term-open` class on `<html>`), so the single-key shortcuts and `noisia` do not fire.
 - Commands are entries in the `commands` table: `about` puts a command into `help`, and one without it is hidden. A command that needs several lines of input sets a mode, `{ prompt, input(line), stop() }`; the game and `mail` are modes, and a later `ask` command would be one more. The files shown by `ls` and `cat` are the `files` table at the top; the content rules below apply to them. The panel's own prompt is `guest:~$`, not the nickname.
 - In the `light` theme the panel is a black shell under the blue panels. It follows the CRT mode through the colour tokens, and is hidden in print.
-- On a phone the panel fills the height that the touch keyboard leaves (`visualViewport`), and its text is 16px so that iOS does not zoom into the input.
+- The panel fills the visible height (`visualViewport`, so on a phone what the touch keyboard leaves). On a phone its text is 16px so that iOS does not zoom into the input.
 
 ### The story
 

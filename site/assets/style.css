@@ -359,9 +359,8 @@ footer.foot {
 }
 .toast[hidden] { display: none; }
 
-/* Terminal panel, created by shell.js. It drops from the top when the header prompt is clicked. */
+/* Terminal, created by shell.js. It drops from the top over the whole screen when the header prompt is clicked. */
 
-.term-back { position: fixed; inset: 0; z-index: 19; background: rgba(0, 0, 0, 0.55); visibility: hidden; }
 .term {
   position: fixed;
   top: 0;
@@ -370,8 +369,8 @@ footer.foot {
   z-index: 20;
   display: flex;
   flex-direction: column;
-  height: min(32rem, calc(var(--vh, 100vh) * 0.7));
-  border-bottom: 1px solid var(--line);
+  /* --vh is the visible height, set by shell.js: on a phone, what the touch keyboard leaves. */
+  height: var(--vh, 100dvh);
   background: var(--bg);
   color: var(--ink);
   font: 400 0.875rem/1.6 var(--mono);
@@ -380,14 +379,13 @@ footer.foot {
   transition: transform 0.24s steps(8), visibility 0s 0.24s;
 }
 .term-open .term { visibility: visible; transform: none; transition: transform 0.24s steps(8); }
-.term-open .term-back { visibility: visible; }
 @media screen {
   /* Under the blue panels the shell is black, as it was under a file manager. */
-  :root[data-theme="light"]:not(.crt) .term { --bg: #000000; --ink: #c0c0c0; --muted: #9a9a9a; --faint: #808080; --line: #00a8a8; }
+  :root[data-theme="light"]:not(.crt) .term { --bg: #000000; --ink: #c0c0c0; --muted: #9a9a9a; --faint: #808080; }
 }
 
 .term-out, .term-line { width: 100%; max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gutter); }
-.term-out { position: relative; flex: 1; min-height: 0; padding-top: 1rem; padding-bottom: 0.4rem; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--faint) transparent; white-space: pre-wrap; overflow-wrap: anywhere; }
+.term-out { position: relative; flex: 0 1 auto; min-height: 0; padding-top: 1rem; padding-bottom: 0.4rem; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--faint) transparent; white-space: pre-wrap; overflow-wrap: anywhere; }
 .term-out:focus { outline: none; }
 .term-row { min-height: 1.6em; }
 .term-echo, .term-dim { color: var(--muted); }
@@ -401,8 +399,8 @@ footer.foot {
 .term-line span { color: var(--muted); white-space: nowrap; }
 .term-line input { flex: 1; min-width: 0; padding: 0; border: 0; border-radius: 0; outline: none; background: none; color: var(--ink); font: inherit; caret-color: var(--accent); }
 @media (hover: none), (max-width: 47.5rem) {
-  /* A phone: the whole visible height, and 16px so that iOS does not zoom into the input. */
-  .term { height: var(--vh, 100dvh); font-size: 1rem; }
+  /* 16px, so that iOS does not zoom into the input. */
+  .term { font-size: 1rem; }
   .term-pick { padding: 0.4rem 0; }
 }
 
@@ -587,7 +585,7 @@ footer.foot {
   }
   body { background: #fff; font-size: 9.6pt; line-height: 1.38; }
   .has-keys body { padding-bottom: 0; }
-  .no-print, .bar, .keys, .toast, .term, .term-back, footer.foot { display: none !important; }
+  .no-print, .bar, .keys, .toast, .term, footer.foot { display: none !important; }
   .wrap { padding: 0; max-width: none; }
   .cv { max-width: none; margin: 0; padding: 0; font-size: 9.6pt; line-height: 1.38; }
   .cv-head { padding-bottom: 0.7em; border-bottom: 2px solid var(--ink); }

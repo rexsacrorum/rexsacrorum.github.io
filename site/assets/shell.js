@@ -62,7 +62,6 @@
 
   // --- the panel
 
-  var back = el("div", "term-back");
   var panel = el("section", "term");
   panel.setAttribute("role", "dialog");
   panel.setAttribute("aria-modal", "true");
@@ -91,7 +90,6 @@
 
   panel.appendChild(out);
   panel.appendChild(form);
-  document.body.appendChild(back);
   document.body.appendChild(panel);
 
   // --- output
@@ -213,7 +211,7 @@
     pwd: { run: function () { print("/home/guest"); } },
     echo: { run: function (args, rest) { print(rest); } }
   };
-  var aliases = { "?": "help", ":q!": ":q", ":wq": ":q", ":x": ":q", quit: "exit", close: "exit", logout: "exit", q: "exit", cd: "open", go: "open", less: "cat", more: "cat", home: "open home", cv: "cat cv", dir: "ls" };
+  var aliases = { "?": "help", ":q!": ":q", ":wq": ":q", ":x": ":q", zz: ":q", quit: "exit", close: "exit", logout: "exit", q: "exit", cd: "open", go: "open", less: "cat", more: "cat", home: "open home", cv: "cat cv", dir: "ls" };
 
   function exec(line) {
     if (!line) return;
@@ -339,7 +337,7 @@
       input: function (line) {
         var word = line.toLowerCase();
         var pick = /^\d+$/.test(word) ? picks[+word - 1] : null;
-        if (word === "quit" || word === "exit" || word === "q" || word === ":q" || (pick && pick.quit)) {
+        if (word === "quit" || word === "exit" || word === "q" || /^(:q|:q!|:wq|:x|zz)$/.test(word) || (pick && pick.quit)) {
           stop();
           dim("the queue is empty. for now.");
         } else if (word === "again" || word === "restart" || (pick && pick.again)) {
@@ -393,7 +391,7 @@
       });
     }
     function gotMessage(line) {
-      if (!line || /^:(q|q!|wq|x)$/.test(line)) { cancel(); return; }
+      if (!line || /^(:q|:q!|:wq|:x|ZZ)$/.test(line)) { cancel(); return; }
       if (line.length > MAIL_MAX) {
         print("that is " + line.length + " characters and the limit is " + MAIL_MAX + ". shorter, please.");
         return;
@@ -404,7 +402,7 @@
       enter({ prompt: "reply-to>", input: gotReply, stop: cancel });
     }
     function gotReply(line) {
-      if (/^:(q|q!|wq|x)$/.test(line)) { cancel(); return; }
+      if (/^(:q|:q!|:wq|:x|ZZ)$/.test(line)) { cancel(); return; }
       if (line && (line.length > 200 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(line))) {
         print("that does not look like an address. again, or enter to skip.");
         return;
@@ -434,7 +432,7 @@
   var others = [];
   var view = window.visualViewport;
 
-  // On a phone the panel fills what the touch keyboard leaves visible.
+  // The terminal covers the visible screen: on a phone, what the touch keyboard leaves.
   function fit() {
     if (!view || !opened) return;
     panel.style.setProperty("--vh", view.height + "px");
@@ -443,13 +441,14 @@
   if (view) {
     view.addEventListener("resize", fit);
     view.addEventListener("scroll", fit);
+    window.addEventListener("resize", fit);
   }
 
   function open() {
     if (opened) return;
     opened = true;
     others = Array.prototype.filter.call(document.body.children, function (node) {
-      return node !== panel && node !== back && !node.inert;
+      return node !== panel && !node.inert;
     });
     others.forEach(function (node) { node.inert = true; });
     root.classList.add("term-open");
