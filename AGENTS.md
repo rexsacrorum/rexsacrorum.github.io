@@ -19,7 +19,7 @@ Static site for https://novosad.xyz. The landing page and the CV are hand-writte
 `.github/workflows/cloudflare.yml` runs the tests and the build on push to `main`, then `wrangler deploy` uploads `dist/` to the Worker `novosad-xyz`. `wrangler.jsonc` is its whole configuration.
 
 - The Worker has no script: every request is a static file, free and outside the Workers request quota. The functions for `/tg/*` and `/mail` come later; `wrangler.jsonc` says what to add. Only the paths listed in `run_worker_first` may run code.
-- The workflow needs two repository secrets, `CLOUDFLARE_API_TOKEN` (Account > Workers Scripts > Edit) and `CLOUDFLARE_ACCOUNT_ID`. Neither value belongs in the repository.
+- The workflow needs two repository secrets, `CLOUDFLARE_API_TOKEN` (made from the "Edit Cloudflare Workers" template, limited to the one account) and `CLOUDFLARE_ACCOUNT_ID`. Neither value belongs in the repository.
 - Do not add `routes` or a custom domain to `wrangler.jsonc`: a deploy would then create DNS records by itself. The owner makes every DNS change by hand.
 - `site/_headers` sets the response headers of static files: the cache time of `/assets/*`, `nosniff`, the referrer policy, and `noindex` on the `workers.dev` address. It does not apply to responses a function produces. `build.py --serve` ignores it.
 - An unknown path gets `404.html` with status 404 (`not_found_handling`). `/cv` redirects to `/cv/`, and a path ending in `.html` or `index.html` redirects to the short form.
