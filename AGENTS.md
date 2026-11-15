@@ -52,7 +52,7 @@ Static site for https://novosad.xyz. The landing page and the CV are hand-writte
 
 `tg` is a chat with the owner through his Telegram bot. It asks for a nick, then every line goes to the bot's chat with the owner as `nick #id` and the text. The owner answers by replying to that message in Telegram, and the answer is printed in the terminal as `bogdan> ...`.
 
-- The other end is `worker/index.js`: `POST /tg/send`, `/tg/poll` and `/tg/hook` (Telegram's webhook). The tables are in `worker/schema.sql`, in the D1 database `novosad-tg`. `node --test worker/` runs its tests against SQLite and a fake Telegram; the workflow runs them before a deploy.
+- The other end is `worker/index.js`: `POST /tg/send`, `/tg/poll` and `/tg/hook` (Telegram's webhook). The tables are in `worker/schema.sql`, in the D1 database `novosad-tg`. `node --test worker/test.mjs` runs its tests against SQLite and a fake Telegram; the workflow runs them before a deploy.
 - An answer must be a reply to a visitor's message. That is the only routing, so an answer cannot reach another visitor. A message that is not a reply goes nowhere and the bot says so. A reply with `/ban` closes that chat.
 - The nick is a label and is not verified. A visitor's lines are not stored on the server; the owner's answers are kept until the chat is seven days idle. The chat's token is in `localStorage` under `tg`, so `tg` returns to the chat later; `/forget` drops it.
 - The page asks for answers only while the chat is open, the tab is visible and the last message is recent: every 3 seconds for two minutes, then every 10, then every 30, and not at all after half an hour until the next line. Keep it that way: each poll is a Worker request.

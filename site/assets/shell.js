@@ -666,14 +666,15 @@
     function send(text, again) {
       var first = !me;
       return call("/send", me ? { session: me.session, text: text } : { nick: nick, text: text }).then(function (answer) {
-        if (!alive) return;
         var error = answer.data.error;
-        if (answer.status === 200) {
-          if (first) {
-            me = { session: answer.data.session, nick: nick, after: 0 };
-            note("delivered. the answer appears here and can take a while; tg returns to this chat later.");
-          }
+        // A chat that opened is kept even if the visitor has left by now: the owner already has the line.
+        if (answer.status === 200 && first) {
+          me = { session: answer.data.session, nick: nick, after: 0 };
           save();
+        }
+        if (!alive) return;
+        if (answer.status === 200) {
+          if (first) note("delivered. the answer appears here and can take a while; tg returns to this chat later.");
           active = Date.now();
           plan();
         } else if (answer.status === 404 && !first && !again) {

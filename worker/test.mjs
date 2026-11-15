@@ -1,4 +1,4 @@
-// node --test worker/
+// node --test worker/test.mjs
 // The Worker runs against a real SQLite database (node:sqlite behind a small D1 look-alike)
 // and a fake Telegram, so the SQL and the routing are exercised, not mocked away.
 
@@ -172,7 +172,14 @@ test("old chats are removed when a new one opens", async () => {
   const ada = await open("ada");
   await hook(owner({ text: "hi", reply_to_message: { message_id: 1001 } }));
   db.prepare("UPDATE sessions SET last = last - 8 * 86400, created = created - 8 * 86400").run();
+  // An answer counts as activity: the chat it went to survives the next clean-up.
+  const eve = await open("eve");
+  db.prepare("UPDATE sessions SET last = last - 8 * 86400 WHERE nick = 'eve'").run();
+  await hook(owner({ message_id: 78, text: "late", reply_to_message: { message_id: 1002 } }));
   await open("bob");
+  assert.equal((await page("/tg/poll", { session: eve, after: 0 })).status, 200);
+  db.prepare("DELETE FROM sessions WHERE nick = 'eve'").run();
+  db.prepare("DELETE FROM replies WHERE text = 'late'").run();
   assert.equal((await page("/tg/poll", { session: ada, after: 0 })).status, 404);
   assert.equal(db.prepare("SELECT COUNT(*) AS n FROM replies").get().n, 0);
   assert.equal(db.prepare("SELECT COUNT(*) AS n FROM sessions").get().n, 1);

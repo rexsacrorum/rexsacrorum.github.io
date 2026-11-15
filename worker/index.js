@@ -179,8 +179,12 @@ async function hook(request, env) {
     }
     const text = message.text.replace(/[\u0000-\u0008\u000b-\u001f\u007f]/g, " ").trim().slice(0, 4000);
     if (text) {
-      await env.DB.prepare("INSERT OR IGNORE INTO replies (session_id, tg_message_id, text, at) VALUES (?, ?, ?, ?)")
-        .bind(session.id, message.message_id, text, now()).run();
+      // An answer also keeps the chat alive, so a late one is not removed before it is read.
+      await env.DB.batch([
+        env.DB.prepare("INSERT OR IGNORE INTO replies (session_id, tg_message_id, text, at) VALUES (?, ?, ?, ?)")
+          .bind(session.id, message.message_id, text, now()),
+        env.DB.prepare("UPDATE sessions SET last = ? WHERE id = ?").bind(now(), session.id)
+      ]);
     }
   } catch (error) {
     console.error("tg hook:", error && error.message);

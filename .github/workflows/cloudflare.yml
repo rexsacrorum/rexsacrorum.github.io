@@ -32,7 +32,7 @@ jobs:
         with:
           node-version: "24"
       - name: Test the Worker
-        run: node --test worker/
+        run: node --test worker/test.mjs
       - name: Build the site
         run: python build.py
       - name: Deploy to Cloudflare Workers
