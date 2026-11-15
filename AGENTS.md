@@ -3,16 +3,28 @@
 Static site for https://novosad.xyz. The landing page and the CV are hand-written HTML; articles are Markdown rendered by `build.py`.
 
 - `python build.py` copies `site/` to `dist/` and renders `content/writing/*.md` into `dist/writing/<slug>/`. It also writes the writing index, `sitemap.xml` and `feed.xml`, and fills the `<!-- writing:latest -->` marker on the landing page with the newest articles. `dist/` is not committed.
-- `.github/workflows/pages.yml` runs the tests and the build on push to `main` and deploys `dist/`.
+- The site is moving from GitHub Pages to Cloudflare Workers (static assets); see "Deployment" below. Until the domain is switched, a push to `main` deploys to both: `.github/workflows/pages.yml` to GitHub Pages, which still serves novosad.xyz, and `.github/workflows/cloudflare.yml` to Cloudflare.
 - `python build.py --serve` builds and serves `dist/` on http://localhost:8137. Run it again after an edit.
 - `site/index.html` is the landing page, `site/cv/index.html` the CV (keep the `/cv/` URL; LinkedIn links to it).
-- `site/assets/style.css` holds all styling, including the A4 print rules for the CV and the chart styles. Pages caches assets for 10 minutes, so bump the `?v=` on its link in every page and in `templates/base.html` when it changes. The same goes for `charts.js`, `theme.js`, `term.js` and `shell.js`. A test checks that the four page shells carry the same versions.
+- `site/assets/style.css` holds all styling, including the A4 print rules for the CV and the chart styles. Browsers keep files under `/assets/` for a day on Cloudflare (`site/_headers`) and for 10 minutes on GitHub Pages, so bump the `?v=` on its link in every page and in `templates/base.html` when it changes. The same goes for `charts.js`, `theme.js`, `term.js` and `shell.js`. A test checks that the four page shells carry the same versions.
 - The design is a terminal look: monospace headings, a shell prompt in the header, no rounded corners, and few rules or frames. Dark is the default for every visitor. The second theme is called `light` in the code and on the button, and it is the blue file-manager palette, not a white page. The choice is stored under the `scheme` key.
 - `site/assets/term.js` adds the key bar at the bottom, the keyboard shortcuts, the console commands, the uptime counter in the footer (it counts from `data-since`; without the script the footer reads "up since 1989") and the hidden CRT mode (type `noisia`). Arrow keys move a cursor over links only on pages that are lists of links; on an article and on the CV they scroll. The pages must keep working without this script.
 - `site/assets/shell.js` is the terminal behind the header prompt; see "The terminal" below.
 - The print rules at the end of `style.css` reset every colour token and pin the CV's fonts, so the CV PDF does not follow the screen design. Theme overrides sit inside `@media screen` for the same reason.
-- The custom domain is set in the repository's Pages settings, not via a CNAME file.
+- The custom domain is set in the repository's Pages settings, not via a CNAME file. After the move it is attached to the Worker in the Cloudflare dashboard, not in `wrangler.jsonc`.
 - PDFs and images are in Git LFS (see `.gitattributes`); the workflow checks out with `lfs: true`. Charts are inline SVG and HTML, so they are not LFS files.
+
+## Deployment
+
+`.github/workflows/cloudflare.yml` runs the tests and the build on push to `main`, then `wrangler deploy` uploads `dist/` to the Worker `novosad-xyz`. `wrangler.jsonc` is its whole configuration.
+
+- The Worker has no script: every request is a static file, free and outside the Workers request quota. The functions for `/tg/*` and `/mail` come later; `wrangler.jsonc` says what to add. Only the paths listed in `run_worker_first` may run code.
+- The workflow needs two repository secrets, `CLOUDFLARE_API_TOKEN` (Account > Workers Scripts > Edit) and `CLOUDFLARE_ACCOUNT_ID`. Neither value belongs in the repository.
+- Do not add `routes` or a custom domain to `wrangler.jsonc`: a deploy would then create DNS records by itself. The owner makes every DNS change by hand.
+- `site/_headers` sets the response headers of static files: the cache time of `/assets/*`, `nosniff`, the referrer policy, and `noindex` on the `workers.dev` address. It does not apply to responses a function produces. `build.py --serve` ignores it.
+- An unknown path gets `404.html` with status 404 (`not_found_handling`). `/cv` redirects to `/cv/`, and a path ending in `.html` or `index.html` redirects to the short form.
+- Cloudflare does not answer `Range` requests for static files with a part; it sends the whole file.
+- To look at a build before it is live: `python build.py`, then `npx wrangler versions upload`, which prints a preview address and does not change what visitors get.
 
 ## The terminal
 

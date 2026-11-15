@@ -11,8 +11,5 @@
   Cache-Control: public, max-age=86400
 
 # Keep the deployment hosts out of search results; only novosad.xyz is the site.
-https://:project.pages.dev/*
-  X-Robots-Tag: noindex
-
-https://:version.:project.pages.dev/*
+https://:worker.:account.workers.dev/*
   X-Robots-Tag: noindex

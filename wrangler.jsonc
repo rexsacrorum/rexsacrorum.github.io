@@ -1,0 +1,22 @@
+// Cloudflare Workers configuration: the site is served as static assets from dist/.
+// There is no script yet, so no request runs code and none counts against the Workers quota.
+//
+// When the functions for /tg/* and /mail are added, add "main" (the script) and, inside
+// "assets", "binding": "ASSETS" and "run_worker_first": ["/tg/*", "/mail"]. Keep that list
+// narrow: every other path must stay a plain static request.
+//
+// The custom domain is attached in the Cloudflare dashboard. Do not add "routes" or a
+// custom domain here: a deploy would then change DNS by itself.
+{
+  "name": "novosad-xyz",
+  "compatibility_date": "2026-11-01",
+  "workers_dev": true,
+  "preview_urls": true,
+  "assets": {
+    "directory": "./dist",
+    // Serve 404.html with status 404 for an unknown path (the default is an empty 404).
+    "not_found_handling": "404-page",
+    // /cv/index.html is served at /cv/, and /cv redirects there.
+    "html_handling": "auto-trailing-slash"
+  }
+}
