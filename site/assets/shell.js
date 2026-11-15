@@ -121,7 +121,7 @@
   function dim(text) { return print(text, "term-dim"); }
 
   function greet() {
-    var text = "hello, traveller. can I help you with something?";
+    var text = "hello, traveller. can I help you?";
     var hint = function () { dim("help lists the commands."); };
     if (calm) { print(text); hint(); return; }
     // The typing is for the eye; a screen reader gets the whole line once.
@@ -165,7 +165,6 @@
         Object.keys(commands).forEach(function (name) {
           if (commands[name].about) print((name + "        ").slice(0, 8) + commands[name].about);
         });
-        dim("not everything is listed. help <command> says more.");
       }
     },
     whoami: {
