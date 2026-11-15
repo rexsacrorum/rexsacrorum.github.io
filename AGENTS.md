@@ -2,7 +2,7 @@
 
 Static site for https://novosad.xyz. The landing page and the CV are hand-written HTML; articles are Markdown rendered by `build.py`.
 
-- `python build.py` copies `site/` to `dist/` and renders `content/writing/*.md` into `dist/writing/<slug>/`. It also writes the writing index, `sitemap.xml` and `feed.xml`, and fills two markers on the landing page: `<!-- writing:latest -->` with the newest articles and `<!-- writing:issue -->` with the month of the newest article (the "issue 2026.11" in the top strip). `dist/` is not committed.
+- `python build.py` copies `site/` to `dist/` and renders `content/writing/*.md` into `dist/writing/<slug>/`. It also writes the writing index, `sitemap.xml` and `feed.xml`, and fills the `<!-- writing:latest -->` marker on the landing page with the newest articles. `dist/` is not committed.
 - `.github/workflows/pages.yml` runs the tests and the build on push to `main` and deploys `dist/`.
 - `python build.py --serve` builds and serves `dist/` on http://localhost:8137. Run it again after an edit.
 - `site/index.html` is the landing page, `site/cv/index.html` the CV (keep the `/cv/` URL; LinkedIn links to it).

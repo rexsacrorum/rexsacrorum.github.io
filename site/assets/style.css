@@ -11,8 +11,6 @@
   --code-bg: #171c19;
   --cursor-bg: var(--accent);
   --cursor-ink: var(--on-accent);
-  --strip-bg: transparent;
-  --strip-ink: var(--muted);
   --primary-bg: var(--accent);
   --primary-ink: var(--on-accent);
   --keys-bg: var(--bg);
@@ -55,8 +53,6 @@
     --code-bg: #000078;
     --cursor-bg: #00a8a8;
     --cursor-ink: #000000;
-    --strip-bg: #00a8a8;
-    --strip-ink: #000000;
     --primary-bg: #00a8a8;
     --primary-ink: #000000;
     --keys-bg: #000000;
@@ -80,8 +76,6 @@
     --code-bg: #062006;
     --cursor-bg: var(--accent);
     --cursor-ink: var(--on-accent);
-    --strip-bg: transparent;
-    --strip-ink: var(--muted);
     --primary-bg: var(--accent);
     --primary-ink: var(--on-accent);
     --keys-bg: var(--bg);
@@ -131,17 +125,7 @@ a:focus-visible::before, a:focus-visible::after, a:focus-visible *, button:focus
 
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
-/* Masthead strip and top bar */
-
-.strip {
-  border-bottom: 1px solid var(--line);
-  background: var(--strip-bg);
-  color: var(--strip-ink);
-  font: 500 0.75rem/1 var(--mono);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-.strip .wrap { padding-top: 0.6rem; padding-bottom: 0.6rem; }
+/* Top bar */
 
 .bar {
   display: flex;
@@ -556,7 +540,7 @@ footer.foot {
   }
   body { background: #fff; font-size: 9.6pt; line-height: 1.38; }
   .has-keys body { padding-bottom: 0; }
-  .no-print, .strip, .bar, .keys, .toast, footer.foot { display: none !important; }
+  .no-print, .bar, .keys, .toast, footer.foot { display: none !important; }
   .wrap { padding: 0; max-width: none; }
   .cv { max-width: none; margin: 0; padding: 0; font-size: 9.6pt; line-height: 1.38; }
   .cv-head { padding-bottom: 0.7em; border-bottom: 2px solid var(--ink); }
