@@ -471,7 +471,7 @@ def build(out):
         target.write_text(page, encoding='utf-8', newline='\n')
 
     index = fill((TEMPLATES / 'writing.html').read_text(encoding='utf-8'), items=listing(articles))
-    page = fill(base, title='Writing', description='Articles by Bogdan Novosad on agentic development.', canonical=BASE_URL + '/writing/',
+    page = fill(base, title='Writing', description='Articles by Bogdan Novosad on software engineering, with the measurements behind them.', canonical=BASE_URL + '/writing/',
                 og_type='website', head='', main=index)
     (out / 'writing').mkdir(exist_ok=True)
     (out / 'writing' / 'index.html').write_text(page, encoding='utf-8', newline='\n')
