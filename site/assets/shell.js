@@ -9,6 +9,10 @@
   // URL of the mail backend (see AGENTS.md). While it is empty, mail opens the visitor's mail client.
   var MAIL_ENDPOINT = "";
   var MAIL_MAX = 1000;
+  // The chat behind `tg`: worker/index.js answers under this path. The chat is kept in localStorage.
+  var TG_URL = "/tg";
+  var TG_KEY = "tg";
+  var TG_MAX = 1000;
   // The story is fetched on first use, so its version lives here and not in the page shells.
   var STORY_URL = "/assets/story.json?v=1";
   // The pause between the paragraphs of a scene, in milliseconds.
@@ -208,6 +212,11 @@
       }
     },
     mail: { about: "send me a message", usage: ["mail [message]", "send me one line, up to 1000 characters. without a message it asks for one."], run: mail },
+    tg: {
+      about: "chat with me over telegram",
+      usage: ["tg", "a chat with Bogdan. your lines go to his Telegram, his answers appear here.", "/quit leaves the chat, /forget also drops it from this browser."],
+      run: tg
+    },
     theme: {
       about: "switch the theme",
       run: function () {
@@ -567,6 +576,179 @@
     if (rest) { gotMessage(rest); return; }
     print("a short message for Bogdan: one line, up to " + MAIL_MAX + " characters. an empty line cancels.");
     enter({ prompt: "message>", input: gotMessage, stop: cancel });
+  }
+
+  // --- tg. A chat with Bogdan through his Telegram bot. The page sends lines to the Worker
+  // and asks it for answers; it asks only while the chat is open, the tab is visible and the
+  // talk is recent, so an idle chat costs no requests.
+
+  function tg() {
+    var me = null; // { session, nick, after }, as kept in localStorage
+    var nick = "";
+    var alive = true; // false once the chat is left: answers that arrive later are dropped
+    var forgotten = false; // true after /forget: a line still on its way must not bring the chat back
+    var timer = 0;
+    var asking = false;
+    var active = Date.now();
+    var line = Promise.resolve(); // lines are sent one after another
+    var QUIT = /^(\/quit|\/q|\/exit|exit|quit|:q|:q!|:wq|:x|zz)$/i;
+
+    try {
+      var saved = JSON.parse(localStorage.getItem(TG_KEY));
+      if (saved && /^[0-9a-f]{32}$/.test(saved.session) && typeof saved.nick === "string" && saved.nick) {
+        me = { session: saved.session, nick: saved.nick, after: +saved.after || 0 };
+        nick = me.nick;
+      }
+    } catch (error) {}
+    function save() {
+      try {
+        if (me) localStorage.setItem(TG_KEY, JSON.stringify(me));
+        else localStorage.removeItem(TG_KEY);
+      } catch (error) {}
+    }
+    function note(text) {
+      dim(text);
+      out.scrollTop = out.scrollHeight;
+    }
+    // Resolves to { status, data }; status 0 means the request did not get through.
+    function call(path, body) {
+      return fetch(TG_URL + path, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      }).then(function (response) {
+        return response.json().then(function (data) { return { status: response.status, data: data || {} }; });
+      }).catch(function () { return { status: 0, data: {} }; });
+    }
+
+    // Every 3 seconds while the talk is fresh, then slower, then not at all until the next line.
+    function pause() {
+      var idle = Date.now() - active;
+      return idle < 120000 ? 3000 : idle < 600000 ? 10000 : idle < 1800000 ? 30000 : 0;
+    }
+    function plan(now) {
+      clearTimeout(timer);
+      if (!alive || !me || document.hidden) return;
+      var ms = now ? 1 : pause();
+      if (ms) timer = setTimeout(ask, ms);
+    }
+    function ask() {
+      if (!alive || !me || asking) return;
+      asking = true;
+      var session = me.session;
+      call("/poll", { session: session, after: me.after }).then(function (answer) {
+        asking = false;
+        if (!alive || !me || me.session !== session) return;
+        if (answer.status === 404) {
+          me = null;
+          save();
+          note("this chat has expired. your next line starts a new one.");
+          return;
+        }
+        if (answer.status === 403) {
+          note("this chat is closed.");
+          return;
+        }
+        var messages = answer.status === 200 && Array.isArray(answer.data.messages) ? answer.data.messages : [];
+        messages.forEach(function (message) {
+          print("bogdan> " + message.text);
+          me.after = Math.max(me.after, +message.id || 0);
+        });
+        if (messages.length) {
+          save();
+          active = Date.now();
+          out.scrollTop = out.scrollHeight;
+        }
+        plan();
+      });
+    }
+    function seen() { if (!document.hidden) plan(true); }
+
+    function send(text, again) {
+      var first = !me;
+      return call("/send", me ? { session: me.session, text: text } : { nick: nick, text: text }).then(function (answer) {
+        var error = answer.data.error;
+        // A chat that opened is kept even if the visitor has left by now: the owner already has the line.
+        if (answer.status === 200 && first && !forgotten) {
+          me = { session: answer.data.session, nick: nick, after: 0 };
+          save();
+        }
+        if (!alive) return;
+        if (answer.status === 200) {
+          if (first) note("delivered. the answer appears here and can take a while; tg returns to this chat later.");
+          active = Date.now();
+          plan();
+        } else if (answer.status === 404 && !first && !again) {
+          // The chat expired on the server: start a new one with the same nick.
+          me = null;
+          save();
+          return send(text, true);
+        } else if (answer.status === 403 && error === "closed") {
+          note("this chat is closed.");
+        } else if (answer.status === 429) {
+          note(error === "full" ? "the line is full for today. mail still works." : "too fast. wait a minute and send it again.");
+        } else {
+          note("not sent. try again in a minute.");
+        }
+      });
+    }
+
+    function stop() {
+      alive = false;
+      clearTimeout(timer);
+      document.removeEventListener("visibilitychange", seen);
+      leave();
+    }
+    function chat() {
+      enter({
+        prompt: nick + ">",
+        input: function (text) {
+          if (!text) return;
+          if (QUIT.test(text)) {
+            stop();
+            dim("left the chat. tg returns to it.");
+          } else if (/^\/forget$/i.test(text)) {
+            forgotten = true;
+            me = null;
+            save();
+            stop();
+            dim("left the chat and dropped it from this browser.");
+          } else if (text.length > TG_MAX) {
+            print("that is " + text.length + " characters and the limit is " + TG_MAX + ". shorter, please.");
+          } else {
+            line = line.then(function () { if (!forgotten) return send(text); });
+          }
+        },
+        stop: stop
+      });
+      document.addEventListener("visibilitychange", seen);
+      plan(true);
+    }
+
+    if (me) {
+      print("back in the chat as " + nick + ". /quit leaves it.");
+      chat();
+      return;
+    }
+    print("a chat with Bogdan. your lines go to his Telegram and his answers appear here, when he is around.");
+    dim("/quit leaves the chat.");
+    print("what should he call you?");
+    enter({
+      prompt: "nick:",
+      input: function (text) {
+        text = text.replace(/\s+/g, " ").trim();
+        if (QUIT.test(text)) {
+          stop();
+          dim("tg: cancelled.");
+        } else if (!text || text.length > 32) {
+          print("a name of 1 to 32 characters.");
+        } else {
+          nick = text;
+          chat();
+        }
+      },
+      stop: stop
+    });
   }
 
   // --- opening and closing

@@ -18,7 +18,7 @@ Static site for https://novosad.xyz. The landing page and the CV are hand-writte
 
 `.github/workflows/cloudflare.yml` runs the tests and the build on push to `main`, then `wrangler deploy` uploads `dist/` to the Worker `novosad-xyz`. `wrangler.jsonc` is its whole configuration.
 
-- The Worker has no script: every request is a static file, free and outside the Workers request quota. The functions for `/tg/*` and `/mail` come later; `wrangler.jsonc` says what to add. Only the paths listed in `run_worker_first` may run code.
+- The script in `worker/` runs only for `/tg/*` (`run_worker_first` in `wrangler.jsonc`). Every other request is a static file, free and outside the Workers request quota. Keep that list narrow.
 - The workflow needs two repository secrets, `CLOUDFLARE_API_TOKEN` (made from the "Edit Cloudflare Workers" template, limited to the one account) and `CLOUDFLARE_ACCOUNT_ID`. Neither value belongs in the repository.
 - Do not add `routes` or a custom domain to `wrangler.jsonc`: a deploy would then create DNS records by itself. The owner makes every DNS change by hand.
 - `site/_headers` sets the response headers of static files: the cache time of `/assets/*`, `nosniff`, the referrer policy, and `noindex` on the `workers.dev` address. It does not apply to responses a function produces. `build.py --serve` ignores it.
@@ -33,7 +33,7 @@ Static site for https://novosad.xyz. The landing page and the CV are hand-writte
 - The way out is `exit` (also `quit`, `logout`, `:q`, `:wq`, `ZZ`). There is no close button and Esc does not close. The plain hint is printed to the browser console when the panel opens, the panel's `aria-label` tells a screen reader, and three presses of Esc print a hint. Do not add a close control.
 - The terminal does not reopen after a reload or on another page.
 - While the panel is open the rest of the page is `inert`, and `term.js` ignores keys (it checks the `term-open` class on `<html>`), so the single-key shortcuts and `noisia` do not fire.
-- Commands are entries in the `commands` table: `about` puts a command into `help`, and one without it is hidden. `usage` is what `help <command>` prints; `help ls` is where the `-a` flag is named, which leads to the hidden files. A command that needs several lines of input sets a mode, `{ prompt, input(line), stop() }`; the game and `mail` are modes, and a later `ask` command would be one more. `shutdown` (hidden, also `poweroff`) takes the machine down line by line and leaves a black screen until a key or a tap; `shutdown -r` (also `reboot`) brings it back by itself. Both boot into Omarchy and end at the greeting: boot lines, then the Omarchy logo with one pass of its sheen. The lines are `DOWN` and `BOOT` in `shell.js`; the logo and the sheen are copied from the Omarchy repository under its MIT licence, and the comment above `LOGO` carries the notice, so keep it. The files shown by `ls` and `cat` are the `files` table at the top; the content rules below apply to them. The panel's own prompt is `guest:~$`, not the nickname.
+- Commands are entries in the `commands` table: `about` puts a command into `help`, and one without it is hidden. `usage` is what `help <command>` prints; `help ls` is where the `-a` flag is named, which leads to the hidden files. A command that needs several lines of input sets a mode, `{ prompt, input(line), stop() }`; the game, `mail` and `tg` are modes, and a later `ask` command would be one more. `shutdown` (hidden, also `poweroff`) takes the machine down line by line and leaves a black screen until a key or a tap; `shutdown -r` (also `reboot`) brings it back by itself. Both boot into Omarchy and end at the greeting: boot lines, then the Omarchy logo with one pass of its sheen. The lines are `DOWN` and `BOOT` in `shell.js`; the logo and the sheen are copied from the Omarchy repository under its MIT licence, and the comment above `LOGO` carries the notice, so keep it. The files shown by `ls` and `cat` are the `files` table at the top; the content rules below apply to them. The panel's own prompt is `guest:~$`, not the nickname.
 - In the `light` theme the panel is a black shell under the blue panels. It follows the CRT mode through the colour tokens, and is hidden in print.
 - The panel fills the visible height (`visualViewport`, so on a phone what the touch keyboard leaves). On a phone its text is 16px so that iOS does not zoom into the input.
 
@@ -47,6 +47,18 @@ Static site for https://novosad.xyz. The landing page and the CV are hand-writte
 - `build.py` (`check_story`) stops the build when a target does not exist, when some state leaves the player with no choice, or when a scene or an ending cannot be reached.
 - After editing the story, bump `?v=` in `STORY_URL` in `shell.js`, and then the version of `shell.js` in the page shells.
 - The story is original. Do not retell or quote an existing book or game in it.
+
+### Chat
+
+`tg` is a chat with the owner through his Telegram bot. It asks for a nick, then every line goes to the bot's chat with the owner as `nick #id` and the text. The owner answers by replying to that message in Telegram, and the answer is printed in the terminal as `bogdan> ...`.
+
+- The other end is `worker/index.js`: `POST /tg/send`, `/tg/poll` and `/tg/hook` (Telegram's webhook). The tables are in `worker/schema.sql`, in the D1 database `novosad-tg`. `node --test worker/test.mjs` runs its tests against SQLite and a fake Telegram; the workflow runs them before a deploy.
+- An answer must be a reply to a visitor's message. That is the only routing, so an answer cannot reach another visitor. A message that is not a reply goes nowhere and the bot says so. A reply with `/ban` closes that chat.
+- The nick is a label and is not verified. A visitor's lines are not stored on the server; the owner's answers are kept until the chat is seven days idle. The chat's token is in `localStorage` under `tg`, so `tg` returns to the chat later; `/forget` drops it.
+- The page asks for answers only while the chat is open, the tab is visible and the last message is recent: every 3 seconds for two minutes, then every 10, then every 30, and not at all after half an hour until the next line. Keep it that way: each poll is a Worker request.
+- Limits: per address in `wrangler.jsonc` (`ratelimits`), plus a daily ceiling of new chats and a ceiling of messages per chat in `worker/index.js`. Requests must be JSON `POST`s whose `Origin` is the site's own.
+- The secrets are `TG_TOKEN` (the bot's token), `TG_SECRET` (the webhook's `secret_token`) and `TG_CHAT` (the owner's Telegram user id). They are set with `npx wrangler secret put <NAME>` and never written into the repository, the page or a chat. An unset secret matches nothing, so without them the hook refuses everything and `tg` answers "not sent".
+- To run it locally: put test values and `TG_API=http://127.0.0.1:<port>` of a stand-in server into `.dev.vars` (ignored by git), create the tables with `npx wrangler d1 execute novosad-tg --local --file worker/schema.sql`, then `python build.py` and `npx wrangler dev`.
 
 ### Mail
 

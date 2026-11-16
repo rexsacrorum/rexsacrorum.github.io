@@ -1,22 +1,35 @@
 // Cloudflare Workers configuration: the site is served as static assets from dist/.
-// There is no script yet, so no request runs code and none counts against the Workers quota.
-//
-// When the functions for /tg/* and /mail are added, add "main" (the script) and, inside
-// "assets", "binding": "ASSETS" and "run_worker_first": ["/tg/*", "/mail"]. Keep that list
-// narrow: every other path must stay a plain static request.
+// The script in worker/ runs only for the paths in "run_worker_first". Keep that list
+// narrow: every other path must stay a plain static request, free and outside the quota.
 //
 // The custom domain is attached in the Cloudflare dashboard. Do not add "routes" or a
 // custom domain here: a deploy would then change DNS by itself.
+//
+// The bot's secrets (TG_TOKEN, TG_SECRET, TG_CHAT) are set with `wrangler secret put`.
+// They are not here and a deploy keeps them.
 {
   "name": "novosad-xyz",
+  "main": "worker/index.js",
   "compatibility_date": "2026-11-01",
   "workers_dev": true,
   "preview_urls": true,
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/tg/*"],
     // Serve 404.html with status 404 for an unknown path (the default is an empty 404).
     "not_found_handling": "404-page",
     // /cv/index.html is served at /cv/, and /cv redirects there.
     "html_handling": "auto-trailing-slash"
-  }
+  },
+  // The chats of the terminal's `tg` command; worker/schema.sql holds the tables.
+  "d1_databases": [
+    { "binding": "DB", "database_name": "novosad-tg", "database_id": "c75eb096-78c0-4a38-a395-f9ff19326879" }
+  ],
+  // Per visitor address. "period" can only be 10 or 60 seconds.
+  "ratelimits": [
+    { "name": "RL_SEND", "namespace_id": "4301", "simple": { "limit": 10, "period": 60 } },
+    { "name": "RL_NEW", "namespace_id": "4302", "simple": { "limit": 3, "period": 60 } },
+    { "name": "RL_POLL", "namespace_id": "4303", "simple": { "limit": 40, "period": 60 } }
+  ]
 }
