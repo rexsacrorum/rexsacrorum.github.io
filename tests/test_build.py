@@ -86,6 +86,23 @@ class ChartTests(unittest.TestCase):
         line = build.chart({'type': 'line', 'values': [1, 9], 'y_ticks': [0, 10], 'alt': 'x'})
         self.assertIn('<details class="data">', line)
 
+    def test_xy_draws_each_series_and_lists_every_point(self):
+        spec = {'type': 'xy', 'alt': 'two curves', 'x_ticks': [0, 10], 'y_ticks': [0.9, 1.0], 'y_format': '{v:.2f}',
+                'mark': {'y': 0.95, 'label': 'target'}, 'tip': '{name} {label}: {x} MB, {y}',
+                'series': [{'name': 'a', 'points': [[1, 0.91, 'q1'], [5, 0.96, 'q2']]}, {'name': 'b', 'points': [[2, 0.93, 'q1'], [9, 0.99, 'q2']]}]}
+        html = build.chart(spec)
+        self.assertEqual(html.count('<polyline'), 2)
+        self.assertEqual(html.count('<circle'), 4)
+        self.assertIn('data-tip="b q2: 9 MB, 0.99"', html)
+        self.assertIn('<td>a</td><td>q1</td><td>1</td><td>0.91</td>', html)
+        self.assertIn('aria-label="two curves"', html)
+        spec['series'][0]['points'][0][1] = 0.5
+        with self.assertRaises(build.BuildError):
+            build.chart(spec)
+        spec['series'] = [{'name': str(n), 'points': [[1, 0.91, 'p'], [2, 0.92, 'p']]} for n in range(4)]
+        with self.assertRaises(build.BuildError):
+            build.chart(spec)
+
     def test_segments_show_each_rounded_share_once(self):
         html = build.chart({'type': 'segments', 'parts': [['big', 60, 'a'], ['small', 5, 'b'], ['rest', 35, 'c']], 'alt': 'x'})
         self.assertIn('>60%</span>', html)

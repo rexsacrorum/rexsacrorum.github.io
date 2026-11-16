@@ -353,7 +353,52 @@ def chart_segments(spec, where):
     return figure(spec, body)
 
 
-CHARTS = {'stats': chart_stats, 'bars': chart_bars, 'dots': chart_dots, 'line': chart_line, 'stack': chart_stack, 'segments': chart_segments}
+def chart_xy(spec, where):
+    """Up to three series of [x, y, label] points on shared axes that need not start at zero."""
+    need(spec, where, 'series', 'x_ticks', 'y_ticks', 'alt')
+    series = spec['series']
+    if not 1 <= len(series) <= 3:
+        raise BuildError(f'{where}: the palette has three validated series; fold the rest into "Other"')
+    width, height, left, right, top, bottom = 640, 300, 52, 16, 14, 50
+    x_low, x_high = min(spec['x_ticks']), max(spec['x_ticks'])
+    y_low, y_high = min(spec['y_ticks']), max(spec['y_ticks'])
+    if any(len(s['points']) < 2 or any(not (x_low <= p[0] <= x_high and y_low <= p[1] <= y_high) for p in s['points']) for s in series):
+        raise BuildError(f'{where}: every series needs at least two points, all inside the ticks')
+
+    def x(value):
+        return left + (value - x_low) / (x_high - x_low) * (width - left - right)
+
+    def y(value):
+        return top + (1 - (value - y_low) / (y_high - y_low)) * (height - top - bottom)
+
+    x_format, y_format = spec.get('x_format', '{v}'), spec.get('y_format', '{v}')
+    y_tick = spec.get('y_tick_format', y_format)
+    grid = ''.join(f'<line class="grid" x1="{left}" y1="{y(t):.1f}" x2="{width - right}" y2="{y(t):.1f}"/>'
+                   f'<text x="{left - 8}" y="{y(t) + 4:.1f}" text-anchor="end">{esc(y_tick.format(v=t))}</text>' for t in spec['y_ticks'])
+    grid += ''.join(f'<text x="{x(t):.1f}" y="{height - bottom + 18}" text-anchor="middle">{esc(x_format.format(v=t))}</text>' for t in spec['x_ticks'])
+    if spec.get('x_label'):
+        grid += f'<text x="{width - right}" y="{height - 8}" text-anchor="end">{esc(spec["x_label"])}</text>'
+    if 'mark' in spec:
+        level = y(spec['mark']['y'])
+        grid += (f'<line class="median" x1="{left}" y1="{level:.1f}" x2="{width - right}" y2="{level:.1f}"/>'
+                 f'<text class="strong" x="{width - right}" y="{level - 6:.1f}" text-anchor="end">{esc(spec["mark"]["label"])}</text>')
+    tip = spec.get('tip', '{name} {label}: {x}, {y}')
+    marks, rows = '', []
+    for number, s in enumerate(series, 1):
+        points = sorted(s['points'], key=lambda p: p[0])
+        path = ' '.join(f'{x(p[0]):.1f},{y(p[1]):.1f}' for p in points)
+        marks += f'<polyline class="xy-line c{number}" points="{path}"/>'
+        for px, py, label in points:
+            text = tip.format(name=s['name'], label=label, x=x_format.format(v=px), y=y_format.format(v=py))
+            marks += f'<circle class="xy-dot c{number}" cx="{x(px):.1f}" cy="{y(py):.1f}" r="4" data-tip="{esc(text)}"/>'
+            rows.append([s['name'], label, x_format.format(v=px), y_format.format(v=py)])
+    svg = f'<svg viewBox="0 0 {width} {height}" role="img" aria-label="{esc(spec["alt"])}">{grid}{marks}</svg>'
+    header = ['Series', spec.get('label_name', 'Point'), spec.get('x_label', 'x'), spec.get('y_label', 'y')]
+    return figure(spec, legend([s['name'] for s in series]) + svg, 'wide', data_table(header, rows))
+
+
+CHARTS = {'stats': chart_stats, 'bars': chart_bars, 'dots': chart_dots, 'line': chart_line, 'xy': chart_xy, 'stack': chart_stack,
+          'segments': chart_segments}
 
 
 def chart(spec, where='chart'):

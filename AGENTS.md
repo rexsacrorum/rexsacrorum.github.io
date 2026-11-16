@@ -70,11 +70,13 @@ Add `content/writing/<name>.md`. The front matter needs `title`, `slug`, `date` 
 
 The body is a deliberately small Markdown subset: `##` and `###` headings, paragraphs, `-` and `1.` lists (one level), pipe tables, fenced code, `> ` asides, raw HTML blocks, and inline code, links, bold and italic. Unsupported block syntax (other headings, nested lists, indented text, ragged tables, unclosed code or `**`) stops the build with the file and line, so that a typo fails the build and does not ship as broken HTML. Two limits are not caught: a URL containing a parenthesis must be percent-encoded, and a raw HTML block must start with a block tag such as `<div>` or `<figure>`.
 
-A chart is a fenced `chart` block holding JSON. The types are `stats`, `bars` (with optional `panels`), `dots`, `line`, `stack` and `segments`; `build.py` has one function per type and the article in `content/writing/` shows each. Rules for charts:
+A chart is a fenced `chart` block holding JSON. The types are `stats`, `bars` (with optional `panels`), `dots`, `line`, `xy` (up to three series of `[x, y, label]` points, axes that need not start at zero, an optional `mark` line), `stack` and `segments`; `build.py` has one function per type and the articles in `content/writing/` show each. Rules for charts:
 
-- Give every `dots`, `line`, `stack` and `segments` chart an `alt` that states the finding in words. The build adds a "Show the data" table to `dots`, `line` and `stack`, so no value exists only in a tooltip; state the finding itself in the text or the note.
-- Marks use `--series-1` to `--series-3` from `style.css`. A chart is always a dark panel (`--chart-surface`) in both themes, so the series colours meet one surface; all three are above 4.5:1 against it. They were checked for colour-blind separation. The site accent is a separate token and must not be used for marks. `stack` refuses a fourth series. Fold extra series into "Other" or use small multiples.
+- Give every `dots`, `line`, `xy`, `stack` and `segments` chart an `alt` that states the finding in words. The build adds a "Show the data" table to `dots`, `line`, `xy` and `stack`, so no value exists only in a tooltip; state the finding itself in the text or the note.
+- Marks use `--series-1` to `--series-3` from `style.css`. A chart is always a dark panel (`--chart-surface`) in both themes, so the series colours meet one surface; all three are above 4.5:1 against it. They were checked for colour-blind separation. The site accent is a separate token and must not be used for marks. `stack` and `xy` refuse a fourth series. Fold extra series into "Other" or use small multiples.
 - One hue for a single series. Never two y-axes. Text wears the text colours, never a series colour.
+
+An image goes into a raw `<figure class="fig">` block with `<img>` tags that carry `alt`, `width` and `height`; several crops side by side go inside `<div class="shots">`. Image files live under `site/assets/img/` (Git LFS).
 
 Sources are linked where the claim is made. Do not quote more than a short phrase from a source; paraphrase and link.
 

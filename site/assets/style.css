@@ -522,6 +522,21 @@ footer.foot {
 .fig svg .cross-dot { fill: var(--series-1); stroke: var(--surface); stroke-width: 2; visibility: hidden; }
 .fig svg.active .cross, .fig svg.active .cross-dot { visibility: visible; }
 .fig svg .hit { fill: transparent; }
+.fig svg .xy-line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.fig svg .xy-line.c1 { stroke: var(--series-1); }
+.fig svg .xy-line.c2 { stroke: var(--series-2); }
+.fig svg .xy-line.c3 { stroke: var(--series-3); }
+.fig svg .xy-dot { stroke: var(--surface); stroke-width: 1.5; }
+.fig svg .xy-dot.c1 { fill: var(--series-1); }
+.fig svg .xy-dot.c2 { fill: var(--series-2); }
+.fig svg .xy-dot.c3 { fill: var(--series-3); }
+.fig svg .xy-dot:hover { fill: var(--ink); }
+
+/* Image crops side by side inside a figure. Three across, two on a phone. */
+.shots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; }
+.shots div { font: 500 0.8125rem/1.4 var(--mono); color: var(--muted); }
+.shots img { display: block; width: 100%; height: auto; margin-bottom: 0.4rem; }
+.shots b { display: block; font-weight: 600; color: var(--ink); }
 
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); gap: 0.75rem; margin: 1.75rem 0 2rem; }
 .stat { padding: 1rem 1.1rem; }
@@ -572,6 +587,7 @@ footer.foot {
 }
 
 @media (max-width: 34rem) {
+  .shots { grid-template-columns: repeat(2, 1fr); }
   .bars { grid-template-columns: 1fr max-content; }
   .bars .name { grid-column: 1 / -1; margin-bottom: -0.35rem; }
 }
