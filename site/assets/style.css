@@ -138,10 +138,10 @@ a:focus-visible::before, a:focus-visible::after, a:focus-visible *, button:focus
 }
 
 .mark { font-weight: 600; font-size: 0.875rem; text-decoration: none; white-space: nowrap; }
-.mark i, .mark-key i { font-style: normal; color: var(--muted); }
-/* shell.js splits the prompt: the name stays the link home, the rest opens the terminal. */
-.mark-both { display: inline-flex; align-items: baseline; white-space: nowrap; }
-.mark-key { appearance: none; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; color: inherit; font: inherit; font-weight: 600; font-size: 0.875rem; cursor: pointer; }
+.mark i { font-style: normal; color: var(--muted); }
+/* The button shell.js adds to the navigation: it opens the terminal. */
+.shell-key { appearance: none; margin: -0.5rem; padding: 0.5rem; border: 0; border-radius: 0; background: none; color: var(--accent); font: inherit; font-weight: 600; white-space: nowrap; cursor: pointer; }
+.shell-key:hover { color: var(--ink); }
 .cursor {
   display: inline-block;
   width: 0.55em;

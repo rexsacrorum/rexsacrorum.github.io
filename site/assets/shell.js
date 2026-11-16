@@ -1,5 +1,5 @@
-// The terminal behind the header prompt: a panel with a few commands, a text game and mail.
-// An extra, like term.js: without this script the prompt stays a plain link to the home page.
+// The terminal behind the >_ button in the header: a panel with a few commands, a text game, mail and a chat.
+// An extra, like term.js: without this script there is no button, and the pages work as they are.
 (function () {
   var root = document.documentElement;
   var mark = document.querySelector(".mark");
@@ -770,18 +770,15 @@
     key.focus({ preventScroll: true });
   }
 
-  // With the script on, the name stays the link to the home page, and the rest of the prompt,
-  // ":~$" and the cursor, becomes the button that opens the terminal.
-  var key = el("button", "mark-key");
+  // The prompt at the top left stays the link to the home page. The terminal gets a button
+  // of its own in the navigation, before the theme switch.
+  var key = el("button", "shell-key", ">_");
   key.type = "button";
   key.setAttribute("aria-label", "Open the terminal");
   key.setAttribute("aria-haspopup", "dialog");
   key.setAttribute("aria-expanded", "false");
-  while (mark.childNodes.length > 1) key.appendChild(mark.childNodes[1]);
-  var both = el("span", "mark-both");
-  mark.parentNode.replaceChild(both, mark);
-  both.appendChild(mark);
-  both.appendChild(key);
+  var nav = mark.parentNode.querySelector("nav");
+  if (nav) nav.insertBefore(key, nav.querySelector(".theme"));
   key.addEventListener("click", open);
   // A tap prints the rest of a paced screen. The tap that picked an answer is not one of those.
   panel.addEventListener("click", function (event) {
