@@ -145,49 +145,49 @@ async function poll(request, env) {
 // visitor's message: that is the only way it finds its chat, so nothing reaches a stranger.
 async function hook(request, env) {
   if (!(await same(request.headers.get("x-telegram-bot-api-secret-token"), env.TG_SECRET))) return fail(403, "forbidden");
-  // From here on the answer is always 200: Telegram resends an update on anything else.
-  try {
-    const update = await request.json();
-    const message = update && update.message;
-    if (!message || !message.chat || !message.from) return json({ ok: true });
-    const say = (text) => telegram(env, "sendMessage", { chat_id: message.chat.id, text });
-    const owner = env.TG_CHAT && String(message.chat.id) === String(env.TG_CHAT) && String(message.from.id) === String(env.TG_CHAT);
-    if (!owner) {
-      // Lets the owner learn the id to put into TG_CHAT; a stranger learns only their own.
-      if (message.chat.type === "private" && message.text === "/start") await say(`This bot is private. Your id: ${message.from.id}`);
-      return json({ ok: true });
-    }
-    const target = message.reply_to_message;
-    if (!target) {
-      await say("Reply to a visitor's message to answer it. A reply with /ban closes that chat.");
-      return json({ ok: true });
-    }
-    const session = await env.DB.prepare(
-      "SELECT s.id, s.nick FROM outbound o JOIN sessions s ON s.id = o.session_id WHERE o.tg_message_id = ?").bind(target.message_id).first();
-    if (!session) {
-      await say("That chat is gone.");
-      return json({ ok: true });
-    }
-    if (typeof message.text !== "string") {
-      await say("Text only.");
-      return json({ ok: true });
-    }
-    if (message.text.trim() === "/ban") {
-      await env.DB.prepare("UPDATE sessions SET banned = 1 WHERE id = ?").bind(session.id).run();
-      await say(`Closed the chat with ${session.nick} #${session.id}.`);
-      return json({ ok: true });
-    }
-    const text = message.text.replace(/[\u0000-\u0008\u000b-\u001f\u007f]/g, " ").trim().slice(0, 4000);
-    if (text) {
-      // An answer also keeps the chat alive, so a late one is not removed before it is read.
-      await env.DB.batch([
-        env.DB.prepare("INSERT OR IGNORE INTO replies (session_id, tg_message_id, text, at) VALUES (?, ?, ?, ?)")
-          .bind(session.id, message.message_id, text, now()),
-        env.DB.prepare("UPDATE sessions SET last = ? WHERE id = ?").bind(now(), session.id)
-      ]);
-    }
-  } catch (error) {
-    console.error("tg hook:", error && error.message);
+  // Telegram resends an update on anything but 200. An update that can never be handled is
+  // answered 200; a database failure is not caught here and becomes a 500, so the answer or
+  // the /ban arrives again later. Storing an answer twice is harmless.
+  const update = await request.json().catch(() => null);
+  const message = update && update.message;
+  if (!message || !message.chat || !message.from) return json({ ok: true });
+  // A note to the owner that fails is not worth a resend.
+  const say = (text) => telegram(env, "sendMessage", { chat_id: message.chat.id, text })
+    .catch((error) => console.error("tg hook:", error && error.message));
+  const owner = env.TG_CHAT && String(message.chat.id) === String(env.TG_CHAT) && String(message.from.id) === String(env.TG_CHAT);
+  if (!owner) {
+    // Lets the owner learn the id to put into TG_CHAT; a stranger learns only their own.
+    if (message.chat.type === "private" && message.text === "/start") await say(`This bot is private. Your id: ${message.from.id}`);
+    return json({ ok: true });
+  }
+  const target = message.reply_to_message;
+  if (!target) {
+    await say("Reply to a visitor's message to answer it. A reply with /ban closes that chat.");
+    return json({ ok: true });
+  }
+  const session = await env.DB.prepare(
+    "SELECT s.id, s.nick FROM outbound o JOIN sessions s ON s.id = o.session_id WHERE o.tg_message_id = ?").bind(target.message_id).first();
+  if (!session) {
+    await say("That chat is gone.");
+    return json({ ok: true });
+  }
+  if (typeof message.text !== "string") {
+    await say("Text only.");
+    return json({ ok: true });
+  }
+  if (message.text.trim() === "/ban") {
+    await env.DB.prepare("UPDATE sessions SET banned = 1 WHERE id = ?").bind(session.id).run();
+    await say(`Closed the chat with ${session.nick} #${session.id}.`);
+    return json({ ok: true });
+  }
+  const text = message.text.replace(/[\u0000-\u0008\u000b-\u001f\u007f]/g, " ").trim().slice(0, 4000);
+  if (text) {
+    // An answer also keeps the chat alive, so a late one is not removed before it is read.
+    await env.DB.batch([
+      env.DB.prepare("INSERT OR IGNORE INTO replies (session_id, tg_message_id, text, at) VALUES (?, ?, ?, ?)")
+        .bind(session.id, message.message_id, text, now()),
+      env.DB.prepare("UPDATE sessions SET last = ? WHERE id = ?").bind(now(), session.id)
+    ]);
   }
   return json({ ok: true });
 }

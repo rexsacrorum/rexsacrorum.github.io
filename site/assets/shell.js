@@ -586,6 +586,7 @@
     var me = null; // { session, nick, after }, as kept in localStorage
     var nick = "";
     var alive = true; // false once the chat is left: answers that arrive later are dropped
+    var forgotten = false; // true after /forget: a line still on its way must not bring the chat back
     var timer = 0;
     var asking = false;
     var active = Date.now();
@@ -668,7 +669,7 @@
       return call("/send", me ? { session: me.session, text: text } : { nick: nick, text: text }).then(function (answer) {
         var error = answer.data.error;
         // A chat that opened is kept even if the visitor has left by now: the owner already has the line.
-        if (answer.status === 200 && first) {
+        if (answer.status === 200 && first && !forgotten) {
           me = { session: answer.data.session, nick: nick, after: 0 };
           save();
         }
@@ -707,6 +708,7 @@
             stop();
             dim("left the chat. tg returns to it.");
           } else if (/^\/forget$/i.test(text)) {
+            forgotten = true;
             me = null;
             save();
             stop();
@@ -714,7 +716,7 @@
           } else if (text.length > TG_MAX) {
             print("that is " + text.length + " characters and the limit is " + TG_MAX + ". shorter, please.");
           } else {
-            line = line.then(function () { return send(text); });
+            line = line.then(function () { if (!forgotten) return send(text); });
           }
         },
         stop: stop

@@ -125,6 +125,21 @@ test("only the owner can answer", async () => {
   assert.equal(db.prepare("SELECT COUNT(*) AS n FROM replies").get().n, 0);
 });
 
+test("a database failure makes Telegram resend, and the resent answer arrives", async () => {
+  const session = await open();
+  const working = env.DB;
+  env.DB = { prepare: () => { throw new Error("down"); }, batch: () => { throw new Error("down"); } };
+  const reply = owner({ text: "later", reply_to_message: { message_id: 1001 } });
+  assert.equal((await hook(reply)).status, 500);
+  env.DB = working;
+  assert.equal((await hook(reply)).status, 200);
+  const got = await (await page("/tg/poll", { session, after: 0 })).json();
+  assert.deepEqual(got.messages.map((message) => message.text), ["later"]);
+  // A note to the owner that cannot be sent does not ask for a resend.
+  telegramDown = true;
+  assert.equal((await hook(owner({ text: "no target" }))).status, 200);
+});
+
 test("/ban closes a chat for sending and polling", async () => {
   const ada = await open();
   await hook(owner({ text: "/ban", reply_to_message: { message_id: 1001 } }));
