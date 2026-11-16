@@ -11,6 +11,8 @@
   --code-bg: #171c19;
   --cursor-bg: var(--accent);
   --cursor-ink: var(--on-accent);
+  --strip-bg: transparent;
+  --strip-ink: var(--muted);
   --primary-bg: var(--accent);
   --primary-ink: var(--on-accent);
   --keys-bg: var(--bg);
@@ -53,6 +55,8 @@
     --code-bg: #000078;
     --cursor-bg: #00a8a8;
     --cursor-ink: #000000;
+    --strip-bg: #00a8a8;
+    --strip-ink: #000000;
     --primary-bg: #00a8a8;
     --primary-ink: #000000;
     --keys-bg: #000000;
@@ -76,6 +80,8 @@
     --code-bg: #062006;
     --cursor-bg: var(--accent);
     --cursor-ink: var(--on-accent);
+    --strip-bg: transparent;
+    --strip-ink: var(--muted);
     --primary-bg: var(--accent);
     --primary-ink: var(--on-accent);
     --keys-bg: var(--bg);
@@ -125,7 +131,19 @@ a:focus-visible::before, a:focus-visible::after, a:focus-visible *, button:focus
 
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
-/* Top bar */
+/* Masthead strip and top bar. The strip is the way home: the prompt under it opens the terminal. */
+
+.strip {
+  border-bottom: 1px solid var(--line);
+  background: var(--strip-bg);
+  color: var(--strip-ink);
+  font: 500 0.75rem/1 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.strip .wrap { padding-top: 0.6rem; padding-bottom: 0.6rem; }
+.strip a { color: inherit; text-decoration: none; }
+.strip a:hover { text-decoration: underline; }
 
 .bar {
   display: flex;
@@ -139,9 +157,6 @@ a:focus-visible::before, a:focus-visible::after, a:focus-visible *, button:focus
 
 .mark { font-weight: 600; font-size: 0.875rem; text-decoration: none; white-space: nowrap; }
 .mark i { font-style: normal; color: var(--muted); }
-/* The button shell.js adds to the navigation: it opens the terminal. */
-.shell-key { appearance: none; margin: -0.5rem; padding: 0.5rem; border: 0; border-radius: 0; background: none; color: var(--accent); font: inherit; font-weight: 600; white-space: nowrap; cursor: pointer; }
-.shell-key:hover { color: var(--ink); }
 .cursor {
   display: inline-block;
   width: 0.55em;
@@ -591,7 +606,7 @@ footer.foot {
   }
   body { background: #fff; font-size: 9.6pt; line-height: 1.38; }
   .has-keys body { padding-bottom: 0; }
-  .no-print, .bar, .keys, .toast, .term, footer.foot { display: none !important; }
+  .no-print, .strip, .bar, .keys, .toast, .term, footer.foot { display: none !important; }
   .wrap { padding: 0; max-width: none; }
   .cv { max-width: none; margin: 0; padding: 0; font-size: 9.6pt; line-height: 1.38; }
   .cv-head { padding-bottom: 0.7em; border-bottom: 2px solid var(--ink); }

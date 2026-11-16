@@ -9,7 +9,7 @@ Static site for https://novosad.xyz. The landing page and the CV are hand-writte
 - `site/assets/style.css` holds all styling, including the A4 print rules for the CV and the chart styles. Browsers keep files under `/assets/` for a day (`site/_headers`), so bump the `?v=` on its link in every page and in `templates/base.html` when it changes. The same goes for `charts.js`, `theme.js`, `term.js` and `shell.js`. A test checks that the four page shells carry the same versions.
 - The design is a terminal look: monospace headings, a shell prompt in the header, no rounded corners, and few rules or frames. Dark is the default for every visitor. The second theme is called `light` in the code and on the button, and it is the blue file-manager palette, not a white page. The choice is stored under the `scheme` key.
 - `site/assets/term.js` adds the key bar at the bottom, the keyboard shortcuts, the console commands, the uptime counter in the footer (it counts from `data-since`; without the script the footer reads "up since 1989") and the hidden CRT mode (type `noisia`). Arrow keys move a cursor over links only on pages that are lists of links; on an article and on the CV they scroll. The pages must keep working without this script.
-- `site/assets/shell.js` is the terminal behind the `>_` button in the header; see "The terminal" below.
+- `site/assets/shell.js` is the terminal behind the header prompt; see "The terminal" below.
 - The print rules at the end of `style.css` reset every colour token and pin the CV's fonts, so the CV PDF does not follow the screen design. Theme overrides sit inside `@media screen` for the same reason.
 - The custom domain is attached to the Worker in the Cloudflare dashboard, not in `wrangler.jsonc`. The zone's "Always Use HTTPS" setting redirects `http://` to `https://`.
 - PDFs and images are in Git LFS (see `.gitattributes`); the workflow checks out with `lfs: true`. Charts are inline SVG and HTML, so they are not LFS files.
@@ -28,7 +28,7 @@ Static site for https://novosad.xyz. The landing page and the CV are hand-writte
 
 ## The terminal
 
-The header prompt (`.mark`) at the top left is the link to the home page, with or without scripts; keep it so. `site/assets/shell.js` adds a `>_` button to the navigation, before the theme switch, that drops a terminal from the top over the whole screen. The key under Esc opens the panel too. The panel opens empty, with no greeting; an unknown command names `help`. The header cursor blinks for every visitor, also with `prefers-reduced-motion`; that is the owner's choice.
+The strip at the very top (`.strip`, the domain name) is the link to the home page on every page; keep it, because `site/assets/shell.js` turns the header prompt under it (`.mark`) into a button that drops a terminal from the top over the whole screen. Without the script the prompt is a link to the home page too. The key under Esc opens the panel too. The panel opens empty, with no greeting; an unknown command names `help`. The header cursor blinks for every visitor, also with `prefers-reduced-motion`; that is the owner's choice.
 
 - The way out is `exit` (also `quit`, `logout`, `:q`, `:wq`, `ZZ`). There is no close button and Esc does not close. The plain hint is printed to the browser console when the panel opens, the panel's `aria-label` tells a screen reader, and three presses of Esc print a hint. Do not add a close control.
 - The terminal does not reopen after a reload or on another page.
