@@ -1,9 +1,9 @@
-// The terminal behind the header prompt: a panel with a few commands, a text game, mail and a chat.
-// An extra, like term.js: without this script the prompt stays a plain link to the home page.
+// The terminal behind the >_ button in the header: a panel with a few commands, a text game, mail and a chat.
+// An extra, like term.js: without this script there is no button, and the pages work as they are.
 (function () {
   var root = document.documentElement;
-  var mark = document.querySelector(".mark");
-  if (!mark) return;
+  var nav = document.querySelector(".bar nav");
+  if (!nav) return;
 
   var MAIL_TO = "bogdan@novosad.xyz";
   // URL of the mail backend (see AGENTS.md). While it is empty, mail opens the visitor's mail client.
@@ -770,24 +770,15 @@
     key.focus({ preventScroll: true });
   }
 
-  // With the script on, the prompt opens the terminal. Home is the strip above it, the
-  // `home` command, or a ctrl/middle click, which still follows the link.
-  var key = mark;
-  key.setAttribute("role", "button");
+  // The terminal's button, ">_", is added to the navigation before the theme switch.
+  // The domain name on the left stays the link to the home page.
+  var key = el("button", "shell-key", ">_");
+  key.type = "button";
   key.setAttribute("aria-label", "Open the terminal");
   key.setAttribute("aria-haspopup", "dialog");
   key.setAttribute("aria-expanded", "false");
-  key.addEventListener("click", function (event) {
-    if (event.button || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
-    event.preventDefault();
-    open();
-  });
-  key.addEventListener("keydown", function (event) {
-    if (event.key !== " ") return;
-    event.preventDefault();
-    event.stopPropagation();
-    open();
-  });
+  nav.insertBefore(key, nav.querySelector(".theme"));
+  key.addEventListener("click", open);
   // A tap prints the rest of a paced screen. The tap that picked an answer is not one of those.
   panel.addEventListener("click", function (event) {
     if (event.target.closest && event.target.closest(".term-pick")) return;
