@@ -193,7 +193,7 @@
     mail: { about: "send me a message", usage: ["mail [message]", "send me one line, up to 1000 characters. without a message it asks for one."], run: mail },
     tg: {
       about: "chat with me over telegram",
-      usage: ["tg", "a chat with Bogdan. your lines go to his Telegram, his answers appear here.", "/quit leaves the chat, /forget also drops it from this browser."],
+      usage: ["tg", "a chat with Bogdan. your lines go to his Telegram, his answers appear here.", "/quit or ctrl+c leaves the chat, /forget also drops it from this browser."],
       run: tg
     },
     theme: {
@@ -798,13 +798,7 @@
       event.preventDefault();
       at = Math.max(0, Math.min(past.length, at + (event.key === "ArrowUp" ? -1 : 1)));
       input.value = past[at] || "";
-    } else if (event.ctrlKey && event.key.toLowerCase() === "c" && input.selectionStart === input.selectionEnd) {
-      event.preventDefault();
-      print(ps.textContent + " " + input.value + "^C", "term-echo");
-      input.value = "";
-      if (mode) mode.stop();
-      out.scrollTop = out.scrollHeight;
-    } else if (event.ctrlKey && event.key.toLowerCase() === "l") {
+    } else if (event.ctrlKey && (event.code === "KeyL" || event.key.toLowerCase() === "l")) {
       event.preventDefault();
       if (!mode) out.textContent = "";
     }
@@ -820,6 +814,20 @@
         event.preventDefault();
         open();
       }
+      return;
+    }
+    // ctrl+c leaves whatever is running, wherever the focus is: the game leaves it on an answer.
+    // With text selected it stays the browser's copy. The key is taken by its place on the keyboard
+    // too, so that it works in a layout where that key types another letter.
+    if (event.ctrlKey && !event.metaKey && !event.altKey && (event.code === "KeyC" || event.key.toLowerCase() === "c")) {
+      var picked = String(window.getSelection ? window.getSelection() : "") || input.selectionStart !== input.selectionEnd;
+      if (picked) return;
+      event.preventDefault();
+      print(ps.textContent + " " + input.value + "^C", "term-echo");
+      input.value = "";
+      if (mode) mode.stop();
+      input.focus({ preventScroll: true });
+      out.scrollTop = out.scrollHeight;
       return;
     }
     if (mode && mode.skip && event.key.length === 1) mode.skip();
