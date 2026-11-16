@@ -16,7 +16,7 @@ I wanted a smaller file at the same quality, so I measured JPEG, WebP and AVIF o
 {"type": "stats", "items": [
   {"value": "56.5%", "label": "of the JPEG bytes: AVIF at the same luma SSIM"},
   {"value": "71%", "label": "of the JPEG bytes: WebP at the same luma SSIM"},
-  {"value": "133%", "label": "is what the same WebP files scored through the faulty decoder"},
+  {"value": "133%", "label": "of the JPEG bytes is what WebP seemed to need through the faulty decoder"},
   {"value": "240", "label": "images, every one the product serves"}
 ]}
 ```
@@ -35,9 +35,11 @@ Quality is luma SSIM against the reference: the standard 11×11 Gaussian window 
 
 Every file was also scored a second time as Chromium 156 decodes it, with the same metrics in JavaScript. That second pass is how the bug below came out.
 
+Some limits apply to everything below. Chromium is the only browser decoder I checked, not Firefox or Safari. SSIM is a single metric on luma, the colour figure is a PSNR, and nobody compared the images by eye in a controlled test. The images are one kind of content, and other photos may rank the formats differently. The baseline is Go's standard JPEG encoder, because that is what the product ships; a stronger JPEG encoder such as mozjpeg would narrow both gaps.
+
 ## What the first run said
 
-The draft table, from 45 images, said that WebP at quality 80 was about 30% smaller than JPEG at quality 80 but clearly worse, and that it needed quality 90 to 95 to reach the JPEG's SSIM. At those settings it was 18% to 66% larger than the JPEG. I concluded that WebP is smaller only because it is worse.
+A first pass over 180 images said that WebP at quality 80 was about 30% smaller in total than JPEG at quality 80, with a clearly lower SSIM. A second pass over 45 of them said that WebP needed quality 90 to 95 to reach the JPEG's SSIM, and that at those settings it was 18% to 66% larger than the JPEG. I concluded that WebP is smaller only because it is worse.
 
 On 240 images and with the Gaussian SSIM, the same tool path gives the same picture. WebP reaches the JPEG's SSIM only at quality 92, at 133% of the JPEG bytes.
 
@@ -70,7 +72,7 @@ Through the faulty decode, the 240 images give numbers close to the draft's. On 
  "rows": [["Faulty decode, q92", 133.1, "133% · 46.2 MB"], ["JPEG q80", 100, "100% · 34.7 MB"], ["Correct decode, q80", 71.0, "71% · 24.7 MB"]]}
 ```
 
-Nothing in the first run looked broken. The numbers moved in the right direction with the quality setting, and "WebP is not as good as people say" is a result that is easy to accept. What exposed it was a second decoder. For WebP and for AVIF in 4:4:4 the browser's scores and the corrected Go scores now agree exactly; for JPEG and AVIF in 4:2:0 the luma agrees to within 0.0001 SSIM.
+Nothing in the first run looked broken: the scores rose with the quality setting, as they should. What exposed it was a second decoder. For WebP and for AVIF in 4:4:4 the browser's scores and the corrected Go scores now agree exactly; for JPEG and AVIF in 4:2:0 the luma agrees to within 0.0001 SSIM.
 
 ## The corrected result
 
@@ -85,7 +87,7 @@ Nothing in the first run looked broken. The numbers moved in the right direction
  "x_label": "total MB", "y_label": "Luma SSIM", "label_name": "Quality", "mark": {"y": 0.9597, "label": "JPEG q80"},
  "tip": "{name}, {label}: {x} MB, SSIM {y}",
  "alt": "Line chart of mean luma SSIM against total megabytes for JPEG, WebP and AVIF. At every size AVIF is highest, WebP is in the middle and JPEG is lowest. The curves cross the SSIM of JPEG quality 80 at about 19.6 MB for AVIF, 24.7 MB for WebP and 34.7 MB for JPEG.",
- "note": "AVIF in 4:2:0 has the same luma as 4:4:4 at each setting and is left out. libavif gave byte-identical files for quality 60 and 61 and for 64 and 65, so each pair is one point."}
+ "note": "Scored with the Go decoders, which agree with Chromium on luma to within 0.0001. AVIF in 4:2:0 has the same luma as 4:4:4 at each setting and is left out. libavif gave byte-identical files for quality 60 and 61 and for 64 and 65, so each pair is one point."}
 ```
 
 | Encoder | Median | 90th percentile | Total | Share of JPEG | Luma SSIM | Chroma PSNR | Encode time |
@@ -102,17 +104,17 @@ SSIM and chroma PSNR in the table are as Chromium decodes the files. Encode time
  "rows": [["JPEG q80", 34.72, "34.72 MB · 100%"], ["WebP q80", 24.67, "24.67 MB · 71.0%"], ["AVIF q62, 4:4:4", 19.62, "19.62 MB · 56.5%"]]}
 ```
 
-WebP at quality 80 is the first WebP setting at or above the JPEG's SSIM. Quality 79 misses by 0.0003 at 67.9% of the bytes, so the figure for WebP is about 70%. AVIF at quality 62 is the first AVIF setting above the line; quality 60 falls 0.0007 short at 54.2%.
+WebP at quality 80 is the first WebP setting at or above the JPEG's SSIM. Quality 79 misses by 0.0003 at 67.9% of the bytes, so the exact crossing lies between 67.9% and 71.0%. AVIF at quality 62 is the first AVIF setting above the line; quality 60 falls 0.0007 short at 54.2%.
 
 Both figures are a match on the mean. If I choose for every image the smallest setting that reaches that image's own JPEG score, WebP comes to 74.8% and AVIF to 58.0%. At the fixed quality 62, 103 of the 240 AVIF files score below their own JPEG, the worst by 0.0105.
-
-The baseline matters too. It is Go's standard JPEG encoder, because that is what the product ships. A stronger JPEG encoder such as mozjpeg would narrow both gaps.
 
 ## Full chroma for 2.3% more bytes
 
 Most lossy images store colour at half resolution in both directions (4:2:0). AVIF can keep it at full resolution (4:4:4). On a road sign the colour edge is the content: a red ring on white, a red bar over a black arrow.
 
 At quality 62 the luma of the two variants is identical. Full chroma costs 2.3% more bytes (19.62 MB against 19.17 MB) and gives 1.44 dB more chroma PSNR as Chromium decodes it. My draft said 1.7 dB. That number came from Go's decoders, which upsample 4:2:0 chroma more crudely than a browser does and so make 4:2:0 look worse than it is on screen.
+
+The figure shows one sign edge from the same image in each format, next to the pixels that went into the encoders.
 
 <figure class="fig">
 <figcaption><b>One sign edge, as Chromium decodes each file</b>A 96×96 px region of a "no U-turn" sign, magnified four times. The sizes are those of the whole image.</figcaption>
@@ -138,12 +140,8 @@ AVIF at quality 62, 4:4:4, speed 6, with the existing JPEG as the fallback:
 
 A browser that decodes AVIF takes the first file, and any other browser takes the JPEG. All 240 images have both files, and this has been live on teoriaya.com since 15 November 2026.
 
-There is no WebP in between. It would be a third file per image for the browsers that decode WebP and not AVIF, and I have no traffic data yet to say how many of those visit.
+There is no WebP in between: two files per image, not three. The site has no real traffic yet, so I have no figure for how many visitors receive the AVIF.
 
 AVIF encoding is slow: 2.5 s per image against 0.02 s for the JPEG, with the encoder compiled to WebAssembly and run on one thread. That is fine for 240 images encoded once, ahead of time. Speed 4 would give slightly better files (SSIM 0.9618 against 0.9590 at quality 60, at almost the same size) for 17.7 s per image, about seven times longer.
 
 The files are stored under a key that is the hash of their bytes, so the encoder has to produce the same bytes every time. It did: a single-threaded run and a parallel one gave the same files, byte for byte, for every setting I compared. The WebP and AVIF libraries prefer a system library when one is installed, which could change the bytes, so the build refuses to encode unless it is pinned to the bundled encoder.
-
-## What the numbers cover
-
-The decoder is Chromium only; I did not check Firefox or Safari. SSIM is a single metric on luma, the chroma figure is a PSNR, and nobody compared the images by eye in a controlled test. The images are one kind of content, road signs and road scenes, and other photos may rank the formats differently. The site has no real traffic yet, so there is no figure for how many visitors receive the AVIF.
