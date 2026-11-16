@@ -196,14 +196,6 @@
       usage: ["tg", "a chat with Bogdan. your lines go to his Telegram, his answers appear here.", "/quit or ctrl+c leaves the chat, /forget also drops it from this browser."],
       run: tg
     },
-    theme: {
-      about: "switch the theme",
-      run: function () {
-        var button = document.querySelector(".theme");
-        if (button) button.click();
-        print("theme: " + (root.getAttribute("data-theme") === "light" ? "light" : "dark"));
-      }
-    },
     clear: { about: "clear the screen", run: function () { out.textContent = ""; } },
 
     // Not in help. There is no close button: the way out is exit, or :q as in the editor.
