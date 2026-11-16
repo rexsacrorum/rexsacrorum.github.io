@@ -138,7 +138,10 @@ a:focus-visible::before, a:focus-visible::after, a:focus-visible *, button:focus
 }
 
 .mark { font-weight: 600; font-size: 0.875rem; text-decoration: none; white-space: nowrap; }
-.mark i { font-style: normal; color: var(--muted); }
+.mark i, .mark-key i { font-style: normal; color: var(--muted); }
+/* shell.js splits the prompt: the name stays the link home, the rest opens the terminal. */
+.mark-both { display: inline-flex; align-items: baseline; white-space: nowrap; }
+.mark-key { appearance: none; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; color: inherit; font: inherit; font-weight: 600; font-size: 0.875rem; cursor: pointer; }
 .cursor {
   display: inline-block;
   width: 0.55em;
@@ -302,7 +305,6 @@ footer.foot {
 
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
-  .cursor { animation: none; }
   html { scroll-behavior: auto; }
 }
 
