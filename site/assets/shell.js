@@ -1,9 +1,9 @@
-// The terminal behind the header prompt: a panel with a few commands, a text game and mail.
-// An extra, like term.js: without this script the prompt stays a plain link to the home page.
+// The terminal behind the >_ button in the header: a panel with a few commands, a text game, mail and a chat.
+// An extra, like term.js: without this script there is no button, and the pages work as they are.
 (function () {
   var root = document.documentElement;
-  var mark = document.querySelector(".mark");
-  if (!mark) return;
+  var nav = document.querySelector(".bar nav");
+  if (!nav) return;
 
   var MAIL_TO = "bogdan@novosad.xyz";
   // URL of the mail backend (see AGENTS.md). While it is empty, mail opens the visitor's mail client.
@@ -125,27 +125,6 @@
     return row;
   }
   function dim(text) { return print(text, "term-dim"); }
-
-  function greet() {
-    var text = "hello, traveller. can I help you?";
-    var hint = function () { dim("help lists the commands."); };
-    if (calm) { print(text); hint(); return; }
-    // The typing is for the eye; a screen reader gets the whole line once.
-    var row = print("");
-    var typed = el("span");
-    typed.setAttribute("aria-hidden", "true");
-    row.appendChild(el("span", "sr", text));
-    row.appendChild(typed);
-    var hintRow = el("div", "term-row term-dim");
-    out.appendChild(hintRow);
-    var n = 0;
-    var timer = setInterval(function () {
-      typed.textContent = text.slice(0, ++n);
-      if (n < text.length) return;
-      clearInterval(timer);
-      hintRow.textContent = "help lists the commands.";
-    }, 26);
-  }
 
   // --- commands. A command that needs several lines of input sets a mode:
   // { prompt, input(line), stop() }, and skip() when it prints in steps. The game and mail are modes; a later `ask` would be one too.
@@ -491,7 +470,6 @@
         splash(function () {
           out.textContent = "";
           done();
-          greet();
         });
       });
     }
@@ -754,7 +732,6 @@
   // --- opening and closing
 
   var opened = false;
-  var greeted = false;
   var others = [];
   var view = window.visualViewport;
 
@@ -778,14 +755,10 @@
     });
     others.forEach(function (node) { node.inert = true; });
     root.classList.add("term-open");
-    mark.setAttribute("aria-expanded", "true");
+    key.setAttribute("aria-expanded", "true");
     fit();
     input.focus({ preventScroll: true });
     console.log("%cStuck in the terminal? Type exit and press Enter.", "color:#8a938c;font-family:monospace");
-    if (!greeted) {
-      greeted = true;
-      greet();
-    }
   }
   function close() {
     if (!opened) return;
@@ -793,27 +766,19 @@
     if (mode) mode.stop();
     others.forEach(function (node) { node.inert = false; });
     root.classList.remove("term-open");
-    mark.setAttribute("aria-expanded", "false");
-    mark.focus({ preventScroll: true });
+    key.setAttribute("aria-expanded", "false");
+    key.focus({ preventScroll: true });
   }
 
-  // With the script on, the prompt opens the terminal. Home stays reachable with the `home`
-  // command or a ctrl/middle click, which still follows the link.
-  mark.setAttribute("role", "button");
-  mark.setAttribute("aria-label", "Open the terminal");
-  mark.setAttribute("aria-haspopup", "dialog");
-  mark.setAttribute("aria-expanded", "false");
-  mark.addEventListener("click", function (event) {
-    if (event.button || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
-    event.preventDefault();
-    open();
-  });
-  mark.addEventListener("keydown", function (event) {
-    if (event.key !== " ") return;
-    event.preventDefault();
-    event.stopPropagation();
-    open();
-  });
+  // The terminal's button, ">_", is added to the navigation before the theme switch.
+  // The domain name on the left stays the link to the home page.
+  var key = el("button", "shell-key", ">_");
+  key.type = "button";
+  key.setAttribute("aria-label", "Open the terminal");
+  key.setAttribute("aria-haspopup", "dialog");
+  key.setAttribute("aria-expanded", "false");
+  nav.insertBefore(key, nav.querySelector(".theme"));
+  key.addEventListener("click", open);
   // A tap prints the rest of a paced screen. The tap that picked an answer is not one of those.
   panel.addEventListener("click", function (event) {
     if (event.target.closest && event.target.closest(".term-pick")) return;
