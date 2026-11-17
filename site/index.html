@@ -29,7 +29,7 @@
   </script>
   <script src="/assets/theme.js?v=3" defer></script>
   <script src="/assets/term.js?v=4" defer></script>
-  <script src="/assets/shell.js?v=9" defer></script>
+  <script src="/assets/shell.js?v=10" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -100,6 +100,22 @@
     <section class="wrap block" id="projects" aria-labelledby="projects-title">
       <h2 class="label" id="projects-title"><small>~/projects</small><a href="#projects">Projects</a></h2>
       <div class="projects">
+        <article class="project">
+          <header>
+            <h3>Wearbrands</h3>
+            <span class="role">creator · 2026</span>
+          </header>
+          <p>A fashion search across shops: type an ordinary query such as "black dress" and get clothes from several shops in one place. The catalogue is collected through the ZenRows API. It is early: four shops so far, and most of the catalogue comes from H&amp;M.</p>
+          <ul>
+            <li><b>Go API and ingest pipeline</b>, PostgreSQL with pgvector, a SvelteKit front end, Terraform on AWS. A plain parser, not a language model call, turns the query into filters.</li>
+            <li><b>Credit budget</b> in code: the ingest reserves the worst-case cost before each ZenRows request and settles to the real cost after it.</li>
+            <li><b>Archive before parse</b>: every scraped response is saved first, so a parser fix is tested by replaying saved responses. A new shop must pass a small probe run before a full run, and tests never call the paid API.</li>
+          </ul>
+          <div class="foot">
+            <ul class="tags"><li>Go</li><li>PostgreSQL</li><li>SvelteKit</li><li>ZenRows</li></ul>
+            <a class="go" href="https://wearbrands.co/">wearbrands.co →</a>
+          </div>
+        </article>
         <article class="project">
           <header>
             <h3>TeoriaYa</h3>
