@@ -46,7 +46,7 @@ A reviewer that has not seen the reasoning. Anthropic's post on [harness design]
 A workflow gives some subagents a name, a model and instructions of their own. I keep such a role only when it gives at least one of these:
 
 1. **A fresh reader.** It has not seen how the code was written.
-2. **A small conclusion from large output.** Builds, test runs and logs stay out of the main agent's history.
+2. **A small conclusion from large output.** Builds, test runs, logs, and the many reads and edits of a large mechanical change stay out of the main agent's history.
 3. **Rules of its own.** A long set of instructions needed for one step, which the main agent would otherwise carry for the rest of the session.
 4. **Parallel work** on paths that do not overlap.
 5. **A simpler, faster model is enough.** The role reads much and decides little.
@@ -59,7 +59,7 @@ By this test my [open workflow package](https://github.com/rexsacrorum/agent-eng
 
 | Role | Model tier | When it is called | What it gives |
 | --- | --- | --- | --- |
-| Implementer | Strong; mid for a routine area | Independent parts in parallel, or a large mechanical change with a short contract | 4, and 5 on the mid tier |
+| Implementer | Strong; mid for a routine area | Independent parts in parallel, or a large mechanical change with a short contract | 2, 4, and 5 on the mid tier |
 | Reviewer | Strong | A substantial change; always for access rights, data migrations and spending | 1 |
 | Verifier | Mid | Browser checks, long test runs, log reading | 2, 5, 6 |
 | Advisor | Top | Conflicting evidence, a decision that is hard to reverse, a failure that survived two repairs | 7, 1 |
