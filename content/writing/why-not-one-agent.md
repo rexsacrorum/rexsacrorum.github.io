@@ -24,7 +24,7 @@ In every other case, stay in the main agent. Claude Code's [best-practices guide
 
 | Reason I gave | Verdict | What holds |
 | --- | --- | --- |
-| Fewer instructions, so the agent follows them better | True, but it is not delegation | Keep the always-loaded file short and load the rest on demand. One agent gets this too. |
+| Fewer instructions, so the agent follows them better | True, but mostly not delegation | Keep the always-loaded file short and load the rest on demand. One agent gets this too. A role helps only when a long set of rules is needed for one step. |
 | Lower cost | Only in two cases | Bulky output kept out of the main agent's history, and output written by a cheaper model. |
 | Fewer hallucinations | The wrong word | Recall gets worse as the context grows. A new session per task fixes that without subagents. |
 | Faster | For parallel work and simple jobs | A fresh subagent first rebuilds context and can be slower. |
@@ -41,11 +41,36 @@ In every other case, stay in the main agent. Claude Code's [best-practices guide
 
 A reviewer that has not seen the reasoning. Anthropic's post on [harness design](https://www.anthropic.com/engineering/harness-design-long-running-apps) reports that agents tend to praise their own work, and that a separate sceptical evaluator was much easier to build than a self-critical author. This does not depend on the model being weak. In my measured session eight fresh reviews cost 6% of the total.
 
+## When a role earns its place
+
+A workflow gives some subagents a name, a model and instructions of their own. I keep such a role only when it gives at least one of these:
+
+1. **A fresh reader.** It has not seen how the code was written.
+2. **A small conclusion from large output.** Builds, test runs and logs stay out of the main agent's history.
+3. **Rules of its own.** A long set of instructions needed for one step, which the main agent would otherwise carry for the rest of the session.
+4. **Parallel work** on paths that do not overlap.
+5. **A simpler, faster model is enough.** The role reads much and decides little.
+6. **One owner of a shared resource**, such as a browser or a database.
+7. **A stronger model** than the main agent's.
+
+"It would do the job better" is not on the list. The first, second and fourth are the three cases from the short answer. The rest matter only once roles have models and instructions of their own.
+
+By this test my [open workflow package](https://github.com/rexsacrorum/agent-engineering-workflow) went from eight roles to four:
+
+| Role | Model tier | When it is called | What it gives |
+| --- | --- | --- | --- |
+| Implementer | Strong; mid for a routine area | Independent parts in parallel, or a large mechanical change with a short contract | 4, and 5 on the mid tier |
+| Reviewer | Strong | A substantial change; always for access rights, data migrations and spending | 1 |
+| Verifier | Mid | Browser checks, long test runs, log reading | 2, 5, 6 |
+| Advisor | Top | Conflicting evidence, a decision that is hard to reverse, a failure that survived two repairs | 7, 1 |
+
+Four roles went. An architecture role and a QA planning role re-read a plan on the main agent's tier or below it, so they gave nothing the main agent could not judge itself; a hard question now goes to the advisor. A documentation role and a delivery role were not called once in the measured session: the main agent commits and pushes in a few commands, and the client waits for CI without spending tokens.
+
 ## Is a workflow still needed?
 
 Yes, a thinner one. The same harness post gives the test: every part of a harness encodes an assumption about what the model cannot do alone, and those assumptions go stale. Google Research found that [adding agents](https://research.google/blog/towards-a-science-of-scaling-agent-systems-when-and-why-agent-systems-work/) improved a task with parallel parts by about 81% and made a sequential one worse by 39% to 70%.
 
-What I kept rests on price, time, or who has seen what: a fresh reviewer, one writer per set of paths, bulky output to a cheaper reader, one task per session. What I expect to delete rests on the model being weak: extra roles that re-read the plan, and tables that tell the agent when to delegate.
+What I kept rests on price, time, or who has seen what: a fresh reviewer, one writer per set of paths, bulky output to a cheaper reader, one task per session. What rests on the model being weak goes: the roles that re-read the plan are already deleted, and I expect the tables that tell the agent when to delegate to follow.
 
 ## What to do
 
