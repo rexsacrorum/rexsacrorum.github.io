@@ -66,35 +66,35 @@
 
     <section class="wrap block" id="workflow" aria-labelledby="workflow-title">
       <h2 class="label" id="workflow-title"><small>~/workflow</small><a href="#workflow">How I ship with agents</a></h2>
-      <p class="lead">One agent keeps the plan, every file has one writer, a fresh reviewer checks the result, and a person decides what ships.</p>
+      <p class="lead">One agent keeps the plan and calls a specialist only when it pays. Every file has one writer, a fresh reviewer checks the result, and a person decides what ships.</p>
       <ol class="flow">
         <li>
           <span class="n">[1]</span>
-          <h3>Research</h3>
-          <p>Agents pull the ticket, docs and code context from Jira, Confluence and GitLab over MCP.</p>
+          <h3>Scope</h3>
+          <p>One task per session. A short task record carries it to the next one.</p>
         </li>
         <li>
           <span class="n">[2]</span>
           <h3>Plan</h3>
-          <p>The main agent plans and keeps the decisions. An architecture role reads the plan once, before a risky stage.</p>
+          <p>The main agent plans and keeps the decisions. Architecture and QA roles read the plan once, before a risky stage.</p>
         </li>
         <li>
           <span class="n">[3]</span>
           <h3>Write</h3>
-          <p>One writer per set of files. Parallel writers only on parts that do not overlap.</p>
+          <p>Small edits stay with the main agent. Otherwise one writer per set of files, in parallel only on parts that do not overlap.</p>
         </li>
         <li>
           <span class="n">[4]</span>
           <h3>Review and verify</h3>
-          <p>An agent that has not seen the reasoning reviews the final diff. Builds and Playwright tests run on a cheaper model.</p>
+          <p>An agent that has not seen the reasoning reviews the final diff. Long test runs and browser checks go to a cheaper model.</p>
         </li>
         <li>
           <span class="n">[5]</span>
-          <h3>Approve</h3>
-          <p>Nothing is pushed, merged or changed in Jira without explicit human approval. I review every change.</p>
+          <h3>Deliver</h3>
+          <p>A request for a pull request covers the branch, commits and push. Merge, release and deploy wait for an explicit go-ahead.</p>
         </li>
       </ol>
-      <p class="facts">Claude Code, Codex and GitHub Copilot · 4 skills · 9 specialist roles · taught in internal seminars · <a href="/writing/where-the-tokens-went/">measured here</a> · <a href="https://github.com/rexsacrorum/agent-engineering-workflow">open source</a></p>
+      <p class="facts">Claude Code · 8 roles on four model tiers · token use measured per role · <a href="/writing/where-the-tokens-went/">measured here</a> · <a href="https://github.com/rexsacrorum/agent-engineering-workflow">open source</a></p>
     </section>
 
     <section class="wrap block" id="projects" aria-labelledby="projects-title">
