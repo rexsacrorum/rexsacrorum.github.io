@@ -71,12 +71,12 @@
         <li>
           <span class="n">[1]</span>
           <h3>Scope</h3>
-          <p>One task per session. A short task record carries it to the next one.</p>
+          <p>One task per session. The agent keeps a short file with the criteria, the decisions and what is left, so a new session can read it and continue.</p>
         </li>
         <li>
           <span class="n">[2]</span>
           <h3>Plan</h3>
-          <p>The main agent plans and keeps the decisions. Before a risky stage it maps each requirement to a check; a hard question goes to an advisor.</p>
+          <p>The main agent plans and keeps the decisions. Before a risky stage it writes down which test or check will prove each requirement. A hard question goes to an advisor.</p>
         </li>
         <li>
           <span class="n">[3]</span>
@@ -90,8 +90,8 @@
         </li>
         <li>
           <span class="n">[5]</span>
-          <h3>Deliver</h3>
-          <p>A request for a pull request covers the branch, commits and push. Merge, release and deploy wait for an explicit go-ahead.</p>
+          <h3>Ship</h3>
+          <p>The main agent commits, pushes and opens the pull request itself. It merges, releases or deploys only when told to.</p>
         </li>
       </ol>
       <p class="facts">Claude Code · 4 roles on four model tiers · token use measured per role · <a href="/writing/where-the-tokens-went/">measured here</a> · <a href="https://github.com/rexsacrorum/agent-engineering-workflow">open source</a></p>
