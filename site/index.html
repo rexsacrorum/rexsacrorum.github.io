@@ -29,7 +29,7 @@
   </script>
   <script src="/assets/theme.js?v=3" defer></script>
   <script src="/assets/term.js?v=4" defer></script>
-  <script src="/assets/shell.js?v=10" defer></script>
+  <script src="/assets/shell.js?v=11" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -105,14 +105,13 @@
             <h3>Wearbrands</h3>
             <span class="role">creator · 2026</span>
           </header>
-          <p>A fashion search across shops: type an ordinary query such as "black dress" and get clothes from several shops in one place. The catalogue is collected through the ZenRows API. It is early: four shops so far, and most of the catalogue comes from H&amp;M.</p>
+          <p>A fashion search across shops: type an ordinary query such as "black dress" and get clothes from several shops in one place.</p>
           <ul>
-            <li><b>Go API and ingest pipeline</b>, PostgreSQL with pgvector, a SvelteKit front end, Terraform on AWS. A plain parser, not a language model call, turns the query into filters.</li>
-            <li><b>Credit budget</b> in code: the ingest reserves the worst-case cost before each ZenRows request and settles to the real cost after it.</li>
+            <li><b>Go API and ingest pipeline</b>, PostgreSQL with pgvector, a SvelteKit front end, Terraform on AWS.</li>
             <li><b>Archive before parse</b>: every scraped response is saved first, so a parser fix is tested by replaying saved responses. A new shop must pass a small probe run before a full run, and tests never call the paid API.</li>
           </ul>
           <div class="foot">
-            <ul class="tags"><li>Go</li><li>PostgreSQL</li><li>SvelteKit</li><li>ZenRows</li></ul>
+            <ul class="tags"><li>Go</li><li>PostgreSQL</li><li>SvelteKit</li><li>AWS</li></ul>
             <a class="go" href="https://wearbrands.co/">wearbrands.co →</a>
           </div>
         </article>
@@ -121,11 +120,11 @@
             <h3>TeoriaYa</h3>
             <span class="role">founder · 2026</span>
           </header>
-          <p>A language-learning product for immigrants in Spain: learners practice the driving-license theory test in Spanish and tap any word or phrase to see it in their own language. Built end to end with AI agents.</p>
+          <p>Practice for the Spanish driving-license theory test, for people who are still learning Spanish: learners answer the questions in Spanish and can see each one translated into their own language. Built end to end with AI agents.</p>
           <ul>
             <li><b>Go API</b> as a modular monolith with separate HTTP and AI-worker roles; PostgreSQL with sqlc and golang-migrate.</li>
             <li><b>Content pipeline</b> with AI-assisted rewriting, images, translations and glossary tooltips, each behind a human review gate.</li>
-            <li><b>Retrieval</b> over the official traffic rulebook with local embeddings and an evaluation set.</li>
+            <li><b>Rulebook grounding</b>: retrieval over the official traffic rulebook, with local embeddings and an evaluation set, finds the rule behind a question, so content is checked against the source.</li>
           </ul>
           <div class="foot">
             <ul class="tags"><li>Go</li><li>PostgreSQL</li><li>SvelteKit</li><li>RAG</li></ul>
@@ -137,7 +136,7 @@
             <h3>GliderMCP</h3>
             <span class="role">creator · 2026</span>
           </header>
-          <p>Local MCP servers that give AI coding agents compiler-backed and indexed evidence about a codebase.</p>
+          <p>Local MCP servers that let AI coding agents ask a codebase exact questions: where a symbol is defined, who calls it, and what a change would break.</p>
           <ul>
             <li><b>Glider</b> (C#/.NET): Roslyn-powered navigation, references, call graphs, diagnostics and refactoring. About 148K NuGet downloads.</li>
             <li><b>Scout</b> (Rust): local code index with literal, regex and fuzzy search, structural search across nine languages, and optional on-device semantic search with GPU acceleration.</li>
