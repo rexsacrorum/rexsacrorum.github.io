@@ -49,9 +49,9 @@
       "the full version: [open cv](/cv/) · [cv.pdf](/Bogdan_Novosad_CV.pdf)"
     ],
     "projects.txt": [
-      "Wearbrands a fashion search across shops, built on the ZenRows API. [wearbrands.co](https://wearbrands.co/)",
+      "Wearbrands a fashion search across shops. [wearbrands.co](https://wearbrands.co/)",
       "TeoriaYa   practice for the Spanish driving theory test, for learners of Spanish. [teoriaya.com](https://teoriaya.com/)",
-      "GliderMCP  local MCP servers that give coding agents compiler-backed and indexed evidence about a codebase. [glidermcp.com](https://glidermcp.com/)",
+      "GliderMCP  local MCP servers that let coding agents ask a codebase exact questions. [glidermcp.com](https://glidermcp.com/)",
       "workflow   the multi-agent workflow I use, open source. [github](https://github.com/rexsacrorum/agent-engineering-workflow)"
     ],
     "links.txt": [
